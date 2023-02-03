@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>使用Hugo搭建技术博客 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Hugo简介 Hugo是go语音开发的静态网页生成工具，它在速度、易用性和可配置性方面进行了优化。Hugo获取一个包含内容和模板的目录，并将他" /><meta name="keywords" content='hugo' /><meta itemprop="name" content="使用Hugo搭建技术博客">
+<meta itemprop="description" content="Hugo简介 Hugo是go语音开发的静态网页生成工具，它在速度、易用性和可配置性方面进行了优化。Hugo获取一个包含内容和模板的目录，并将他"><meta itemprop="datePublished" content="2023-02-03T17:01:13+08:00" />
+<meta itemprop="dateModified" content="2023-02-03T17:01:13+08:00" />
+<meta itemprop="wordCount" content="688">
+<meta itemprop="keywords" content="hugo," /><meta property="og:title" content="使用Hugo搭建技术博客" />
+<meta property="og:description" content="Hugo简介 Hugo是go语音开发的静态网页生成工具，它在速度、易用性和可配置性方面进行了优化。Hugo获取一个包含内容和模板的目录，并将他" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/first_post/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-03T17:01:13+08:00" />
+<meta property="article:modified_time" content="2023-02-03T17:01:13+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用Hugo搭建技术博客"/>
+<meta name="twitter:description" content="Hugo简介 Hugo是go语音开发的静态网页生成工具，它在速度、易用性和可配置性方面进行了优化。Hugo获取一个包含内容和模板的目录，并将他"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/first_post/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "使用Hugo搭建技术博客",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/first_post\/"
+    },"genre": "posts","keywords": "hugo","wordcount":  688 ,
+    "url": "http:\/\/example.org\/posts\/first_post\/","datePublished": "2023-02-03T17:01:13+08:00","dateModified": "2023-02-03T17:01:13+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/j5land.png"
+    data-srcset="/j5land.png, /j5land.png 1.5x, /j5land.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客" width="460" height="460"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/j5land.png"
+    data-srcset="/j5land.png, /j5land.png 1.5x, /j5land.png 2x"
+    data-sizes="auto"
+    alt="/j5land.png"
+    title="/j5land.png" width="460" height="460"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>使用Hugo搭建技术博客</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="https://www.gravatar.com/avatar/09f6ba2c1a27e4f0245271e28bf8417c?s=32&amp;d="
+    data-srcset="https://www.gravatar.com/avatar/09f6ba2c1a27e4f0245271e28bf8417c?s=32&amp;d=, https://www.gravatar.com/avatar/09f6ba2c1a27e4f0245271e28bf8417c?s=32&amp;d= 1.5x, https://www.gravatar.com/avatar/09f6ba2c1a27e4f0245271e28bf8417c?s=32&amp;d= 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/hugo/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> hugo</a></span></div>
+      <div class="post-meta-line"><span title=2023-02-03&#32;17:01:13><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-02-03">2023-02-03</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 688 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 2 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#hugo简介">Hugo简介</a></li>
+    <li><a href="#hugo-初探">Hugo 初探</a>
+      <ul>
+        <li><a href="#本地安装hugo">本地安装Hugo</a></li>
+        <li><a href="#安装是否成功">安装是否成功</a></li>
+        <li><a href="#初始化网站">初始化网站</a></li>
+        <li><a href="#选择hugo主题进行配置">选择Hugo主题进行配置</a></li>
+        <li><a href="#运行hugo">运行Hugo</a></li>
+        <li><a href="#创建第一篇文章">创建第一篇文章</a></li>
+        <li><a href="#启动本地服务器">启动本地服务器</a></li>
+        <li><a href="#构建静态网站">构建静态网站</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="hugo简介">Hugo简介</h2>
+<p>Hugo是go语音开发的静态网页生成工具，它在速度、易用性和可配置性方面进行了优化。Hugo获取一个包含内容和模板的目录，并将他们呈现为一个完整的HTML网站。</p>
+<p>Hugo依赖具有前端内容的Markdown文件作为元数据，可以从任何目录运行Hugo。Hugo被设计成适用于任何类型的网站，包括博客、文档。</p>
+<h2 id="hugo-初探">Hugo 初探</h2>
+<h3 id="本地安装hugo">本地安装Hugo</h3>
+<p>到 <a href="https://github.com/spf13/hugo/releases"target="_blank" rel="external nofollow noopener noreferrer">Hugo Releases</a> 下载对应的操作系统版本的Hugo二进制文件（hugo或者hugo.exe）</p>
+<p>Mac下直接使用 <code>Homebrew</code> 安装：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew install hugo
+</span></span></code></pre></div><h3 id="安装是否成功">安装是否成功</h3>
+<p>通过版本号检查的方式，确认是否安装成功</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo version
+</span></span><span class="line"><span class="cl">hugo v0.110.0+extended darwin/arm64 <span class="nv">BuildDate</span><span class="o">=</span>unknown
+</span></span></code></pre></div><h3 id="初始化网站">初始化网站</h3>
+<p>使用Hugo快速初始化网站，比如希望生产 到 <code>/Users/xxx/Documents/site-name</code> 目录</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo new site /Users/xxx/Documents/site-name
+</span></span></code></pre></div><p>进入网站目录：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> /Users/xxx/Documents/site-name
+</span></span></code></pre></div><h3 id="选择hugo主题进行配置">选择Hugo主题进行配置</h3>
+<p>本次博客选择FixIt，因为它基于LoveIt 扩展很多功能</p>
+<pre tabindex="0"><code>git init #如果是已经存在的git项目，这步可忽略
+git submodule add https://github.com/hugo-fixit/FixIt.git themes/FixIt
+</code></pre><h3 id="运行hugo">运行Hugo</h3>
+<p>在你的网站根目录执行Hugo命令进行调试：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo server --theme<span class="o">=</span>FixIt --buildDrafts
+</span></span></code></pre></div><p>在构建网站时，你可以使用 &ndash;theme 选项设置主题。但是，建议你修改配置文件 (config.toml) 将本主题设置为默认主题。</p>
+<h3 id="创建第一篇文章">创建第一篇文章</h3>
+<p>通过Hugo命令来创建第一篇文章的方法：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo new posts/first_post.md
+</span></span></code></pre></div><p>通过添加一些示例内容并替换文件开头的标题，你可以随意编辑文章。</p>
+<blockquote>
+<p>默认情况下，所有文章和页面均作为草稿创建。如果想要渲染这些页面，请从元数据中删除属性 draft: true, 设置属性 draft: false 或者为 hugo 命令添加 -D / &ndash;buildDrafts 参数。</p>
+</blockquote>
+<h3 id="启动本地服务器">启动本地服务器</h3>
+<p>启动 hugo 服务器，进入 http://localhost:1313/ 预览页面</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo server -D
+</span></span></code></pre></div><p>当你运行 <code>hugo server</code> 时，当文件内容更改时，页面会随着更改自动刷新。</p>
+<h3 id="构建静态网站">构建静态网站</h3>
+<p>当你准备好部署你的网站时，运行以下命令：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo
+</span></span></code></pre></div><p>会生成一个 <code>public</code> 目录，其中包含你网站的所有静态内容和资源。现在可以将其部署在任何 Web 服务器上。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-02-03&#32;17:01:13>更新于 2023-02-03&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://example.org/posts/first_post/" data-title="使用Hugo搭建技术博客" data-hashtags="hugo"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://example.org/posts/first_post/" data-hashtag="hugo"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://example.org/posts/first_post/" data-title="使用Hugo搭建技术博客"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/hugo/' class="post-tag">hugo</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/lunr/lunr.min.js" defer></script><script src="/lib/lunr/lunr.stemmer.support.min.js" defer></script><script src="/lib/lunr/lunr.zh.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"search":{"highlightTag":"em","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

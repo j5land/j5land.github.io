@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>hugo - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/hugo/</link>
+    <description>hugo - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 03 Feb 2023 17:01:13 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/hugo/" rel="self" type="application/rss+xml" /><item>
+  <title>使用Hugo搭建技术博客</title>
+  <link>http://example.org/posts/first_post/</link>
+  <pubDate>Fri, 03 Feb 2023 17:01:13 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/first_post/</guid>
+  <description><![CDATA[Hugo简介 Hugo是go语音开发的静态网页生成工具，它在速度、易用性和可配置性方面进行了优化。Hugo获取一个包含内容和模板的目录，并将他]]></description>
+</item>
+</channel>
+</rss>
