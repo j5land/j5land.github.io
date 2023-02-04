@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>服务如何实现限流 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理" /><meta name="keywords" content='sentinel' /><meta itemprop="name" content="服务如何实现限流">
+<meta itemprop="description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理"><meta itemprop="datePublished" content="2021-03-11T01:37:33+08:00" />
+<meta itemprop="dateModified" content="2021-03-11T01:37:33+08:00" />
+<meta itemprop="wordCount" content="4545">
+<meta itemprop="keywords" content="sentinel," /><meta property="og:title" content="服务如何实现限流" />
+<meta property="og:description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-11T01:37:33+08:00" />
+<meta property="article:modified_time" content="2021-03-11T01:37:33+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="服务如何实现限流"/>
+<meta name="twitter:description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" /><link rel="next" href="http://example.org/posts/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "服务如何实现限流",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81\/"
+    },"genre": "posts","keywords": "sentinel","wordcount":  4545 ,
+    "url": "http:\/\/example.org\/posts\/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81\/","datePublished": "2021-03-11T01:37:33+08:00","dateModified": "2021-03-11T01:37:33+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>服务如何实现限流</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/sentinel/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> sentinel</a></span></div>
+      <div class="post-meta-line"><span title=2021-03-11&#32;01:37:33><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-03-11">2021-03-11</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 4545 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 10 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#服务限流">服务限流</a></li>
+    <li><a href="#限流算法">限流算法</a>
+      <ul>
+        <li><a href="#11-固定时间窗口算法">1.1 固定时间窗口算法</a></li>
+        <li><a href="#算法对比总结">算法对比总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#限流降级组件">限流降级组件</a>
+      <ul>
+        <li><a href="#官方对比">官方对比</a></li>
+        <li><a href="#sentinel">Sentinel</a></li>
+        <li><a href="#sentinel工作流程">Sentinel工作流程</a></li>
+        <li><a href="#生产环境sentinel应用与实践">生产环境Sentinel应用与实践</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><p>后台服务是如何实现限流的</p>
+<h2 id="服务限流">服务限流</h2>
+<p>服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理请求为代价，保证整个服务可用。限流主要限制请求流量，保证当前服务、依赖服务不会被被大流量彻底压垮而导致雪崩。</p>
+<p>比如我们的核心系统最高支持300QPS，但是突然有1000QPS请求打了进来，可能这个时候系统就会直接挂掉，导致后面一个请求都处理不了，但是如果我们有限流的手段，无论他有多大的QPS，我们都只处理300QPS的请求，其他请求都直接拒绝掉，虽然有700的QPS的请求我们拒绝掉了，但是我们的系统没有挂掉，我们系统仍然可以不断的处理后续的请求，这个是我们所期望的。</p>
+<p>目前越来越多的企业在大流量高并发的处理场景取得不少的成果，例如：在2020年天猫京东双11购物节、12306在春运期间支撑全国人民的抢火车票、苏宁/淘宝/京东抢购飞天茅台活动，都是对大流量高并发处理的成功案例。</p>
+<p>在Google，已经开源工具包Guava中发布了一个限流工具类RateLimiter，RateLimiter基于可配置的速率来分发令牌，在获取到令牌之后才能进行后续处理，从而实现对接口速率的限制。</p>
+<p>在Netflix，API团队于2011年开始的弹性工程工作，随着Hystrix不断发展和成熟，Netflix内部的许多团队都采用了它。如今，每天在Netflix上通过Hystrix执行数百亿个线程隔离和数千亿个信号量隔离的调用。</p>
+<p>在阿里巴巴，2012~2018年，Sentinel 在阿里巴巴集团内部迅速发展，成为基础技术模块，覆盖了所有的核心场景。Sentinel 也因此积累了大量的流量控制场景以及生产实践，2018年，阿里巴巴宣布限流降级框架组件 Sentinel 正式开源，在此之前，Sentinel 作为阿里巴巴架构中的基础模块，已经覆盖了阿里的所有核心场景，因此积累了大量的流量归整场景以及生产实践。</p>
+<h2 id="限流算法">限流算法</h2>
+<p>限流在技术层面，是一种主动调整流量输出速率的措施，它能够采取一定的方法控制指定时间段内发送的流量，有助于减少拥堵。
+限流控制最早主要用于与网络设备端口流量速率控制。</p>
+<p>在1997年，思科就提出：专利<a href="https://patents.google.com/patent/CN1536815A/zh"target="_blank" rel="external nofollow noopener noreferrer">《采用令牌漏桶进行报文限流的方法》</a>。</p>
+<p>在2017年 阿里巴巴集团就互联网场景限流，申请的<a href="https://patents.google.com/patent/CN107547433A/zh"target="_blank" rel="external nofollow noopener noreferrer">《基于令牌桶进行限流的方法、装置和设备》</a>专利发布，目前此限流广泛在Web应用中使用该技术用于控制网络请求与处理速率。
+目前互联网服务流量场景，主要算法包括有：时间滑动窗口算法、令牌桶算法、漏桶算法等。</p>
+<h3 id="11-固定时间窗口算法">1.1 固定时间窗口算法</h3>
+<p>首先我们来说一下固定时间窗口算法，这个算法比较简单粗暴，我们只需要一个累加变量，然后每个一秒去刷新这个累加的变量，然后再判断这个累计变量是否大于我们的最大QPS。
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png"
+    data-srcset="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png, https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png 1.5x, https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png 2x"
+    data-sizes="auto"
+    alt="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png"
+    title="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png"/></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author Herry Jiang
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @date 2021/3/8
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FixRateLimit</span> <span class="kd">extends</span> <span class="n">AbstractRateLimit</span> <span class="kd">implements</span> <span class="n">RateLimit</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">long</span> <span class="n">lasTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 当前QPS
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="n">AtomicInteger</span> <span class="n">curQPS</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicInteger</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">FixRateLimit</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxQps</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">super</span><span class="o">(</span><span class="n">maxQps</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">acquire</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mutex</span><span class="o">()){</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//获取当前时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">long</span> <span class="n">now</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">lasTime</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">lasTime</span> <span class="o">=</span> <span class="n">now</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">curQPS</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">curQPS</span><span class="o">.</span><span class="na">addAndGet</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">&gt;</span> <span class="n">maxQps</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h4 id="12-时间滑动窗口算法">1.2 时间滑动窗口算法</h4>
+<p>滑动时间窗口算法相比固定时间窗口计算算法优化在于，它把时间以一定比例分片。解决了固定时间窗口临界值的问题。相对固定窗口，滑动窗口除了需要引入计数器之外还需要记录时间窗口内每个请求到达的时间点，因此对内存占用相对多一些。
+例如：限流每秒钟处理300个请求，我们可以把1秒分为100个窗口，每隔10毫秒移动一次，每隔窗口只能处理10毫秒只能处理3个请求，通过把窗口分成更小的片，从而解决了固定窗口临界值流量翻倍的问题。
+虽然侧面切分窗口的方法解决了流量固定窗口翻倍的问题(分的越细控制越精准)，但是此算法不支持突发流量的情况，例如：在前10ms来了300个请求的流量突发场景。
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png"
+    data-srcset="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png, https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png 1.5x, https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png 2x"
+    data-sizes="auto"
+    alt="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png"
+    title="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png"/></p>
+<p>代码实现</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author Herry Jiang
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @date 2021/3/8
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SlideRateLimit</span> <span class="kd">extends</span> <span class="n">AbstractRateLimit</span> <span class="kd">implements</span> <span class="n">RateLimit</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//默认窗口个数：100个
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">windowNum</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//默认窗口大小：10ms
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">windowSize</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//计算每分片个窗口最大QPS
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">windowMaxQPS</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//记录整个大窗口开始时间戳
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="kt">long</span> <span class="n">windowBeginTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//当前QPS
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="n">AtomicInteger</span> <span class="n">curQPS</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicInteger</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//记录每个小窗口对应QPS情况
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">,</span> <span class="n">AtomicInteger</span><span class="o">&gt;</span> <span class="n">windowQpsMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentHashMap</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">,</span> <span class="n">AtomicInteger</span><span class="o">&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">SlideRateLimit</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxQps</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">super</span><span class="o">(</span><span class="n">maxQps</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">windowMaxQPS</span> <span class="o">=</span> <span class="n">maxQps</span> <span class="o">/</span> <span class="n">windowNum</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">SlideRateLimit</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxQps</span><span class="o">,</span> <span class="kt">int</span> <span class="n">windowSize</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">super</span><span class="o">(</span><span class="n">maxQps</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">windowSize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="s">&#34;窗口大小不能小于0&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">windowSize</span> <span class="o">=</span> <span class="n">windowSize</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">windowNum</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="n">windowSize</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">windowMaxQPS</span> <span class="o">=</span> <span class="n">maxQps</span> <span class="o">/</span> <span class="k">this</span><span class="o">.</span><span class="na">windowNum</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">acquire</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 统计的请求数小于阈值就记录这个请求时间，并允许通过，反之拒绝
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mutex</span><span class="o">()){</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 获取当前时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">long</span> <span class="n">now</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 每次统计请求时间 至 往前1秒这个时间窗口内请求数，且1秒前数据不保存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">long</span> <span class="n">interval</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">windowBeginTime</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">interval</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">windowQpsMap</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">windowBeginTime</span> <span class="o">=</span> <span class="n">now</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">curQPS</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">interval</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">windowMaxQPS</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 计算当前小窗口位置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">Long</span> <span class="n">windowKey</span> <span class="o">=</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">windowSize</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">windowQpsMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">windowKey</span><span class="o">)){</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;窗口位:&#34;</span><span class="o">+</span><span class="n">windowKey</span><span class="o">+</span><span class="s">&#34;, QPS:&#34;</span><span class="o">+</span><span class="n">windowQpsMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">windowKey</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="o">(</span><span class="n">windowQpsMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">windowKey</span><span class="o">).</span><span class="na">addAndGet</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">&gt;</span> <span class="n">windowMaxQPS</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span><span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;窗口位:&#34;</span><span class="o">+</span><span class="n">windowKey</span><span class="o">+</span><span class="s">&#34;, QPS:&#34;</span><span class="o">+</span><span class="n">windowQpsMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">windowKey</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">windowQpsMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">windowKey</span><span class="o">,</span> <span class="k">new</span> <span class="n">AtomicInteger</span><span class="o">(</span><span class="mi">1</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">curQPS</span><span class="o">.</span><span class="na">addAndGet</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="o">&gt;</span> <span class="n">maxQps</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h4 id="13-令牌桶算法">1.3 令牌桶算法</h4>
+<p>令牌桶作为常用的网络流量控制算法，可控制网络请求的数量，对一定限度内的突发请求（图片请求量对于令牌桶的数量）也可以发送，令牌桶算法原理如下：
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png"
+    data-srcset="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png, https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png 1.5x, https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png 2x"
+    data-sizes="auto"
+    alt="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png"
+    title="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png"/></p>
+<p>令牌桶的算法思想具体如下：
+1.假设令牌桶容量可容纳C个令牌，每秒放入r个令牌，W为目前桶内令牌数，如果桶满了，则将多余令牌丢弃；
+2.如果请求b到达，按需求向令牌桶请求令牌，如果上个处理时间为at，此时桶内的令牌数为W&rsquo;=min(C， W+(bt-at)*r)，如果w&rsquo;大于1则拿到令牌W‘减一，否则拒绝请求；
+代码实现</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Java" data-lang="Java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author Herry Jiang
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @date 2021/3/9
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TokenRateLimit</span> <span class="kd">extends</span> <span class="n">AbstractRateLimit</span> <span class="kd">implements</span> <span class="n">RateLimit</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">volatile</span> <span class="kt">long</span> <span class="n">lasTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//每隔多久放一个token，时间单位为微秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="kt">long</span> <span class="n">tokenIntervalMicroseconds</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">CONSTANT_1000</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//当前QPS
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="n">AtomicLong</span> <span class="n">tokenBucket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicLong</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">TokenRateLimit</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxQps</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">super</span><span class="o">(</span><span class="n">maxQps</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tokenIntervalMicroseconds</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">/</span> <span class="n">maxQps</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">acquire</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 放token
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mutex</span><span class="o">()){</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">long</span> <span class="n">now</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">long</span> <span class="n">interval</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">lasTime</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">interval</span> <span class="o">&gt;</span> <span class="n">CONSTANT_1000</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">lasTime</span> <span class="o">=</span> <span class="n">now</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">interval</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">long</span> <span class="n">putTokenNum</span> <span class="o">=</span> <span class="n">interval</span> <span class="o">*</span> <span class="n">CONSTANT_1000</span> <span class="o">/</span> <span class="n">tokenIntervalMicroseconds</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;开始&gt;当前令牌桶token数：&#34;</span><span class="o">+</span><span class="n">tokenBucket</span><span class="o">.</span><span class="na">get</span><span class="o">()+</span><span class="s">&#34;, putTokenNum=&#34;</span><span class="o">+</span><span class="n">putTokenNum</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">putTokenNum</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">lasTime</span> <span class="o">=</span> <span class="n">now</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;当前令牌桶token数：&#34;</span><span class="o">+</span><span class="n">tokenBucket</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">tokenBucket</span><span class="o">.</span><span class="na">addAndGet</span><span class="o">(</span><span class="n">putTokenNum</span><span class="o">)</span> <span class="o">&gt;</span> <span class="n">maxQps</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">tokenBucket</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">maxQps</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;结束&gt;当前令牌桶token数：&#34;</span><span class="o">+</span><span class="n">tokenBucket</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">tokenBucket</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">tokenBucket</span><span class="o">.</span><span class="na">decrementAndGet</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h4 id="14-漏桶算法">1.4 漏桶算法</h4>
+<p>漏桶算法是一种能够临时存储一定数量的请求，将它们分组按照规定速率输出的方法，常用语异步传输模式的网络中，目的是控制流量注入网络的速率，平滑处理网络的突发流量。
+该算法与漏桶漏水的方式类似，可以将漏桶算法模型比作一个恒定速率漏水的漏桶，漏桶地步的水以固定速率流出。在漏桶顶部，水以不固定的速率进入桶中，当漏桶装满水，之后超出的水会溢出。
+算法原理如下：
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png"
+    data-srcset="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png, https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png 1.5x, https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png 2x"
+    data-sizes="auto"
+    alt="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png"
+    title="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png"/></p>
+<p>漏桶的算法思想具体如下：
+1.假设漏桶容量为C，水流出的速度是r，上一个请求处理的时间为at，漏桶剩余的水量为W;
+2.当前请求为b，当前时间为bt，当前流走的水量为Wb = (bt-at)*r，漏桶目前剩余的水量为W&rsquo; = max(W-Wb, 0)，如果W’+b&lt;C，说明请求可以处理，否则拒绝；
+代码实现</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author Herry Jiang
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @date 2021/3/10
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BucketRateLimit</span> <span class="kd">extends</span> <span class="n">AbstractRateLimit</span> <span class="kd">implements</span> <span class="n">RateLimit</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">volatile</span> <span class="kt">long</span> <span class="n">lasTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//多少时间流出1滴水，流出水的时间，时间精确到微秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="kt">long</span> <span class="n">intervalMicroseconds</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">AtomicLong</span> <span class="n">bucketCapacity</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicLong</span><span class="o">(</span><span class="mi">0</span><span class="o">);;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">BucketRateLimit</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxQps</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">super</span><span class="o">(</span><span class="n">maxQps</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">intervalMicroseconds</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">/</span> <span class="n">maxQps</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">acquire</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mutex</span><span class="o">()){</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">long</span> <span class="n">now</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//漏桶流走的水
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">long</span> <span class="n">runOutWater</span> <span class="o">=</span> <span class="o">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">lasTime</span><span class="o">)</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">/</span> <span class="n">intervalMicroseconds</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">runOutWater</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">lasTime</span> <span class="o">=</span> <span class="n">now</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">bucketCapacity</span><span class="o">.</span><span class="na">addAndGet</span><span class="o">(</span> <span class="o">-</span> <span class="n">runOutWater</span> <span class="o">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">bucketCapacity</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">bucketCapacity</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">maxQps</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">bucketCapacity</span><span class="o">.</span><span class="na">incrementAndGet</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="算法对比总结">算法对比总结</h3>
+<ol>
+<li>固定时间窗口，存在临界点问题，会突破限流的阈值存在被攻击的风险，但效率相对较高；</li>
+<li>滑动时间窗口，可以有效的规避临界点的问题，但是仍然存在时间片概念，时间片段越精确流量控制越细致，从而导致计算耗时增加，且不支持突发流量的处理。</li>
+<li>令牌桶算法，能够在限制数据的平均速度的同时还能允许某种程度的突发流量；</li>
+<li>漏桶算法限制的是常量流出速率，从而平滑突发流量。
+以上是服务限流的技术底层基础。
+另外关于限流如何在生产推广及应用，也是比较考验服务限流组件生产力的表现。</li>
+</ol>
+<h2 id="限流降级组件">限流降级组件</h2>
+<h3 id="官方对比">官方对比</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Sentinel</th>
+<th>Hystrix</th>
+<th>resilience4j</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>隔离策略</td>
+<td>信号量隔离（并发控制）</td>
+<td>线程池隔离/信号量隔离</td>
+<td>信号量隔离</td>
+</tr>
+<tr>
+<td>熔断降级策略</td>
+<td>基于慢调用比例、异常比例、异常数</td>
+<td>基于异常比例</td>
+<td>基于异常比例、响应时间</td>
+</tr>
+<tr>
+<td>实时统计实现</td>
+<td>滑动窗口（LeapArray）</td>
+<td>滑动窗口（基于 RxJava）</td>
+<td>Ring Bit Buffer</td>
+</tr>
+<tr>
+<td>动态规则配置</td>
+<td>支持多种数据源</td>
+<td>支持多种数据源</td>
+<td>有限支持</td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>多个扩展点</td>
+<td>插件的形式</td>
+<td>接口的形式</td>
+</tr>
+<tr>
+<td>基于注解的支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>限流</td>
+<td>基于 QPS，支持基于调用关系的限流</td>
+<td>有限的支持</td>
+<td>Rate Limiter</td>
+</tr>
+<tr>
+<td>流量整形</td>
+<td>支持预热模式与匀速排队控制效果</td>
+<td>不支持</td>
+<td>简单的 Rate Limiter 模式</td>
+</tr>
+<tr>
+<td>系统自适应保护</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>多语言支持</td>
+<td>Java/Go/C++</td>
+<td>Java</td>
+<td>Java</td>
+</tr>
+<tr>
+<td>Service Mesh 支持</td>
+<td>支持 Envoy/Istio</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>控制台</td>
+<td>提供开箱即用的控制台，可配置规则、实时监控、机器发现等</td>
+<td>简单的监控查看</td>
+<td>不提供控制台，可对接其它监控系统</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sentinel">Sentinel</h3>
+<p>这里主要介绍下Sentinel，随着微服务的流行，服务和服务之间的稳定性变得越来越重要。Sentinel 以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。
+Sentinel 具有以下特征：</p>
+<ol>
+<li>丰富的应用场景：Sentinel 承接了阿里巴巴近 10 年的双十一大促流量的核心场景，例如秒杀（即突发流量控制在系统容量可以承受的范围）、消息削峰填谷、集群流量控制、实时熔断下游不可用应用等；</li>
+<li>完备的实时监控：Sentinel 同时提供实时的监控功能。您可以在控制台中看到接入应用的单台机器秒级数据，甚至 500 台以下规模的集群的汇总运行情况；</li>
+<li>广泛的开源生态：Sentinel 提供开箱即用的与其它开源框架/库的整合模块，例如与 Spring Cloud、Dubbo、gRPC 的整合。您只需要引入相应的依赖并进行简单的配置即可快速地接入 Sentinel；</li>
+<li>完善的 SPI 扩展点：Sentinel 提供简单易用、完善的 SPI 扩展接口。您可以通过实现扩展接口来快速地定制逻辑。例如定制规则管理、适配动态数据源等；</li>
+</ol>
+<p>Sentinel 分为两个部分：</p>
+<ol>
+<li>核心库（Java 客户端）不依赖任何框架/库，能够运行于所有 Java 运行时环境，同时对 Dubbo / Spring Cloud 等框架也有较好的支持；</li>
+<li>控制台（Dashboard）基于 Spring Boot 开发，打包后可以直接运行，不需要额外的 Tomcat 等应用容器；</li>
+</ol>
+<h3 id="sentinel工作流程">Sentinel工作流程</h3>
+<h4 id="默认架构">默认架构</h4>
+<p>为了让你更直观的了解Sentinel 的工作流程，可以参考如下图：
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png"
+    data-srcset="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png, https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png 1.5x, https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png 2x"
+    data-sizes="auto"
+    alt="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png"
+    title="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png"/></p>
+<h3 id="生产环境sentinel应用与实践">生产环境Sentinel应用与实践</h3>
+<p>看完Sentinel开源默认运行架构，其实还不能直接投入到生产环境，存在以下几点问题：</p>
+<ol>
+<li>限流、降级规则默认保存在应用节点内容中，应用重新发布后就会失效，这显然是无法接受的；</li>
+<li>metrics信息是有Dashboard主动拉取保存到内容，仅仅保留5分钟，无法全天看到秒级QPS流量情况，也无法还原“案发现场”的流量情况；</li>
+<li>metrics信息是有Dashboard主动拉取，随着应用接入非常多的话，主动拉取metrics的方式是的Dashboard也会存在瓶颈；</li>
+</ol>
+<h4 id="优化解耦架构">优化解耦架构</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png"
+    data-srcset="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png, https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png 1.5x, https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png 2x"
+    data-sizes="auto"
+    alt="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png"
+    title="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png"/></p>
+<h4 id="版本兼容性选型">版本兼容性选型</h4>
+<table>
+<thead>
+<tr>
+<th>Spring Boot Version</th>
+<th>Spring Cloud Alibaba Version</th>
+<th>Sentinel Version</th>
+<th>Nacos Version</th>
+<th>RocketMQ Version</th>
+<th>Dubbo Version</th>
+<th>Seata Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.2.5.RELEASE  2.1.X.RELEASE 2.0.X.RELEASE</td>
+<td>2.2.3.RELEASE 2.1.3.RELEASE 2.0.3.RELEASE</td>
+<td>1.8.0</td>
+<td>1.3.3</td>
+<td>4.4.0</td>
+<td>2.7.8</td>
+<td>1.3.0</td>
+</tr>
+<tr>
+<td>2.2.5.RELEASE  2.1.X.RELEASE 2.0.X.RELEASE</td>
+<td>2.2.1.RELEASE 2.1.2.RELEASE 2.0.2.RELEASE</td>
+<td>1.7.1</td>
+<td>1.2.1</td>
+<td>4.4.0</td>
+<td>2.7.6</td>
+<td>1.2.0</td>
+</tr>
+<tr>
+<td>2.2.X.RELEASE</td>
+<td>2.2.0.RELEASE</td>
+<td>1.7.1</td>
+<td>1.1.4</td>
+<td>4.4.0</td>
+<td>2.7.4.1</td>
+<td>1.0.0</td>
+</tr>
+<tr>
+<td>2.1.X.RELEASE 2.0.X.RELEASE 1.5.X.RELEASE(停止维护)</td>
+<td>2.1.1.RELEASE 2.0.1.RELEASE 1.5.1.RELEASE</td>
+<td>1.7.0</td>
+<td>1.1.4</td>
+<td>4.4.0</td>
+<td>2.7.3</td>
+<td>0.9.0</td>
+</tr>
+<tr>
+<td>2.1.X.RELEASE 2.0.X.RELEASE 1.5.X.RELEASE(停止维护)</td>
+<td>2.1.0.RELEASE 2.0.0.RELEASE 1.5.0.RELEASE</td>
+<td>1.6.3</td>
+<td>1.1.1</td>
+<td>4.4.0</td>
+<td>2.7.3</td>
+<td>0.7.1</td>
+</tr>
+</tbody>
+</table>
+<p>最后希望大家的系统在大流量场景下都能稳定运行
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg"
+    data-srcset="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg, https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg 1.5x, https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg 2x"
+    data-sizes="auto"
+    alt="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg"
+    title="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg"/></p>
+<p>参考：</p>
+<ul>
+<li><a href="https://patents.google.com/patent/CN1536815A/zh"target="_blank" rel="external nofollow noopener noreferrer">https://patents.google.com/patent/CN1536815A/zh</a></li>
+<li><a href="https://patents.google.com/patent/CN107547433A/zh"target="_blank" rel="external nofollow noopener noreferrer">https://patents.google.com/patent/CN107547433A/zh</a></li>
+<li><a href="https://github.com/alibaba/Sentinel/wiki/Guideline:-%E4%BB%8E-Hystrix-%E8%BF%81%E7%A7%BB%E5%88%B0-Sentinel"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/alibaba/Sentinel/wiki/Guideline:-%E4%BB%8E-Hystrix-%E8%BF%81%E7%A7%BB%E5%88%B0-Sentinel</a></li>
+<li><a href="https://www.javadoop.com/post/sentinel"target="_blank" rel="external nofollow noopener noreferrer">https://www.javadoop.com/post/sentinel</a></li>
+<li><a href="https://www.iocoder.cn/Sentinel/laoqian/Sentinel-an-open-source-current-limiting-system-of-alibaba-is-fully-analyzed/"target="_blank" rel="external nofollow noopener noreferrer">https://www.iocoder.cn/Sentinel/laoqian/Sentinel-an-open-source-current-limiting-system-of-alibaba-is-fully-analyzed/</a></li>
+<li><a href="https://www.cnblogs.com/vivotech/p/14137185.html"target="_blank" rel="external nofollow noopener noreferrer">https://www.cnblogs.com/vivotech/p/14137185.html</a></li>
+<li><a href="https://segmentfault.com/a/1190000023552181"target="_blank" rel="external nofollow noopener noreferrer">https://segmentfault.com/a/1190000023552181</a></li>
+<li><a href="https://sentinelguard.io/zh-cn/docs/basic-api-resource-rule.html"target="_blank" rel="external nofollow noopener noreferrer">https://sentinelguard.io/zh-cn/docs/basic-api-resource-rule.html</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2021-03-11&#32;01:37:33>更新于 2021-03-11&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/sentinel/' class="post-tag">sentinel</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav">
+      <a href="/posts/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" class="post-nav-item" rel="next" title="使用Hugo搭建技术博客">使用Hugo搭建技术博客<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/lunr/lunr.min.js" defer></script><script src="/lib/lunr/lunr.stemmer.support.min.js" defer></script><script src="/lib/lunr/lunr.zh.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"search":{"highlightTag":"em","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

@@ -11,5 +11,13 @@
   <guid>http://example.org/tags/hugo/</guid>
   <description><![CDATA[]]></description>
 </item>
+<item>
+  <title>sentinel</title>
+  <link>http://example.org/tags/sentinel/</link>
+  <pubDate>Thu, 11 Mar 2021 01:37:33 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/tags/sentinel/</guid>
+  <description><![CDATA[]]></description>
+</item>
 </channel>
 </rss>
