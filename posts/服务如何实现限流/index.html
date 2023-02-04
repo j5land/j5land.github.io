@@ -211,15 +211,15 @@
 <p>在2017年 阿里巴巴集团就互联网场景限流，申请的<a href="https://patents.google.com/patent/CN107547433A/zh"target="_blank" rel="external nofollow noopener noreferrer">《基于令牌桶进行限流的方法、装置和设备》</a>专利发布，目前此限流广泛在Web应用中使用该技术用于控制网络请求与处理速率。
 目前互联网服务流量场景，主要算法包括有：时间滑动窗口算法、令牌桶算法、漏桶算法等。</p>
 <h3 id="11-固定时间窗口算法">1.1 固定时间窗口算法</h3>
-<p>首先我们来说一下固定时间窗口算法，这个算法比较简单粗暴，我们只需要一个累加变量，然后每个一秒去刷新这个累加的变量，然后再判断这个累计变量是否大于我们的最大QPS。
-<img
+<p>首先我们来说一下固定时间窗口算法，这个算法比较简单粗暴，我们只需要一个累加变量，然后每个一秒去刷新这个累加的变量，然后再判断这个累计变量是否大于我们的最大QPS。</p>
+<p><img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png"
-    data-srcset="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png, https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png 1.5x, https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png 2x"
+    data-src="images/guding.png"
+    data-srcset="images/guding.png, images/guding.png 1.5x, images/guding.png 2x"
     data-sizes="auto"
-    alt="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png"
-    title="https://files.mdnice.com/user/11338/fe55af09-f6ed-4f3e-bec9-2d97956a06e5.png"/></p>
+    alt="images/guding.png"
+    title="images/guding.png"/></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
 </span></span></span><span class="line"><span class="cl"><span class="cm"> * @author Herry Jiang
 </span></span></span><span class="line"><span class="cl"><span class="cm"> * @date 2021/3/8
@@ -249,15 +249,15 @@
 </span></span></code></pre></div><h4 id="12-时间滑动窗口算法">1.2 时间滑动窗口算法</h4>
 <p>滑动时间窗口算法相比固定时间窗口计算算法优化在于，它把时间以一定比例分片。解决了固定时间窗口临界值的问题。相对固定窗口，滑动窗口除了需要引入计数器之外还需要记录时间窗口内每个请求到达的时间点，因此对内存占用相对多一些。
 例如：限流每秒钟处理300个请求，我们可以把1秒分为100个窗口，每隔10毫秒移动一次，每隔窗口只能处理10毫秒只能处理3个请求，通过把窗口分成更小的片，从而解决了固定窗口临界值流量翻倍的问题。
-虽然侧面切分窗口的方法解决了流量固定窗口翻倍的问题(分的越细控制越精准)，但是此算法不支持突发流量的情况，例如：在前10ms来了300个请求的流量突发场景。
-<img
+虽然侧面切分窗口的方法解决了流量固定窗口翻倍的问题(分的越细控制越精准)，但是此算法不支持突发流量的情况，例如：在前10ms来了300个请求的流量突发场景。</p>
+<p><img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png"
-    data-srcset="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png, https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png 1.5x, https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png 2x"
+    data-src="images/huadong.png"
+    data-srcset="images/huadong.png, images/huadong.png 1.5x, images/huadong.png 2x"
     data-sizes="auto"
-    alt="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png"
-    title="https://files.mdnice.com/user/11338/efc090bd-e459-4f73-8fb3-0410f1961fa9.png"/></p>
+    alt="images/huadong.png"
+    title="images/huadong.png"/></p>
 <p>代码实现</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
 </span></span></span><span class="line"><span class="cl"><span class="cm"> * @author Herry Jiang
@@ -323,15 +323,15 @@
 </span></span><span class="line"><span class="cl">    <span class="o">}</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
 </span></span></code></pre></div><h4 id="13-令牌桶算法">1.3 令牌桶算法</h4>
-<p>令牌桶作为常用的网络流量控制算法，可控制网络请求的数量，对一定限度内的突发请求（图片请求量对于令牌桶的数量）也可以发送，令牌桶算法原理如下：
-<img
+<p>令牌桶作为常用的网络流量控制算法，可控制网络请求的数量，对一定限度内的突发请求（图片请求量对于令牌桶的数量）也可以发送，令牌桶算法原理如下：</p>
+<p><img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png"
-    data-srcset="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png, https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png 1.5x, https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png 2x"
+    data-src="images/lingpaitong.jpeg"
+    data-srcset="images/lingpaitong.jpeg, images/lingpaitong.jpeg 1.5x, images/lingpaitong.jpeg 2x"
     data-sizes="auto"
-    alt="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png"
-    title="https://files.mdnice.com/user/11338/013b7008-fe91-47f4-8642-474bb99e9df1.png"/></p>
+    alt="images/lingpaitong.jpeg"
+    title="images/lingpaitong.jpeg"/></p>
 <p>令牌桶的算法思想具体如下：
 1.假设令牌桶容量可容纳C个令牌，每秒放入r个令牌，W为目前桶内令牌数，如果桶满了，则将多余令牌丢弃；
 2.如果请求b到达，按需求向令牌桶请求令牌，如果上个处理时间为at，此时桶内的令牌数为W&rsquo;=min(C， W+(bt-at)*r)，如果w&rsquo;大于1则拿到令牌W‘减一，否则拒绝请求；
@@ -380,15 +380,15 @@
 </span></span></code></pre></div><h4 id="14-漏桶算法">1.4 漏桶算法</h4>
 <p>漏桶算法是一种能够临时存储一定数量的请求，将它们分组按照规定速率输出的方法，常用语异步传输模式的网络中，目的是控制流量注入网络的速率，平滑处理网络的突发流量。
 该算法与漏桶漏水的方式类似，可以将漏桶算法模型比作一个恒定速率漏水的漏桶，漏桶地步的水以固定速率流出。在漏桶顶部，水以不固定的速率进入桶中，当漏桶装满水，之后超出的水会溢出。
-算法原理如下：
-<img
+算法原理如下：</p>
+<p><img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png"
-    data-srcset="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png, https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png 1.5x, https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png 2x"
+    data-src="images/loudou.jpeg"
+    data-srcset="images/loudou.jpeg, images/loudou.jpeg 1.5x, images/loudou.jpeg 2x"
     data-sizes="auto"
-    alt="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png"
-    title="https://files.mdnice.com/user/11338/e083695f-9dde-4c50-b209-7a717cf467bb.png"/></p>
+    alt="images/loudou.jpeg"
+    title="images/loudou.jpeg"/></p>
 <p>漏桶的算法思想具体如下：
 1.假设漏桶容量为C，水流出的速度是r，上一个请求处理的时间为at，漏桶剩余的水量为W;
 2.当前请求为b，当前时间为bt，当前流走的水量为Wb = (bt-at)*r，漏桶目前剩余的水量为W&rsquo; = max(W-Wb, 0)，如果W’+b&lt;C，说明请求可以处理，否则拒绝；
@@ -540,11 +540,11 @@ Sentinel 具有以下特征：</p>
 <img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png"
-    data-srcset="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png, https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png 1.5x, https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png 2x"
+    data-src="images/default_sentinel.jpeg"
+    data-srcset="images/default_sentinel.jpeg, images/default_sentinel.jpeg 1.5x, images/default_sentinel.jpeg 2x"
     data-sizes="auto"
-    alt="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png"
-    title="https://files.mdnice.com/user/11338/85475e8a-545f-40ca-bc8b-f25880f54307.png"/></p>
+    alt="images/default_sentinel.jpeg"
+    title="images/default_sentinel.jpeg"/></p>
 <h3 id="生产环境sentinel应用与实践">生产环境Sentinel应用与实践</h3>
 <p>看完Sentinel开源默认运行架构，其实还不能直接投入到生产环境，存在以下几点问题：</p>
 <ol>
@@ -556,11 +556,11 @@ Sentinel 具有以下特征：</p>
 <p><img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png"
-    data-srcset="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png, https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png 1.5x, https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png 2x"
+    data-src="images/sentinel_opt.jpeg"
+    data-srcset="images/sentinel_opt.jpeg, images/sentinel_opt.jpeg 1.5x, images/sentinel_opt.jpeg 2x"
     data-sizes="auto"
-    alt="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png"
-    title="https://files.mdnice.com/user/11338/59ca0c69-9379-4f8f-b553-553a36fb1855.png"/></p>
+    alt="images/sentinel_opt.jpeg"
+    title="images/sentinel_opt.jpeg"/></p>
 <h4 id="版本兼容性选型">版本兼容性选型</h4>
 <table>
 <thead>
@@ -622,15 +622,15 @@ Sentinel 具有以下特征：</p>
 </tr>
 </tbody>
 </table>
-<p>最后希望大家的系统在大流量场景下都能稳定运行
-<img
+<p>最后希望大家的系统在大流量场景下都能稳定运行</p>
+<p><img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg"
-    data-srcset="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg, https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg 1.5x, https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg 2x"
+    data-src="images/asp7d-tbzxk.jpeg"
+    data-srcset="images/asp7d-tbzxk.jpeg, images/asp7d-tbzxk.jpeg 1.5x, images/asp7d-tbzxk.jpeg 2x"
     data-sizes="auto"
-    alt="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg"
-    title="https://files.mdnice.com/user/11338/4bc7d8b6-68b2-41ea-b662-e34662d42626.jpg"/></p>
+    alt="images/asp7d-tbzxk.jpeg"
+    title="images/asp7d-tbzxk.jpeg"/></p>
 <p>参考：</p>
 <ul>
 <li><a href="https://patents.google.com/patent/CN1536815A/zh"target="_blank" rel="external nofollow noopener noreferrer">https://patents.google.com/patent/CN1536815A/zh</a></li>
