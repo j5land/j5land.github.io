@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>微服务架构看着一篇就够了 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="微服务 之前有读《架构即未来》这本书，了解到组织架构即系统架构的理念。之前看到有关于康恩定律的深度解读，感觉比较有收获，所以照例抄录转载。 微服" /><meta name="keywords" content='微服务, 架构' /><meta itemprop="name" content="微服务架构看着一篇就够了">
+<meta itemprop="description" content="微服务 之前有读《架构即未来》这本书，了解到组织架构即系统架构的理念。之前看到有关于康恩定律的深度解读，感觉比较有收获，所以照例抄录转载。 微服"><meta itemprop="datePublished" content="2021-03-17T18:19:07+08:00" />
+<meta itemprop="dateModified" content="2021-03-17T18:19:07+08:00" />
+<meta itemprop="wordCount" content="3181">
+<meta itemprop="keywords" content="微服务,架构," /><meta property="og:title" content="微服务架构看着一篇就够了" />
+<meta property="og:description" content="微服务 之前有读《架构即未来》这本书，了解到组织架构即系统架构的理念。之前看到有关于康恩定律的深度解读，感觉比较有收获，所以照例抄录转载。 微服" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9C%8B%E7%9D%80%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-17T18:19:07+08:00" />
+<meta property="article:modified_time" content="2021-03-17T18:19:07+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="微服务架构看着一篇就够了"/>
+<meta name="twitter:description" content="微服务 之前有读《架构即未来》这本书，了解到组织架构即系统架构的理念。之前看到有关于康恩定律的深度解读，感觉比较有收获，所以照例抄录转载。 微服"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9C%8B%E7%9D%80%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86/" /><link rel="prev" href="http://example.org/posts/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" /><link rel="next" href="http://example.org/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "微服务架构看着一篇就够了",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9C%8B%E7%9D%80%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86\/"
+    },"genre": "posts","keywords": "微服务, 架构","wordcount":  3181 ,
+    "url": "http:\/\/example.org\/posts\/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9C%8B%E7%9D%80%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86\/","datePublished": "2021-03-17T18:19:07+08:00","dateModified": "2021-03-17T18:19:07+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>微服务架构看着一篇就够了</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 微服务架构</a></span></div>
+      <div class="post-meta-line"><span title=2021-03-17&#32;18:19:07><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-03-17">2021-03-17</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 3181 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 7 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#康威定律详细介绍">康威定律详细介绍</a>
+      <ul>
+        <li><a href="#人是复杂的社会动物">人是复杂的社会动物</a></li>
+        <li><a href="#一口气吃不成胖子先搞定能搞定的">一口气吃不成胖子，先搞定能搞定的</a></li>
+        <li><a href="#做独立自治的自系统减少沟通成本种瓜得瓜">做独立自治的自系统，减少沟通成本（种瓜得瓜）</a></li>
+        <li><a href="#合久比分分而治之">合久比分，分而治之</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="微服务">微服务</h1>
+<p>之前有读《架构即未来》这本书，了解到组织架构即系统架构的理念。之前看到有关于康恩定律的深度解读，感觉比较有收获，所以照例抄录转载。</p>
+<p>微服务是前几年的概念，大家都在追，都觉得很对，也都在执行，但似乎没有很充足的理论基础说明这是正确的，给人的感觉是 不明觉厉 。</p>
+<p>可能出乎很多人意料之外的一个事实是，微服务核心理论其实在半个世纪以前的一篇文章已经被阐述过来额，而且这篇文章中的很多论点在软件开发飞速发展的这半个世纪中惊人一再被验证，这就是<a href="http://www.melconway.com/Home/Conways_Law.html?spm=a2c4e.11153940.blogcont8611.5.7ea872f01bxiRD"target="_blank" rel="external nofollow noopener noreferrer">康威定律（Conway&rsquo;s Law）</a>。</p>
+<p>这篇文章最有名的一句话就是：</p>
+<p>Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations. - Melvin Conway(1967)</p>
+<p>大致意思是：设计系统的组织，其产生的设计等同于组织之内、组织之间的沟通结构。看看下面图片，就能形象生动的理解这句话。</p>
+<p>通俗说法就是：组织形式等同系统架构设计。</p>
+<h2 id="康威定律详细介绍">康威定律详细介绍</h2>
+<ul>
+<li>
+<p>第一定律</p>
+<p>Communication dictates design</p>
+<p>组织沟通方式会通过系统设计表达出来</p>
+</li>
+<li>
+<p>第二定律</p>
+<p>There is never enough time to do something right, but there is always enough time to do it over</p>
+<p>时间再多，一件事情也不可能做百分百完美，但总有足够的时间可以完成它</p>
+</li>
+<li>
+<p>第三定律</p>
+<p>There is a homomorphism from the linear graph of a system to the linear graph of its design organization</p>
+<p>线型组织架构和线型系统有潜在的异质同态特性</p>
+</li>
+<li>
+<p>第四定律</p>
+<p>The structures of large systems tend to disintegrate during development, qualitatively more so than with small systems</p>
+<p>大的系统组织总是比小系统更倾向于分解</p>
+</li>
+</ul>
+<h3 id="人是复杂的社会动物">人是复杂的社会动物</h3>
+<p>第一定律</p>
+<p>Communication dictates design</p>
+<p>组织沟通方式会通过系统设计表达出来</p>
+<p>组织的沟通和系统设计之间的紧密联系，在很多别的领域有类似的阐述。对于复杂的系统，聊设计就离不开聊人与人的沟通，解决好人与人的沟通问题，才能有一个好的系统设计。相信几乎每个程序员都读过的《人月神话》（1975年，感觉都是老古董了，经典的就是经得起时间考验）里面许多观点都和这句话有异曲同工之妙。</p>
+<p>比如《人月神话》中最著名的一句话就是：</p>
+<p>Adding manpower to a late software project makes it later &ndash;Fred Brooks, (1975)</p>
+<p>为什么？人月神话也给出了很简洁的答案：沟通成本 = n(n-1)/2，沟通成本随着项目或者组织的人员增加呈指数级增长。是的，项目管理这个算法的复杂度是O(n^2)。</p>
+<p>举个例子：</p>
+<ul>
+<li>5个人的项目组，需要沟通的渠道是 5*(5–1)/2 = 10</li>
+<li>15个人的项目组，需要沟通的渠道是15*(15–1)/2 = 105</li>
+<li>50个人的项目组，需要沟通的渠道是50*(50–1)/2 = 1,225</li>
+<li>150个人的项目组，需要沟通的渠道是150*(150–1)/2 = 11,175</li>
+</ul>
+<p>所以知道为什么互联网创业公司都这么小了吧，必须小啊，不然等CEO和所有人讲一遍创业的想法后，风投的钱都烧完了。</p>
+<p>还有一个非常有意思的理论，叫“Dunbar Number”，这是一个叫邓巴的生物学家在1992年最早提出来的。最初，他发现灵长类的大脑容量和其对应的族群大小有一定关联，进而推断出人类的大脑能维系的关系的一些有趣估计。</p>
+<p>举例来说：</p>
+<ul>
+<li>亲密（intimate）朋友: 5</li>
+<li>信任（trusted）朋友: 15</li>
+<li>酒肉（close）朋友: 35</li>
+<li>照面（casual）朋友: 150</li>
+</ul>
+<p>是不是和上面的沟通成本的数字很貌似有关联？是的，我们的大脑智力只能支持我们维系这么多的关系。（大家都知道这不是程序猿擅长的领域，在开发团队里，这个值应该更小，估计和猿差不多 -_-凸 ）</p>
+<p>沟通的问题，会带来系统设计的问题，进而影响整个系统的开发效率和最终产品结果。</p>
+<h3 id="一口气吃不成胖子先搞定能搞定的">一口气吃不成胖子，先搞定能搞定的</h3>
+<p>第二定律</p>
+<p>There is never enough time to do something right, but there is always enough time to do it over</p>
+<p>时间再多，一件事情也不可能做百分百完美，但总有足够的时间可以完成它</p>
+<p>Eric Hollnagel是敏捷开发社区的泰斗之一，在他《Efficiency-Effectiveness Trade Offs》 一书中解释了类似的论点。</p>
+<p>Problem too complicated? Ignore details. Not enough resources? Give up features.</p>
+<p>&ndash;Eric Hollnagel (2009)</p>
+<p>系统越做越复杂，功能越来越多，外部市场的竞争越来越剧烈，投资人的期待越来越高。但人的智力是有上限的，即使再牛逼的人，融到钱再多也不一定招到足够多合适的人。对于一个巨复杂的系统，我们永远无法考虑周全。Eric认为，这个时候最好的解决办法竟然是——“破罐子破摔”。</p>
+<p>其实我们在日常开发中也经常碰到。产品经理的需求太复杂了？适当忽略一些细节，先抓主线。产品经理的需求太多了？放弃一些功能。</p>
+<p>据说Eric被一家航空公司请去做安全咨询顾问，复杂保证飞机飞行系统的稳定性和安全性。Eric认为做到安全有两种方式：</p>
+<ul>
+<li>常规的安全指的是尽可能多的发现并消除错误的部分，达到绝对安全，这是理想。</li>
+<li>另一种则是弹性安全，即使发生错误，只要及时恢复，也能正常工作，这是现实。</li>
+</ul>
+<p>对于飞机这样的复杂系统，再牛逼的人也无法考虑到漏洞的方方面面，所以Eric建议放弃打造完美系统的想法，而是通过不断的试飞，发现问题，确保问题发生时，系统能自动复原即可，而不追求飞行系统的绝对正确和安全。</p>
+<p>下面的图很好的解释了这个过程：</p>
+<p>听着很耳熟不是吗？这不就是 持续集成 和敏捷开发吗？的确就是。</p>
+<p>另一方面，这和互联网公司维护的分布式系统的弹性设计也是一个道理。</p>
+<p>对于一个分布式系统，我们几乎永远不可能找到并修复所有的bug，单元测试覆盖1000%也没有用，错误流淌在分布式系统的血液里。解决方法不是消灭这些问题，而是容忍这些问题，在问题发生时，能自动恢复，微服务组成的系统，每一个微服务都可能挂掉，这是常态，我们只有有足够的冗余和备份即可。</p>
+<p>即所谓的 弹性设计（Resilience） 或者叫高可用设计（High Availability）。</p>
+<h3 id="做独立自治的自系统减少沟通成本种瓜得瓜">做独立自治的自系统，减少沟通成本（种瓜得瓜）</h3>
+<p>第三定律</p>
+<p>There is a homomorphism from the linear graph of a system to the linear graph of its design organization</p>
+<p>线型组织架构和线型系统有潜在的异质同态特性</p>
+<p>这是康威第一定律组织和设计间内在关系的一个具体应用。更直白的说，你想要什么样的系统，就搭建什么样的团队。如果你的团队分成前端团队，Java后台开发团队，DBA团队，运维团队，你的系统就会长成下面的样子：</p>
+<p>相反，如果你的系统是按照业务边界划分的，大家按照一个业务目标去把自己的模块做出小系统，小产品的话，你的大系统就会长成下面的样子，即微服务的架构</p>
+<p>微服务的理念团队间应该是 inter-operate, not integrate 。inter-operate是定义好系统的边界和接口，在一个团队内全栈，让团队自治，原因就是因为如果团队按照这样的方式组建，将沟通的成本维持在系统内部，每个子系统就会更加内聚，彼此的依赖耦合能变弱，跨系统的沟通成本也就能降低。</p>
+<h3 id="合久比分分而治之">合久比分，分而治之</h3>
+<p>第四定律</p>
+<p>The structures of large systems tend to disintegrate during development, qualitatively more so than with small systems</p>
+<p>大的系统组织总是比小系统更倾向于分解</p>
+<p>前面说了，人是复杂的社会动物，人与人的通过非常复杂。但是当我们面对复杂系统时，又往往只能通过增加人力来解决。这时，我们的组织一般是如何解决这个沟通问题的呢？Divide and conquer,分而治之。大家看看自己的公司的组织，是不是一个一线经理一般都是管理15个人以下的？二线经理再管理更少的一线？三线再管理更少的，以此类推。（这里完全没有暗示开发经理比程序猿更难管理）</p>
+<p>所以，一个大的组织因为沟通成本/管理问题，总为被拆分成一个个小团队。</p>
+<p>创业的想法太好了，反正风投钱多，多招点程序猿</p>
+<p>人多管不过来啊，找几个经理帮我管，我管经理</p>
+<p>最后， 康威定律 告诉我们组织沟通的方式会在系统设计上有所表达，每个经理都被赋予一定的职责去做大系统的某一小部分，他们和大系统便有了沟通的边界，所以大的系统也会因此被拆分成一个个小团队负责的小系统（微服务是一种好的模式）</p>
+<p><strong>康恩定律的合理性</strong></p>
+<p>了解了康威定律是什么，再来看看他如何在半个世纪前就奠定了微服务架构的理论基础。</p>
+<ul>
+<li>人与人的沟通是非常复杂的，一个人的沟通精力是有限的，所以当问题太复杂需要很多人解决的时候，我们需要做拆分组织来达成对沟通效率的管理</li>
+<li>组织内人与人的沟通方式决定了他们参与的系统设计，管理者可以通过不同的拆分方式带来不同的团队间沟通方式，从而影响系统设计</li>
+<li>如果子系统是内聚的，和外部的沟通边界是明确的，能降低沟通成本，对应的设计也会更合理高效</li>
+<li>复杂的系统需要通过容错弹性的方式持续优化，不要指望一个大而全的设计或架构，好的架构和设计都是慢慢迭代出来的</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2021-03-17&#32;18:19:07>更新于 2021-03-17&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/' class="post-tag">微服务</a><a href='/tags/%E6%9E%B6%E6%9E%84/' class="post-tag">架构</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" class="post-nav-item" rel="prev" title="服务如何实现限流"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>服务如何实现限流</a>
+      <a href="/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" class="post-nav-item" rel="next" title="WebClient性能分析与对比测试">WebClient性能分析与对比测试<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

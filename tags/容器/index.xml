@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>容器 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/%E5%AE%B9%E5%99%A8/</link>
+    <description>容器 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 09 Feb 2023 18:24:56 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/%E5%AE%B9%E5%99%A8/" rel="self" type="application/rss+xml" /><item>
+  <title>Docker起源与容器技术原理</title>
+  <link>http://example.org/posts/docker%E8%B5%B7%E6%BA%90%E4%B8%8E%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/</link>
+  <pubDate>Thu, 09 Feb 2023 18:24:56 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/docker%E8%B5%B7%E6%BA%90%E4%B8%8E%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/</guid>
+  <description><![CDATA[Docker起源 在说Docker之前先说一下“容器”，“容器”这个概念从来就不是什么新鲜的东西，也不是Docker公司发明的。即使在当时最热]]></description>
+</item>
+</channel>
+</rss>

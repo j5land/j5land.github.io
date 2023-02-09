@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "style.min.css",
-	"sourceRoot": "/Users/jianghaoran/Documents/work/github/j5land.github.io",
+	"sourceRoot": "/Users/jianghaoran/Documents/work/github/j5land-blog",
 	"sources": [
 		"themes/FixIt/assets/css/style.scss",
 		"themes/FixIt/assets/css/_variables.scss",

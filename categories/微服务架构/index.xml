@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>微服务架构 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/</link>
+    <description>微服务架构 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 17 Mar 2021 18:19:07 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/" rel="self" type="application/rss+xml" /><item>
+  <title>微服务架构看着一篇就够了</title>
+  <link>http://example.org/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9C%8B%E7%9D%80%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86/</link>
+  <pubDate>Wed, 17 Mar 2021 18:19:07 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9C%8B%E7%9D%80%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86/</guid>
+  <description><![CDATA[微服务 之前有读《架构即未来》这本书，了解到组织架构即系统架构的理念。之前看到有关于康恩定律的深度解读，感觉比较有收获，所以照例抄录转载。 微服]]></description>
+</item>
+</channel>
+</rss>
