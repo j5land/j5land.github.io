@@ -7,11 +7,11 @@
     <meta name="robots" content="noodp" />
     <title>服务如何实现限流 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
 <meta name="author-link" content="">
-<meta name="description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理" /><meta name="keywords" content='sentinel' /><meta itemprop="name" content="服务如何实现限流">
+<meta name="description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理" /><meta name="keywords" content='sentinel, 限流, 熔断' /><meta itemprop="name" content="服务如何实现限流">
 <meta itemprop="description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理"><meta itemprop="datePublished" content="2021-03-11T01:37:33+08:00" />
 <meta itemprop="dateModified" content="2021-03-11T01:37:33+08:00" />
 <meta itemprop="wordCount" content="4545">
-<meta itemprop="keywords" content="sentinel," /><meta property="og:title" content="服务如何实现限流" />
+<meta itemprop="keywords" content="sentinel,限流,熔断," /><meta property="og:title" content="服务如何实现限流" />
 <meta property="og:description" content="后台服务是如何实现限流的 服务限流 服务限流其实就是当高并发或者瞬时高并发时，为了保证系统的稳定性、可用性，系统以牺牲部分请求为代价或者延迟处理" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://example.org/posts/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" /><meta property="article:section" content="posts" />
@@ -23,7 +23,7 @@
 <meta name="application-name" content="FixIt">
 <meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" /><link rel="next" href="http://example.org/posts/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" /><link rel="prev" href="http://example.org/posts/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" /><link rel="next" href="http://example.org/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
   {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
@@ -32,7 +32,7 @@
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": "http:\/\/example.org\/posts\/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81\/"
-    },"genre": "posts","keywords": "sentinel","wordcount":  4545 ,
+    },"genre": "posts","keywords": "sentinel, 限流, 熔断","wordcount":  4545 ,
     "url": "http:\/\/example.org\/posts\/%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81\/","datePublished": "2021-03-11T01:37:33+08:00","dateModified": "2021-03-11T01:37:33+08:00","publisher": {
       "@type": "Organization",
       "name": ""},"author": {
@@ -170,9 +170,16 @@
     data-sizes="auto"
     alt="j5land"
     title="j5land"/>&nbsp;j5land</span></span>
-          <span class="post-category">收录于 <a href="/categories/sentinel/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> sentinel</a></span></div>
+          <span class="post-category">收录于 <a href="/categories/java/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Java</a></span></div>
       <div class="post-meta-line"><span title=2021-03-11&#32;01:37:33><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-03-11">2021-03-11</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 4545 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 10 分钟</span>&nbsp;</div>
-    </div><div class="details toc" id="toc-static" data-kept="false">
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/asp7d-tbzxk.jpeg"
+    data-srcset="/posts/images/asp7d-tbzxk.jpeg, /posts/images/asp7d-tbzxk.jpeg 1.5x, /posts/images/asp7d-tbzxk.jpeg 2x"
+    data-sizes="auto"
+    alt="/posts/images/asp7d-tbzxk.jpeg"
+    title="/posts/images/asp7d-tbzxk.jpeg"/></div><div class="details toc" id="toc-static" data-kept="false">
         <div class="details-summary toc-title">
           <span>目录</span>
           <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
@@ -657,14 +664,14 @@ Sentinel 具有以下特征：</p>
   </div>
 
   <div class="post-info-more">
-    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/sentinel/' class="post-tag">sentinel</a></section>
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/sentinel/' class="post-tag">sentinel</a><a href='/tags/%E9%99%90%E6%B5%81/' class="post-tag">限流</a><a href='/tags/%E7%86%94%E6%96%AD/' class="post-tag">熔断</a></section>
     <section>
       <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
     </section>
   </div>
 
-  <div class="post-nav">
-      <a href="/posts/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" class="post-nav-item" rel="next" title="使用Hugo搭建技术博客">使用Hugo搭建技术博客<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+  <div class="post-nav"><a href="/posts/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" class="post-nav-item" rel="prev" title="使用Hugo搭建技术博客"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>使用Hugo搭建技术博客</a>
+      <a href="/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" class="post-nav-item" rel="next" title="WebClient性能分析与对比测试">WebClient性能分析与对比测试<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 </article></main><footer class="footer">
     <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
@@ -677,5 +684,5 @@ Sentinel 具有以下特征：</p>
         </div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
     <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
   </noscript>
-</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/lunr/lunr.min.js" defer></script><script src="/lib/lunr/lunr.stemmer.support.min.js" defer></script><script src="/lib/lunr/lunr.zh.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"search":{"highlightTag":"em","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
 </html>
