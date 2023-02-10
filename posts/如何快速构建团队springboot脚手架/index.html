@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>如何快速构建团队SpringBoot脚手架 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 随着公司业务迅速发展，团队人员也逐渐壮大，我们需要一种方式去规范大家的工程结构以及代码依赖pom，更需要一种模板工具可以快速搭建项目的能" /><meta name="keywords" content='SpringBoot, 模板工程' /><meta itemprop="name" content="如何快速构建团队SpringBoot脚手架">
+<meta itemprop="description" content="背景 随着公司业务迅速发展，团队人员也逐渐壮大，我们需要一种方式去规范大家的工程结构以及代码依赖pom，更需要一种模板工具可以快速搭建项目的能"><meta itemprop="datePublished" content="2022-10-17T14:17:23+08:00" />
+<meta itemprop="dateModified" content="2022-10-17T14:17:23+08:00" />
+<meta itemprop="wordCount" content="749">
+<meta itemprop="keywords" content="SpringBoot,模板工程," /><meta property="og:title" content="如何快速构建团队SpringBoot脚手架" />
+<meta property="og:description" content="背景 随着公司业务迅速发展，团队人员也逐渐壮大，我们需要一种方式去规范大家的工程结构以及代码依赖pom，更需要一种模板工具可以快速搭建项目的能" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-10-17T14:17:23+08:00" />
+<meta property="article:modified_time" content="2022-10-17T14:17:23+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="如何快速构建团队SpringBoot脚手架"/>
+<meta name="twitter:description" content="背景 随着公司业务迅速发展，团队人员也逐渐壮大，我们需要一种方式去规范大家的工程结构以及代码依赖pom，更需要一种模板工具可以快速搭建项目的能"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/" /><link rel="prev" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/" /><link rel="next" href="http://example.org/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "如何快速构建团队SpringBoot脚手架",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6\/"
+    },"genre": "posts","keywords": "SpringBoot, 模板工程","wordcount":  749 ,
+    "url": "http:\/\/example.org\/posts\/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6\/","datePublished": "2022-10-17T14:17:23+08:00","dateModified": "2022-10-17T14:17:23+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>如何快速构建团队SpringBoot脚手架</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/java/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Java</a></span></div>
+      <div class="post-meta-line"><span title=2022-10-17&#32;14:17:23><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-10-17">2022-10-17</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 749 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 2 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#maven-archetype">Maven Archetype</a></li>
+    <li><a href="#基础工程整理spring-boot-original">基础工程整理（spring-boot-original）</a></li>
+    <li><a href="#自定义archetypespring-boot-archetype">自定义Archetype（spring-boot-archetype）</a></li>
+    <li><a href="#创建目标工程spring-boot-target">创建目标工程（spring-boot-target）、</a>
+      <ul>
+        <li><a href="#使用maven-命令创建">使用Maven 命令创建</a></li>
+        <li><a href="#使用idea创建推荐">使用IDEA创建（推荐）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>随着公司业务迅速发展，团队人员也逐渐壮大，我们需要一种方式去规范大家的工程结构以及代码依赖pom，更需要一种模板工具可以快速搭建项目的能力，来减少研发人员在项目搭建上所消耗的时间成本。</p>
+<p>搭建统一的模板工程收益：</p>
+<ul>
+<li>统一项目研发框架，避免研发依赖版本不一致的问题。</li>
+<li>提升研发效率，减少项目搭建消耗的时间。</li>
+</ul>
+<h2 id="maven-archetype">Maven Archetype</h2>
+<p>Archetype 是 Maven 的工程模板，使用 Archetype 可以快速创建一个统一的工程，提高研发效率。</p>
+<p>Maven自带的 Archetype 在很多时候不能满足我们的需求，通常每家公司都会根据自身的选型再定制 Archetype。</p>
+<p>搭建一个 自定义 Archetype 主要分为以下三个步骤：</p>
+<ol>
+<li>基础工程整理（spring-boot-original）：整理工程依赖、定义包结构，生成 Archetype 模板工程。</li>
+<li>自定义Archetype（spring-boot-archetype）：根据 1 生成的 模板工程，进行自定义参数配置，发布至仓库。</li>
+<li>创建目标工程（spring-boot-target）：根据仓库自定义 Archetype 即可生成对应的目标工程项目。</li>
+</ol>
+<h2 id="基础工程整理spring-boot-original">基础工程整理（spring-boot-original）</h2>
+<p>根据公司业务常用的功能规范依赖的版本，以此为基础。依赖整理举例：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/archetype-pom.jpg"
+    data-srcset="../images/archetype-pom.jpg, ../images/archetype-pom.jpg 1.5x, ../images/archetype-pom.jpg 2x"
+    data-sizes="auto"
+    alt="archetype-pom"
+    title="archetype-pom"/></p>
+<p>在 spring-boot-original 根目录直接命令，生成 Archetype 项目：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">mvn</span> <span class="n">clean</span> <span class="n">archetype</span><span class="o">:</span><span class="n">create</span><span class="o">-</span><span class="n">from</span><span class="o">-</span><span class="n">project</span> <span class="o">-</span><span class="n">Dmaven</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">skip</span><span class="o">=</span><span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="err">上面命令执行时如果报错，指定</span><span class="n">maven</span><span class="err">配置文件，配置文件路径改成自己的</span>
+</span></span><span class="line"><span class="cl"><span class="n">mvn</span> <span class="n">clean</span> <span class="n">archetype</span><span class="o">:</span><span class="n">create</span><span class="o">-</span><span class="n">from</span><span class="o">-</span><span class="n">project</span> <span class="o">--</span><span class="n">settings</span> <span class="o">./</span><span class="n">settings</span><span class="o">.</span><span class="na">xml</span> <span class="o">-</span><span class="n">Dmaven</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">skip</span><span class="o">=</span><span class="kc">true</span>
+</span></span></code></pre></div><p>在 target\generated-sources\archetype 目录会生成 Archetype 的相关内容，把这个目录下的内容复制出来，放到一个新目录 spring-boot-archetype 里，这样就形成了一个新的模板工程。</p>
+<h2 id="自定义archetypespring-boot-archetype">自定义Archetype（spring-boot-archetype）</h2>
+<p>spring-boot-archetype 项目里可以自定义模板变量。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/archetype-2.jpg"
+    data-srcset="../images/archetype-2.jpg, ../images/archetype-2.jpg 1.5x, ../images/archetype-2.jpg 2x"
+    data-sizes="auto"
+    alt="archetype-2"
+    title="archetype-2"/></p>
+<p>在 spring-boot-archetype 根目录下执行，发布 Archetype 到本地仓库，在公司发现可以发布至公共仓库。</p>
+<pre tabindex="0"><code>#本地仓库
+mvn clean install
+#公共仓库
+mvn clean deploy
+</code></pre><h2 id="创建目标工程spring-boot-target">创建目标工程（spring-boot-target）、</h2>
+<h3 id="使用maven-命令创建">使用Maven 命令创建</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mvn archetype:generate -DinteractiveMode<span class="o">=</span><span class="nb">false</span> -DarchetypeGroupId<span class="o">=</span>org.example -DarchetypeArtifactId<span class="o">=</span>spring-boot-archetype -DarchetypeVersion<span class="o">=</span>1.0-SNAPSHOT 
+</span></span><span class="line"><span class="cl">-DgroupId<span class="o">=</span>com.company 
+</span></span><span class="line"><span class="cl">-DartifactId<span class="o">=</span>spring-boot-target 
+</span></span><span class="line"><span class="cl">-Dversion<span class="o">=</span>1.0-SNAPSHOT
+</span></span></code></pre></div><h3 id="使用idea创建推荐">使用IDEA创建（推荐）</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/archetype-target.jpg"
+    data-srcset="../images/archetype-target.jpg, ../images/archetype-target.jpg 1.5x, ../images/archetype-target.jpg 2x"
+    data-sizes="auto"
+    alt="archetype-target"
+    title="archetype-target"/></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-10-17&#32;14:17:23>更新于 2022-10-17&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/springboot/' class="post-tag">SpringBoot</a><a href='/tags/%E6%A8%A1%E6%9D%BF%E5%B7%A5%E7%A8%8B/' class="post-tag">模板工程</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/" class="post-nav-item" rel="prev" title="如何编写优雅的Java代码"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>如何编写优雅的Java代码</a>
+      <a href="/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="post-nav-item" rel="next" title="单元测试最佳实践">单元测试最佳实践<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

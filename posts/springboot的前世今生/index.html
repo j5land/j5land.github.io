@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>SpringBoot的前世今生 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 作为一名Java开发人员，我们最常打交道的就是Spring、SpringBoot这类的开发框架，你知道Spring Boot的由来吗，它和" /><meta name="keywords" content='SpringBoot, Java' /><meta itemprop="name" content="SpringBoot的前世今生">
+<meta itemprop="description" content="背景 作为一名Java开发人员，我们最常打交道的就是Spring、SpringBoot这类的开发框架，你知道Spring Boot的由来吗，它和"><meta itemprop="datePublished" content="2022-05-10T14:12:46+08:00" />
+<meta itemprop="dateModified" content="2022-05-10T14:12:46+08:00" />
+<meta itemprop="wordCount" content="2414">
+<meta itemprop="keywords" content="SpringBoot,Java," /><meta property="og:title" content="SpringBoot的前世今生" />
+<meta property="og:description" content="背景 作为一名Java开发人员，我们最常打交道的就是Spring、SpringBoot这类的开发框架，你知道Spring Boot的由来吗，它和" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-10T14:12:46+08:00" />
+<meta property="article:modified_time" content="2022-05-10T14:12:46+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SpringBoot的前世今生"/>
+<meta name="twitter:description" content="背景 作为一名Java开发人员，我们最常打交道的就是Spring、SpringBoot这类的开发框架，你知道Spring Boot的由来吗，它和"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/" /><link rel="prev" href="http://example.org/posts/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%94%AF%E4%B8%80id%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1/" /><link rel="next" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "SpringBoot的前世今生",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F\/"
+    },"genre": "posts","keywords": "SpringBoot, Java","wordcount":  2414 ,
+    "url": "http:\/\/example.org\/posts\/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F\/","datePublished": "2022-05-10T14:12:46+08:00","dateModified": "2022-05-10T14:12:46+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>SpringBoot的前世今生</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/java/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Java</a></span></div>
+      <div class="post-meta-line"><span title=2022-05-10&#32;14:12:46><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-10">2022-05-10</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2414 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#起因">起因</a></li>
+    <li><a href="#发展">发展</a></li>
+    <li><a href="#build-anything">Build Anything</a></li>
+    <li><a href="#spring框架架构图">Spring框架架构图</a></li>
+    <li><a href="#约定优于配置">约定优于配置</a></li>
+    <li><a href="#spring-boot的特性">Spring Boot的特性</a>
+      <ul>
+        <li><a href="#enableautoconfiguration">EnableAutoConfiguration</a></li>
+        <li><a href="#starter">Starter</a></li>
+        <li><a href="#actuator">Actuator</a></li>
+        <li><a href="#spring-boot-cli">Spring Boot CLI</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>作为一名Java开发人员，我们最常打交道的就是Spring、SpringBoot这类的开发框架，你知道Spring Boot的由来吗，它和Spring的区别又是什么呢，这是我们需要知道的，让我们娓娓道来。</p>
+<p>随着使用Spring Famework进行开发的企业和个人越来越多，Spring也慢慢从一个单一简洁的小框架变成了一个大而全的开源软件，Spring Framework的边界不断进行扩张，到了现在Spring几乎开源做任何事情。目前大部分开源组件和中间件都有Spring的对应组件支持。</p>
+<p>如果你去关注Spring的官网，你就会发现它的solgan是：</p>
+<blockquote>
+<p>Spring makes Java Simple</p>
+</blockquote>
+<p>虽然Spring的组件是轻量级的，但是它的配置确是重量级的，Spring每集成一个开源软件，就需要增加一些配置，慢慢的随着我们的开发的项目越来越庞大，往往需要集成很多的开源软件，太多的配置非常难以理解，并容易配置出错，这个给开发人员带来了不小的负担。</p>
+<h2 id="起因">起因</h2>
+<p>你想象一下，在以前你需要用spring开发一个简单的Hello World程序，应该是哪些步骤呢？</p>
+<ul>
+<li>创建项目结构，包含依赖Maven或者Gradle的构建文件。</li>
+<li>需要添加Spring MVC和Servlet API的依赖</li>
+<li>web.xml 声明Spring的DispacherServlet</li>
+<li>Controller类，响应Http请求</li>
+<li>部署应用程序的web应用服务器，比如Tomcat</li>
+</ul>
+<p>整个过程中，只有一个东西与Hello Word功能相关，就是Controller，剩下的都是Spring开发Web应用程序必备的通用模板，既然所有Spring Web应用程序都要用到他们，那为什么你还要提供这些东西？</p>
+<p>所以，2012年10月，一个叫Mike Youngstrom(扬斯特罗姆)在Spring Jira中创建了一个功能请求，要求在Spring Framework中支持无容器Web应用程序体系结构，他谈到了在主容器引导 spring 容器内配置 Web 容器服务。</p>
+<blockquote>
+<p><a href="https://jira.spring.io/browse/SPR-9888"target="_blank" rel="external nofollow noopener noreferrer">https://jira.spring.io/browse/SPR-9888</a></p>
+<p>I think that Spring&rsquo;s web application architecture can be significantly simplified if it were to provided tools and a reference architecture that leveraged the Spring component and configuration model from top to bottom. Embedding and unifying the configuration of those common web container services within a Spring Container bootstrapped from a simple main() method.
+我认为，如果要提供从上到下充分利用Spring组件和配置模型的工具和参考体系结构，则可以大大简化Spring的Web应用程序体系结构。在通过简单main（）方法引导的Spring容器中嵌入和统一那些通用Web容器服务的配置。</p>
+</blockquote>
+<p>而且Spring开发团队也意识到这些问题，急需一套软件来解决这个问题，而这个时候微服务的概念也慢慢的起来，快速开发独立的小应用程序也变得很急迫。</p>
+<p>而Spring恰好处在这样一个交叉点上，所以顺势而为在2013年初的时候，开始投入Spring Boot项目的研发，直到2014年4月，Spring Boot1.0版本发布。从那以后，Spring Boot开启了一些列的迭代和升级的过程。</p>
+<p>经过7年时间的发展，到目前为止，Spring Boot最新稳定版为2.6.0版本。</p>
+<h2 id="发展">发展</h2>
+<p>Spring Boot刚出生的时候，引起了很多开源社区的关注，并且也有个人和企业开始尝试使用Spring Boot。 其实直到2016年，Spring Boot才真正在国内被使用起来。我之前在挖财的时候，2015年公司就开始采用Spring Boot来构建基于Dubbo的微服务架构。到现在，Spring Boot几乎是所有公司的第一选择。</p>
+<h2 id="build-anything">Build Anything</h2>
+<p>Spring Boot被官方定位为“BUILD ANYTHING”，Spring Boot官方的概述是这么描述Spring Boot的。</p>
+<blockquote>
+<p>Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can &ldquo;just run&rdquo;.
+// 通过Spring Boot可以轻松的创建独立的、生产级别的基于Spring 生态下的应用，你只需要运行即可。
+We take an opinionated view of the Spring platform and third-party libraries so you can get started with minimum fuss. Most Spring Boot applications need minimal Spring configuration.
+//对于Spring平台和第三方库，我们提供了一个固化的视图，这个视图可以让我们在构建应用是减少很多麻烦。大部分spring boot应用只需要最小的Spring 配置即可。</p>
+</blockquote>
+<p>如果大家不习惯看英文文档，可能理解起来比较复杂，翻译成人话就是：Spring Boot能够帮助使用Spring Framework生态的开发者快速高效的构建一个基于Spring以及spring 生态体系的应用。</p>
+<h2 id="spring框架架构图">Spring框架架构图</h2>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-boot.png"
+    data-srcset="../images/spring-boot.png, ../images/spring-boot.png 1.5x, ../images/spring-boot.png 2x"
+    data-sizes="auto"
+    alt="spring-boot"
+    title="spring-boot"/></p>
+<h2 id="约定优于配置">约定优于配置</h2>
+<p>Spring Boot是约定优于配置理念下的产物，那什么是约定优于配置？</p>
+<p>约定优于配置是一种软件设计范式，主要是为了减少开发人员需要决定的数量，获得简单的好处又不失灵活性。</p>
+<p>简单来说，就是你所使用得工具默认会提供一种约定，如果这个约定和你的期待符合，就可以省略哪些基础的配置，否则你就需要通过配置来达到你所期待的方式。</p>
+<p>而相对技术来说，约定还有很多地方的体现，比如一个公司会有专门的文档格式、代码提交规范、接口命名规范、数据库规范等等。这些规定的意义就是让整个项目的可读性和可维护性更强。</p>
+<p>Spring Boot Web 应用约定优于配置的场景：</p>
+<ul>
+<li>Spring Boot 的项目结构约定，默认采用Maven的目录结构</li>
+<li>内置嵌入式的Web容器，支持四种嵌入式Web容器：Tomcat、Jetty、Undertow、Reactor</li>
+<li>默认提供两种配置文件，application.properties和application.yml</li>
+<li>通过starter依赖，来减少第三方jar的依赖</li>
+</ul>
+<h2 id="spring-boot的特性">Spring Boot的特性</h2>
+<h3 id="enableautoconfiguration">EnableAutoConfiguration</h3>
+<p>EnableAutoConfiguration 是 SpringBoot的一个特性，可以根据classpath的jar依赖，自动注册Bean，一般用于类或接口上。</p>
+<h3 id="starter">Starter</h3>
+<p>Starter 可以理解为启动器，它包含一系列可以集成到应用的依赖包，可以一站式集成Spring 和 其他技术，而不需要找到示例代码和依赖包。</p>
+<h3 id="actuator">Actuator</h3>
+<p>Actuator 是Spring Boot 程序的监控系统，可以实现健康检查、info信息等。</p>
+<h3 id="spring-boot-cli">Spring Boot CLI</h3>
+<p>Spring Boot CLI为Spring Cloud提供了 命令行功能。</p>
+<h2 id="总结">总结</h2>
+<p>Spring Boot能够帮助使用Spring Framework生态的开发者快速高效的构建一个基于Spring以及spring 生态体系的应用。Spring Boot的内核还是Spring Framework。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-05-10&#32;14:12:46>更新于 2022-05-10&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/springboot/' class="post-tag">SpringBoot</a><a href='/tags/java/' class="post-tag">Java</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%94%AF%E4%B8%80id%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1/" class="post-nav-item" rel="prev" title="分布式系统唯一ID如何设计"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>分布式系统唯一ID如何设计</a>
+      <a href="/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/" class="post-nav-item" rel="next" title="如何写一个自己的Spring Boot Starter">如何写一个自己的Spring Boot Starter<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

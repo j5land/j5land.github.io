@@ -580,5 +580,29 @@
 <li><a href="https://projectreactor.io/docs/netty/snapshot/reference/index.html#_connection_pool_2"target="_blank" rel="external nofollow noopener noreferrer">https://projectreactor.io/docs/netty/snapshot/reference/index.html#_connection_pool_2</a></li>
 </ul>]]></description>
 </item>
+<item>
+  <title>如何编写优雅的Java代码</title>
+  <link>http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/</link>
+  <pubDate>Fri, 09 Sep 2022 14:14:50 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/</guid>
+  <description><![CDATA[背景 随着软件代码日积月累，系统维护成本变得越来越高，是所有开发团队面临的问题。持续优化代码，提高代码质量是提升系统生命力有效手段之一。在编码]]></description>
+</item>
+<item>
+  <title>如何写一个自己的Spring Boot Starter</title>
+  <link>http://example.org/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/</link>
+  <pubDate>Sun, 12 Jun 2022 14:10:04 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/</guid>
+  <description><![CDATA[背景 我们知道可以使用SpringBoot快速开发基于Spring框架的项目，由于围绕SpringBoot存在很多开箱即用的Starter依赖]]></description>
+</item>
+<item>
+  <title>SpringBoot的前世今生</title>
+  <link>http://example.org/posts/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/</link>
+  <pubDate>Tue, 10 May 2022 14:12:46 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/</guid>
+  <description><![CDATA[背景 作为一名Java开发人员，我们最常打交道的就是Spring、SpringBoot这类的开发框架，你知道Spring Boot的由来吗，它和]]></description>
+</item>
 </channel>
 </rss>

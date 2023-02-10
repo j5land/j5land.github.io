@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Lucene查询原理及解析 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="前言 Lucene 是一个基于Java的全文信息检索工具包，目前主流的搜索系统Elasticsearch和solr都是基于Lucene的索引和搜索能力进行" /><meta name="keywords" content='Lucene, 检索引擎' /><meta itemprop="name" content="Lucene查询原理及解析">
+<meta itemprop="description" content="前言 Lucene 是一个基于Java的全文信息检索工具包，目前主流的搜索系统Elasticsearch和solr都是基于Lucene的索引和搜索能力进行"><meta itemprop="datePublished" content="2023-01-20T14:20:05+08:00" />
+<meta itemprop="dateModified" content="2023-01-20T14:20:05+08:00" />
+<meta itemprop="wordCount" content="4299">
+<meta itemprop="keywords" content="Lucene,检索引擎," /><meta property="og:title" content="Lucene查询原理及解析" />
+<meta property="og:description" content="前言 Lucene 是一个基于Java的全文信息检索工具包，目前主流的搜索系统Elasticsearch和solr都是基于Lucene的索引和搜索能力进行" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/lucene%E6%9F%A5%E8%AF%A2%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E6%9E%90/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-20T14:20:05+08:00" />
+<meta property="article:modified_time" content="2023-01-20T14:20:05+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lucene查询原理及解析"/>
+<meta name="twitter:description" content="前言 Lucene 是一个基于Java的全文信息检索工具包，目前主流的搜索系统Elasticsearch和solr都是基于Lucene的索引和搜索能力进行"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/lucene%E6%9F%A5%E8%AF%A2%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E6%9E%90/" /><link rel="prev" href="http://example.org/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" /><link rel="next" href="http://example.org/posts/%E6%8F%AD%E7%A7%98%E5%B9%BF%E5%91%8A%E6%9E%B6%E6%9E%84%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Lucene查询原理及解析",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/lucene%E6%9F%A5%E8%AF%A2%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E6%9E%90\/"
+    },"genre": "posts","keywords": "Lucene, 检索引擎","wordcount":  4299 ,
+    "url": "http:\/\/example.org\/posts\/lucene%E6%9F%A5%E8%AF%A2%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E6%9E%90\/","datePublished": "2023-01-20T14:20:05+08:00","dateModified": "2023-01-20T14:20:05+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>Lucene查询原理及解析</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/java/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Java</a></span></div>
+      <div class="post-meta-line"><span title=2023-01-20&#32;14:20:05><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-01-20">2023-01-20</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 4299 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 9 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/Lucene.jpeg"
+    data-srcset="/posts/images/Lucene.jpeg, /posts/images/Lucene.jpeg 1.5x, /posts/images/Lucene.jpeg 2x"
+    data-sizes="auto"
+    alt="/posts/images/Lucene.jpeg"
+    title="/posts/images/Lucene.jpeg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#前言"><strong>前言</strong></a></li>
+        <li><a href="#lucene数据模型">Lucene数据模型</a></li>
+        <li><a href="#快速开始">快速开始</a></li>
+        <li><a href="#lucene-查询过程分析">Lucene 查询过程分析</a></li>
+        <li><a href="#lucene的代码目录结构">Lucene的代码目录结构</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h3 id="前言"><strong>前言</strong></h3>
+<p>Lucene 是一个基于Java的全文信息检索工具包，目前主流的搜索系统Elasticsearch和solr都是基于Lucene的索引和搜索能力进行的。想了解其搜索实现原理，就需要深入Lucene这一层，看看Lucene是如何存储需要检索的数据，以及如何完成高效的数据检索。</p>
+<p>在数据中因为有索引的存在，也可以支持很多有效的查询操作。不过对比Lucene，数据的查询能力还是会弱很多，本文就将探索下Lucene支持支持哪些查询，并会分析Lucene内部是如何实现的。</p>
+<h3 id="lucene数据模型">Lucene数据模型</h3>
+<p>Lucene中包含四种基本数据类型，分别是：</p>
+<ul>
+<li>Index：索引，由很多的Document组成。</li>
+<li>Document：由很多的Field组成，是Index和Search的最小单位。</li>
+<li>Field：由很多的Term组成，包括Field Name和Field Value。、</li>
+<li>Term：由很多的字节组成，一般将Text类型的Field Value分词之后的每个最小单元叫做Term。</li>
+</ul>
+<p>在Lucene中，读写路径是分离的。写入的时候创建一个IndexWriter，而读的时候会创建一个IndexSearcher。</p>
+<h3 id="快速开始">快速开始</h3>
+<p>下面是一个简单的代码示例，如何使用Lucene的IndexWriter创建索引以及如何使用IndexSearch进行搜索查询。</p>
+<p>Lucene中的文件操作都是通过这Directory来实现的，Directory的实现类分为文件目录、内存目录和目录的代理类及工具类。</p>
+<table>
+<thead>
+<tr>
+<th>目录类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FSDirectory</td>
+<td>文件系统目录操作的父类，基本实现的文件目录操作</td>
+</tr>
+<tr>
+<td>SimpleFSDirectory</td>
+<td>FSDirectory的简单实现,并发能力有限，遇到多线程读同一个文件时会遇到瓶颈，通常用NIOFSDirectory或MMapDirectory代替</td>
+</tr>
+<tr>
+<td>NIOFSDirectory</td>
+<td>通过java.nio&rsquo;s FileChannel实行定位读取，支持多线程读（默认情况下是线程安全的）。该类仅使用FileChannel进行读操作，写操作则是通过FSIndexOutput实现。 注意：NIOFSDirectory 不适用于Windows系统，另外如果一个访问该类的线程，在IO阻塞时被interrupt或cancel，将会导致底层的文件描述符被关闭，后续的线程再次访问NIOFSDirectory时将会出现ClosedChannelException异常，此种情况应用SimpleFSDirectory代替。</td>
+</tr>
+<tr>
+<td>MMapDirectory</td>
+<td>通过内存映射进行读，通过FSIndexOutput进行写的FSDirectory实现类。使用该类时要保证用足够的虚拟地址空间。另外当通过IndexInput的close方法进行关闭时并不会立即关闭底层的文件句柄，只有GC进行资源回收时才会关闭</td>
+</tr>
+</tbody>
+</table>
+<p><strong>具体代码如下</strong>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;artifactId&gt;</span>lucene-core<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;version&gt;</span>7.7.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;artifactId&gt;</span>lucene-queryparser<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;version&gt;</span>7.7.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;artifactId&gt;</span>lucene-analyzers-common<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">	<span class="nt">&lt;version&gt;</span>7.7.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Analyzer</span> <span class="n">analyzer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StandardAnalyzer</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//索引存储在内存中；
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&#34;/Users/data/lucene/test&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Path</span> <span class="n">path</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="na">toPath</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">Directory</span> <span class="n">directory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MMapDirectory</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//也可以将索引存储在硬盘上
+</span></span></span><span class="line"><span class="cl"><span class="c1">//Directory directory = FSDirectory.open(&#34;/tmp/testindex&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">IndexWriterConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriterConfig</span><span class="o">(</span><span class="n">analyzer</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">IndexWriter</span> <span class="n">iwriter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriter</span><span class="o">(</span><span class="n">directory</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Document</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="s">&#34;这是文本索引测试&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Field</span><span class="o">(</span><span class="s">&#34;fieldname&#34;</span><span class="o">,</span> <span class="n">text</span><span class="o">,</span> <span class="n">TextField</span><span class="o">.</span><span class="na">TYPE_STORED</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">iwriter</span><span class="o">.</span><span class="na">addDocument</span><span class="o">(</span><span class="n">doc</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">iwriter</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//现在开始搜索刚才创建的索引。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">DirectoryReader</span> <span class="n">ireader</span> <span class="o">=</span> <span class="n">DirectoryReader</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">directory</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">IndexSearcher</span> <span class="n">isearcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexSearcher</span><span class="o">(</span><span class="n">ireader</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">QueryParser</span> <span class="n">parse</span> <span class="o">=</span> <span class="k">new</span> <span class="n">QueryParser</span><span class="o">(</span><span class="s">&#34;fieldname&#34;</span><span class="o">,</span> <span class="n">analyzer</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">Query</span> <span class="n">query</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">&#34;文本&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">ScoreDoc</span><span class="o">[]</span> <span class="n">hits</span> <span class="o">=</span> <span class="n">isearcher</span><span class="o">.</span><span class="na">search</span><span class="o">(</span><span class="n">query</span><span class="o">,</span> <span class="mi">100</span><span class="o">).</span><span class="na">scoreDocs</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span><span class="o">(</span><span class="n">Document</span> <span class="n">hitDoc</span> <span class="o">:</span> <span class="n">hits</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">	 <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">hitDoc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;fieldname&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">ireader</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">directory</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span></code></pre></div><p>在使用IndexSearcher类的时候，需要一个DirectoryReader和QueryParser，其中DIrectoryReader需要对应写入时候的Directory实现。QueryParser主要来解析你的查询语句，例如你想查询 “A and B”，Lucene内部会有机制解析出term A和term B的交集查询。</p>
+<h3 id="lucene-查询过程分析">Lucene 查询过程分析</h3>
+<p>在Lucene中查询基于segment，每个segment可以看做是一个独立的sub index。在建立索引的过程中，Lucene会不断的flush内存中的数据持久化形成新的segment。多个segment也会不断的被merge成一个大的segment，在老的segment还有查询在读取时，不会被删除，没有被读取且被merge的会被删除。这个过程类似LSM数据库的merge过程。</p>
+<table>
+<thead>
+<tr>
+<th>docid</th>
+<th>name</th>
+<th>Age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Alice</td>
+<td>18</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Alan</td>
+<td>20</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Tony</td>
+<td>18</td>
+</tr>
+</tbody>
+</table>
+<p>在Lucene中为了查询条件age=18，会建立基于age的倒排链，如下：</p>
+<table>
+<thead>
+<tr>
+<th>age</th>
+<th>Docid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18</td>
+<td>[1,3]</td>
+</tr>
+<tr>
+<td>20</td>
+<td>[2]</td>
+</tr>
+</tbody>
+</table>
+<p>所以倒排本质上就是基于term的方向列表。</p>
+<p>如果term非常多，如何快速拿到这个倒排链呢？在Lucene就引入term dictionary的概念，也就term的字典。term字典里我们可以按照term进行排序，那么用一个二分查找就可以定为这个term所在的地址。这样的复杂度是logN，在term很多，内存放不下的时候，效率还是需要进一步提升。可以用一个hashmap，当有一个term进入，hash继续查找倒排链。这里hashmap的方式可以看做是term dictionary的一个index。 从lucene4开始，为了方便实现rangequery或者前缀，后缀等复杂的查询语句，lucene使用FST数据结构来存储term字典，下面就详细介绍下FST的存储结构。</p>
+<h4 id="fst">FST</h4>
+<p>我们就用Alice和Alan这两个单词为例，来看下FST的构造过程。首先对所有的单词做一下排序为“Alice”，“Alan”。</p>
+<ol>
+<li>插入“Alan”</li>
+</ol>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://pic3.zhimg.com/80/v2-3d65c9a5d838696aec95519bd5d86e3e_1440w.jpg"
+    data-srcset="https://pic3.zhimg.com/80/v2-3d65c9a5d838696aec95519bd5d86e3e_1440w.jpg, https://pic3.zhimg.com/80/v2-3d65c9a5d838696aec95519bd5d86e3e_1440w.jpg 1.5x, https://pic3.zhimg.com/80/v2-3d65c9a5d838696aec95519bd5d86e3e_1440w.jpg 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<ol>
+<li>插入“Alice”</li>
+</ol>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://pic1.zhimg.com/80/v2-34b4346b6bc63b6fc7654c6e67f0e180_1440w.jpg"
+    data-srcset="https://pic1.zhimg.com/80/v2-34b4346b6bc63b6fc7654c6e67f0e180_1440w.jpg, https://pic1.zhimg.com/80/v2-34b4346b6bc63b6fc7654c6e67f0e180_1440w.jpg 1.5x, https://pic1.zhimg.com/80/v2-34b4346b6bc63b6fc7654c6e67f0e180_1440w.jpg 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<p>这样你就得到了一个有向无环图，有这样一个数据结构，就可以很快查找某个人名是否存在。FST在单term查询上可能相比hashmap并没有明显优势，甚至会慢一些。但是在范围，前缀搜索以及压缩率上都有明显的优势。</p>
+<p>在通过FST定位到倒排链后，有一件事情需要做，就是倒排链的合并。因为查询条件可能不止一个，例如上面我们想找name=&ldquo;alan&rdquo; and age=&ldquo;18&quot;的列表。lucene是如何实现倒排链的合并呢。这里就需要看一下倒排链存储的数据结构。</p>
+<h4 id="skiplist">SkipList</h4>
+<p>为了能够快速查找docid，Lucene采用了SkipList这一数据结构。SkipList有以下几个特征：</p>
+<ol>
+<li>元素排序的，对应到我们的倒排链，lucene是按照docid进行排序，从小到大。</li>
+<li>跳跃有一个固定的间隔，这个是需要建立SkipList的时候指定好，例如下图以间隔是3</li>
+<li>SkipList的层次，这个是指整个SkipList有几层</li>
+</ol>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://pic2.zhimg.com/80/v2-2aad54b99982a1242362cde872ad60d5_1440w.jpg"
+    data-srcset="https://pic2.zhimg.com/80/v2-2aad54b99982a1242362cde872ad60d5_1440w.jpg, https://pic2.zhimg.com/80/v2-2aad54b99982a1242362cde872ad60d5_1440w.jpg 1.5x, https://pic2.zhimg.com/80/v2-2aad54b99982a1242362cde872ad60d5_1440w.jpg 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<p>有了这个SkipList以后比如我们要查找docid=12，原来可能需要一个个扫原始链表，1，2，3，5，7，8，10，12。有了SkipList以后先访问第一层看到是然后大于12，进入第0层走到3，8，发现15大于12，然后进入原链表的8继续向下经过10和12。
+有了FST和SkipList的介绍以后，我们大体上可以画一个下面的图来说明Lucene是如何实现整个倒排结构的：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://pic3.zhimg.com/80/v2-926c47383573f70da40475d2ae2777ce_1440w.jpg"
+    data-srcset="https://pic3.zhimg.com/80/v2-926c47383573f70da40475d2ae2777ce_1440w.jpg, https://pic3.zhimg.com/80/v2-926c47383573f70da40475d2ae2777ce_1440w.jpg 1.5x, https://pic3.zhimg.com/80/v2-926c47383573f70da40475d2ae2777ce_1440w.jpg 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<p>有了这张图，我们可以理解为什么基于Lucene可以快速进行倒排链的查找和docid查找，下面就来看一下有了这些后如何进行倒排链合并返回最后的结果。</p>
+<h4 id="倒排合并">倒排合并</h4>
+<p>假如我们的查询条件是name = “Alice”，那么按照之前的介绍，首先在term字典中定位是否存在这个term，如果存在的话进入这个term的倒排链，并根据参数设定返回分页返回结果即可。这类查询，在数据库中使用二级索引也是可以满足，那lucene的优势在哪呢。假如我们有多个条件，例如我们需要按名字或者年龄单独查询，也需要进行组合 name = &ldquo;Alice&rdquo; and age = &ldquo;18&quot;的查询，那么使用传统二级索引方案，你可能需要建立两张索引表，然后分别查询结果后进行合并，这样如果age = 18的结果过多的话，查询合并会很耗时。那么在lucene这两个倒排链是怎么合并呢。
+假如我们有下面三个倒排链需要进行合并。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://pic4.zhimg.com/80/v2-128de2f49b2e40369c10eb33911935fb_1440w.jpg"
+    data-srcset="https://pic4.zhimg.com/80/v2-128de2f49b2e40369c10eb33911935fb_1440w.jpg, https://pic4.zhimg.com/80/v2-128de2f49b2e40369c10eb33911935fb_1440w.jpg 1.5x, https://pic4.zhimg.com/80/v2-128de2f49b2e40369c10eb33911935fb_1440w.jpg 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<p>在Lucene中会采用下列顺序进行合并：</p>
+<ol>
+<li>在termA开始遍历，得到第一个元素docId=1</li>
+<li>Set currentDocId=1</li>
+<li>在termB中 search(currentDocId) = 1 (返回大于等于currentDocId的一个doc),</li>
+<li>因为currentDocId ==1，继续</li>
+<li>如果currentDocId 和返回的不相等，执行2，然后继续</li>
+<li>到termC后依然符合，返回结果</li>
+<li>currentDocId = termC的nextItem</li>
+<li>然后继续步骤3 依次循环。直到某个倒排链到末尾。</li>
+</ol>
+<p>整个合并步骤我可以发现，如果某个链很短，会大幅减少比对次数，并且由于SkipList结构的存在，在某个倒排中定位某个docid的速度会比较快不需要一个个遍历。可以很快的返回最终的结果。从倒排的定位，查询，合并整个流程组成了lucene的查询过程，和传统数据库的索引相比，lucene合并过程中的优化减少了读取数据的IO，倒排合并的灵活性也解决了传统索引较难支持多条件查询的问题。</p>
+<h4 id="实现返回结果进行排序聚合">实现返回结果进行排序聚合</h4>
+<p>通过之前介绍可以看出Lucene通过倒排的存储模型实现term的搜索，那对于有时候我们需要拿到另一个属性的值进行聚合，或者希望返回结果按照另一个属性进行排序。</p>
+<p>在Lucene4之前需要把结果全部拿到再读取原文进行排序，这样效率较低，还比较占用内存，为了加速Lucene实现了fieldcache，把读过的field放进内存中。这样可以减少重复的IO，但是也会带来新的问题，就是占用较多内存。</p>
+<p>新版本的Lucene中引入了DocValues，DocValues是一个基于docid的列式存储。当我们拿到一系列的docid后，进行排序就可以使用这个列式存储，结合一个堆排序进行。当然额外的列式存储会占用额外的空间，Lucene在建索引的时候可以自行选择是否需要DocValue存储和哪些字段需要存储。</p>
+<h3 id="lucene的代码目录结构">Lucene的代码目录结构</h3>
+<p>简单介绍了lucene中几个主要的数据结构和查找原理后，我们在来看下Lucene的代码结构目录：</p>
+<ol>
+<li>analysis模块主要负责词法分析及语言处理而形成Term。</li>
+<li>codecs模块主要负责之前提到的一些数据结构的实现，和一些编码压缩算法。包括skiplist，docvalue等。</li>
+<li>document模块主要包括了lucene各类数据类型的定义实现。</li>
+<li>index模块主要负责索引的创建，里面有IndexWriter。</li>
+<li>store模块主要负责索引的读写。</li>
+<li>search模块主要负责对索引的搜索。</li>
+<li>geo模块主要为geo查询相关的类实现</li>
+<li>util模块是bkd，fst等数据结构实现。</li>
+</ol>
+<h4 id="最后">最后</h4>
+<p>本文介绍了lucene中的一些主要数据结构，以及如何利用这些数据结构实现高效的查找。我们希望通过这些介绍可以加深理解倒排索引和传统数据库索引的区别，数据库有时候也可以借助于搜索引擎实现更丰富的查询语意。除此之外，做为一个搜索库，如何进行打分，query语句如何进行parse这些我们没有展开介绍，有兴趣的同学可以深入lucene的源码进一步了解。</p>
+<h4 id="参考文献">参考文献</h4>
+<ol>
+<li><a href="https://zhuanlan.zhihu.com/p/35814539"target="_blank" rel="external nofollow noopener noreferrer">https://zhuanlan.zhihu.com/p/35814539</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/35469104"target="_blank" rel="external nofollow noopener noreferrer">https://zhuanlan.zhihu.com/p/35469104</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/35795070"target="_blank" rel="external nofollow noopener noreferrer">https://zhuanlan.zhihu.com/p/35795070</a></li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-01-20&#32;14:20:05>更新于 2023-01-20&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/lucene/' class="post-tag">Lucene</a><a href='/tags/%E6%A3%80%E7%B4%A2%E5%BC%95%E6%93%8E/' class="post-tag">检索引擎</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" class="post-nav-item" rel="prev" title="WebClient性能分析与对比测试"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>WebClient性能分析与对比测试</a>
+      <a href="/posts/%E6%8F%AD%E7%A7%98%E5%B9%BF%E5%91%8A%E6%9E%B6%E6%9E%84%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" class="post-nav-item" rel="next" title="揭秘广告架构与系统设计">揭秘广告架构与系统设计<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

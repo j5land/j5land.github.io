@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>单元测试最佳实践 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 在近期的代码重构的过程中，遇到各式各样的问题，比如调整代码顺序导致的bug，方法重构参数校验逻辑的移除等。 在上线前需要花大量时间进行测试" /><meta name="keywords" content='单元测试, Mockito' /><meta itemprop="name" content="单元测试最佳实践">
+<meta itemprop="description" content="背景 在近期的代码重构的过程中，遇到各式各样的问题，比如调整代码顺序导致的bug，方法重构参数校验逻辑的移除等。 在上线前需要花大量时间进行测试"><meta itemprop="datePublished" content="2022-11-21T14:02:25+08:00" />
+<meta itemprop="dateModified" content="2022-11-21T14:02:25+08:00" />
+<meta itemprop="wordCount" content="2646">
+<meta itemprop="keywords" content="单元测试,Mockito," /><meta property="og:title" content="单元测试最佳实践" />
+<meta property="og:description" content="背景 在近期的代码重构的过程中，遇到各式各样的问题，比如调整代码顺序导致的bug，方法重构参数校验逻辑的移除等。 在上线前需要花大量时间进行测试" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-21T14:02:25+08:00" />
+<meta property="article:modified_time" content="2022-11-21T14:02:25+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="单元测试最佳实践"/>
+<meta name="twitter:description" content="背景 在近期的代码重构的过程中，遇到各式各样的问题，比如调整代码顺序导致的bug，方法重构参数校验逻辑的移除等。 在上线前需要花大量时间进行测试"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><link rel="prev" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/" /><link rel="next" href="http://example.org/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "单元测试最佳实践",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5\/"
+    },"genre": "posts","keywords": "单元测试, Mockito","wordcount":  2646 ,
+    "url": "http:\/\/example.org\/posts\/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5\/","datePublished": "2022-11-21T14:02:25+08:00","dateModified": "2022-11-21T14:02:25+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>单元测试最佳实践</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/java/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Java</a></span></div>
+      <div class="post-meta-line"><span title=2022-11-21&#32;14:02:25><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-21">2022-11-21</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2646 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#单元测试">单元测试</a>
+      <ul>
+        <li><a href="#what">what</a></li>
+        <li><a href="#why">why</a></li>
+        <li><a href="#提升代码质量">提升代码质量</a></li>
+        <li><a href="#who">Who</a></li>
+        <li><a href="#when">When</a></li>
+        <li><a href="#which">Which</a></li>
+        <li><a href="#how">How</a></li>
+      </ul>
+    </li>
+    <li><a href="#行动计划">行动计划</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>在近期的代码重构的过程中，遇到各式各样的问题，比如调整代码顺序导致的bug，方法重构参数校验逻辑的移除等。</p>
+<p>在上线前需要花大量时间进行测试和灰度验证。最大的感受就是：一切没有单元测试覆盖情况下的代码重构，都是裸奔。</p>
+<h2 id="单元测试">单元测试</h2>
+<h3 id="what">what</h3>
+<blockquote>
+<p>一个单元测试是一段自动化的代码，这段代码调用被测试的工作单元。只要产品代码不发生变化，单元测试的结果是稳定的。</p>
+</blockquote>
+<p>单元测试是针对程序模块（软件设计的最小单位）来进行正确性检验的测试工作。合格的单元测试具有以下特征：</p>
+<h4 id="自动化检测">自动化检测</h4>
+<p>单元测试应该是无效开发手动进行验证的，运行单元测试应该自动运行结果并进行校验。</p>
+<h4 id="快速运行">快速运行</h4>
+<p>单元测试应该是很快被执行的，一个项目所有的测试用例应该在10s内完成全部的验证。快速的单元测试才能在开发过程中检测，反例是依赖Spring IOC容器启动。</p>
+<h4 id="无依赖">无依赖</h4>
+<p>单元测试不应该依赖任何外部资源，比如：数据库、RPC、文件系统，所有对外资源的调用应该采用Mock的方式。</p>
+<h4 id="持续维护">持续维护</h4>
+<p>单元测试非一次性代码，需要桶业务代码的发展持续进行维护。不易维护、不可月度的单元测试是无意义的。</p>
+<h4 id="粒度小">粒度小</h4>
+<p>单元测试检测的功能范围应该是粒度的。</p>
+<h4 id="单元测试反例">单元测试反例</h4>
+<p>工作中经常会遇到一些无效的单元测试，通常是启动Spring容器，连接数据库，然后调用测试方法控制台查看数据结果。这并不是合格的单元测试，比如：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@SpringBootTest</span><span class="o">(</span><span class="n">classes</span> <span class="o">=</span> <span class="n">ApplicationLoader</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserServiceTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">UserService</span> <span class="n">userService</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Test</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testAddUser</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">AddUserRequest</span> <span class="n">addUserRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AddUserRequest</span><span class="o">(</span><span class="s">&#34;username&#34;</span><span class="o">,</span> <span class="s">&#34;password&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">boolean</span> <span class="n">isSuccess</span> <span class="o">=</span> <span class="n">userService</span><span class="o">.</span><span class="na">addUser</span><span class="o">(</span><span class="n">addUserRequest</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">isSuccess</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="why">why</h3>
+<p>工作中很多代码是没有单元测试的，这些项目也正常运行，那为什么要编写单元测试呢？</p>
+<p>好的单元测试能提供我们代码交付质量的同时，还可以减少bug发现和修复的成本，进而提高工作效率。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/test-why.png"
+    data-srcset="../images/test-why.png, ../images/test-why.png 1.5x, ../images/test-why.png 2x"
+    data-sizes="auto"
+    alt="test-why"
+    title="test-why"/></p>
+<h4 id="提高工作效率">提高工作效率</h4>
+<p>程序员大多时间都消耗在改bug的阶段，编码往往可能至占用一小部分，尤其突出是在修改或者重构已有代码，不得不考虑增量代码是否会对原有逻辑带来影响。所以长远来看，单元测试是能提高工作效率的。</p>
+<h3 id="提升代码质量">提升代码质量</h3>
+<p>可测试通常与软件的设计良好程序相关，难以测试的代码一般设计上都存在问题。所以有效的单元测试会驱动开发者写出高质量的代码。</p>
+<h4 id="节省成本">节省成本</h4>
+<p>单元测试能确保程序的底层逻辑的正确性，让问题能够在开发自测阶段暴露出来。Bug越早发现，修复成本往往越低，带来的影响也会更小。</p>
+<p>如图红色曲线，标表示在不同阶段修复bug的成本差别是巨大的。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/bug-cost.png"
+    data-srcset="../images/bug-cost.png, ../images/bug-cost.png 1.5x, ../images/bug-cost.png 2x"
+    data-sizes="auto"
+    alt="bug-cost"
+    title="bug-cost"/></p>
+<h3 id="who">Who</h3>
+<p>代码的作者最了解代码的目的、特点和实现的局限性。单元测试的编写没有比代码作者更合适的人选了。</p>
+<h3 id="when">When</h3>
+<p>编写单元测试的时机，一般是越早越好，尽量不要将单元测试拖延到代码写完之后，这样带来的收益并不会特别多。遵循：the sonner the better。</p>
+<p>TDD 测试驱动开发，以其倡导先写测试程序，然后编码实现。这是一种理想的状态，由于种种原因想要遵循TDD有一定难度，毕竟产品的需求往往是一直在变化的。</p>
+<p>边开发边写单元测试，先写少量代码，紧接着写单元测试，重复过程知道功能代码开发完成。</p>
+<p>开发后再补单元测试，这个效果往往收益不如前面收益高。</p>
+<h3 id="which">Which</h3>
+<p><strong>哪些方面需要进行单元测试？并不是单元测试覆盖率越高越好。</strong></p>
+<p><strong>接受不完美，对于历史代码全覆盖是不现实的，我们可以根据优先级、重要程度，针对性补全单元测试</strong>。</p>
+<p>另外在JavaWeb项目代码中，Controller层、Dao层以及其他接口转发相关方法，往往是不需要覆盖单元测试的。</p>
+<h3 id="how">How</h3>
+<p>编写单元测试代码遵守BCDE原则，以保证被测试模块的交付质量。</p>
+<ul>
+<li>B：Border，边界值测试，包括循环边界、特殊取值、特殊时间点、数据顺序等。
+边界值分析法就是对输入或输出的边界值进行测试的一种黑盒测试方法。
+<ul>
+<li>循环边界：指校验第0次、1次、n次是否有错误</li>
+<li>特殊取值：指运算或判断中取最大值、最小值时是否有错误</li>
+<li>特殊时间点：指对时间不同值敏感的函数，采用刚好等于、大于、小于的时间值进行校验</li>
+<li>数据顺序：指数据流、控制流中刚好等于、大于、小于确定的比较值是否出现错误</li>
+</ul>
+</li>
+<li>C：Correct，正确的输入，并得到预期的结果。</li>
+<li>D：Design，与设计文档相结合，来编写单元测试。</li>
+<li>E：Error，强制错误信息输入（如：非法数据、异常流程、业务允许外等），并得到预期的结果。</li>
+</ul>
+<h4 id="mockito">Mockito</h4>
+<p>工欲其善必先利器，选择一个合适Mock框架比手动实现Fake数据，往往能让我们的单元测试事半功倍。有很多Mock框架可以选择，比如：Mockito、PowerMock、Spock、EasyMock、JMock。</p>
+<p>引入Mockito测试框架依赖：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.mockito<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mockito-core<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>4.8.1<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><h5 id="创建mock对象">创建Mock对象</h5>
+<p>1.Mockito.mock(class)方式</p>
+<p>通过静态方法mock来创建Mock对象，由于mock是静态方法所以同程会写成静态导入的方式。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">mockList</span> <span class="o">=</span> <span class="n">Mockito</span><span class="o">.</span><span class="na">mock</span><span class="o">(</span><span class="n">ArrayList</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span></code></pre></div><p>2.使用@Mock注解方式来创建Mock对象</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Mock</span>
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">mockList</span><span class="o">;</span>
+</span></span></code></pre></div><p>使用该方式创需要注意的是要在运行测试方法前使用 @RunWith 或者 @ExtendWith。</p>
+<p>注意：如果您使用的是 Junit 版本 &lt; 5，则必须使用 @RunWith(SpringRunner.class) 或 @RunWith(MockitoJUnitRunner.class) 等。</p>
+<p>如果您使用的是 Junit 版本 = 5，那么您必须使用 @ExtendWith(SpringExtension.class) 或 @ExtendWith(MockitoExtension.class) 等</p>
+<h5 id="mockmockbean区别injectmocks与spy的区别">@Mock、@MockBean区别、@InjectMocks与@Spy的区别</h5>
+<p>@Mock: 创建一个Mock.</p>
+<p>@MockBean：可用于向 Spring ApplicationContext 添加模拟的注释&hellip;&hellip;如果在上下文中定义的任何现有的相同类型的单个 bean 将被模拟替换，如果没有定义现有的 bean，则将添加一个新的。</p>
+<p>@InjectMocks: 创建一个实例，简单的说是这个Mock可以调用真实代码的方法，其余用@Mock（或@Spy）注解创建的mock将被注入到用该实例中。</p>
+<p>@Spy：对函数的调用均执行真正部分。</p>
+<h5 id="spy对象value值注入非springboottest场景">@Spy对象@Value值注入（非SpringBootTest场景）</h5>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ReflectionTestUtils</span><span class="o">.</span><span class="na">setField</span><span class="o">(</span><span class="n">obj</span><span class="o">,</span> <span class="s">&#34;value&#34;</span><span class="o">,</span> <span class="s">&#34;some value&#34;</span><span class="o">);</span>
+</span></span></code></pre></div><h4 id="单元测试实战">单元测试实战</h4>
+<p>单元测试的编写一般包含三个部分：</p>
+<ol>
+<li>Given：Mock外部依赖以及准备Fake数据。</li>
+<li>When &amp; Then：调用Case设计。</li>
+<li>Assert：断言执行结果。</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RunWith</span><span class="o">(</span><span class="n">MockitoJUnitRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MiniAdServeServiceImplTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="nd">@InjectMocks</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">private</span> <span class="n">MiniAdServeServiceImpl</span> <span class="n">miniAdServeService</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="nd">@Spy</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">private</span> <span class="n">PositionIdConfig</span> <span class="n">positionIdConfig</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="nd">@Mock</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">private</span> <span class="n">ApolloBean</span> <span class="n">apolloBean</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="nd">@Mock</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">private</span> <span class="n">CommonAdServeService</span> <span class="n">commonAdServeService</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="nd">@Spy</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">private</span> <span class="n">MiniAdServeServiceHelper</span> <span class="n">helper</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">private</span> <span class="n">GetAdsReq</span> <span class="n">commonGetAdsReq</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">//指定参数 case 设计
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">private</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">AdsRequestDTO</span><span class="o">&gt;</span> <span class="n">page_banner</span> <span class="o">=</span> <span class="n">adsRequestDTO</span> <span class="o">-&gt;</span> <span class="n">adsRequestDTO</span><span class="o">.</span><span class="na">getAdPositionId</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;xxxxxxxxxx&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="err">​</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 初始化相关场景与数据mock
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="nd">@Before</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">mockInit</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="c1">//设置 @Value mock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">ReflectionTestUtils</span><span class="o">.</span><span class="na">setField</span><span class="o">(</span><span class="n">positionIdConfig</span><span class="o">,</span> <span class="s">&#34;pid&#34;</span><span class="o">,</span> <span class="n">AdsMockReturnData</span><span class="o">.</span><span class="na">POSITION_DEFAULT</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">ReflectionTestUtils</span><span class="o">.</span><span class="na">setField</span><span class="o">(</span><span class="n">miniAdServeService</span><span class="o">,</span> <span class="s">&#34;bannerPid&#34;</span><span class="o">,</span> <span class="n">AdsMockReturnData</span><span class="o">.</span><span class="na">POSITION_BANNER</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span>    <span class="c1">//Fake 数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">commonGetAdsReq</span> <span class="o">=</span> <span class="n">GetAdsReq</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">order_sn</span><span class="o">(</span><span class="s">&#34;xxxx&#34;</span><span class="o">).</span><span class="na">merchant_id</span><span class="o">(</span><span class="s">&#34;xxxx&#34;</span><span class="o">).</span><span class="na">store_sn</span><span class="o">(</span><span class="s">&#34;xxxx&#34;</span><span class="o">).</span><span class="na">uid</span><span class="o">(</span><span class="s">&#34;xxxxx&#34;</span><span class="o">).</span><span class="na">amount</span><span class="o">(</span><span class="s">&#34;15.00&#34;</span><span class="o">).</span><span class="na">build</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="c1">//当满足指定条件参数匹配场景下，返回不同的 mock case数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">when</span><span class="o">(</span><span class="n">commonAdServeService</span><span class="o">.</span><span class="na">getAds</span><span class="o">(</span><span class="n">createArgumentMatcher</span><span class="o">(</span><span class="n">page_banner</span><span class="o">))).</span><span class="na">thenReturn</span><span class="o">(</span><span class="n">AdsMockReturnData</span><span class="o">.</span><span class="na">BANNER_Ad_GDT</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="err">​</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span>  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="err">​</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="nd">@Test</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">testGetMultiAds_Banner</span><span class="o">(){</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="c1">//发起广告请求
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="err"> </span> <span class="err"> </span> <span class="n">when</span><span class="o">(</span><span class="n">commonAdServeService</span><span class="o">.</span><span class="na">getAds</span><span class="o">(</span><span class="n">defaultArgumentMatcher</span><span class="o">())).</span><span class="na">thenReturn</span><span class="o">(</span><span class="n">AdsMockReturnData</span><span class="o">.</span><span class="na">BANNER_Ad</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">AdsResult</span> <span class="n">adsResult</span> <span class="o">=</span> <span class="n">miniAdServeService</span><span class="o">.</span><span class="na">getMultiAds</span><span class="o">(</span><span class="n">commonGetAdsReq</span><span class="o">,</span> <span class="n">AdsMockReturnData</span><span class="o">.</span><span class="na">USER_AGENT</span><span class="o">,</span> <span class="n">AdsMockReturnData</span><span class="o">.</span><span class="na">PAY_WAY_TEST</span><span class="o">,</span> <span class="n">AdsMockReturnData</span><span class="o">.</span><span class="na">PAY_ENV_MINI</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span>    <span class="c1">//Assert 断言验证
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">helper</span><span class="o">.</span><span class="na">assertScenarioResult</span><span class="o">(</span><span class="n">adsResult</span><span class="o">,</span> <span class="n">ScenarioAssertEnum</span><span class="o">.</span><span class="na">BANNER_AD</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">helper</span><span class="o">.</span><span class="na">assertScenarioResult</span><span class="o">(</span><span class="n">adsResult</span><span class="o">,</span> <span class="n">ScenarioAssertEnum</span><span class="o">.</span><span class="na">AD</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">Ads</span> <span class="n">ads</span> <span class="o">=</span> <span class="n">adsResult</span><span class="o">.</span><span class="na">getGridAds</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ads</span><span class="o">.</span><span class="na">getAppId</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;xxxxxx&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ads</span><span class="o">.</span><span class="na">getScenarioType</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">ScenarioStyleEnum</span><span class="o">.</span><span class="na">BANNER_LINK</span><span class="o">.</span><span class="na">getType</span><span class="o">()));</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ads</span><span class="o">.</span><span class="na">getCampaignType</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ads</span><span class="o">.</span><span class="na">getLandingPage</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;/pages/index/index&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="s">&#34;xxxx&#34;</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">ads</span><span class="o">.</span><span class="na">getCreative</span><span class="o">().</span><span class="na">getContent</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;title&#34;</span><span class="o">)));</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span>  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 创建ArgumentMatcher，根据不同参数值来匹配对应的行为
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span><span class="kd">private</span> <span class="err"> </span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="nf">createArgumentMatcher</span><span class="o">(</span><span class="kd">final</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">predicate</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="k">return</span> <span class="n">Mockito</span><span class="o">.</span><span class="na">argThat</span><span class="o">(</span><span class="n">argument</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="k">if</span> <span class="o">(</span><span class="kc">null</span> <span class="o">==</span> <span class="n">argument</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span>  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span><span class="k">return</span> <span class="n">predicate</span><span class="o">.</span><span class="na">apply</span><span class="o">((</span><span class="n">T</span><span class="o">)</span> <span class="n">argument</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span>  <span class="o">});</span>
+</span></span><span class="line"><span class="cl"> <span class="err"> </span>  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h2 id="行动计划">行动计划</h2>
+<ol>
+<li>梳理项目</li>
+<li>项目发布频率</li>
+<li>项目影响面</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>编写单元测试能持续够提升代码质量，驱动代码设计，帮助我们更早发现问题，保障持续优化和重构，单元测试也不能覆盖所有的问题。单元只测试程序单元自身的功能。它不能发现集成错误、性能、或者其他系统级别的问题。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-11-21&#32;14:02:25>更新于 2022-11-21&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/' class="post-tag">单元测试</a><a href='/tags/mockito/' class="post-tag">Mockito</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/" class="post-nav-item" rel="prev" title="如何快速构建团队SpringBoot脚手架"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>如何快速构建团队SpringBoot脚手架</a>
+      <a href="/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" class="post-nav-item" rel="next" title="WebClient性能分析与对比测试">WebClient性能分析与对比测试<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

@@ -1,0 +1,31 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>SpringBoot - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/springboot/</link>
+    <description>SpringBoot - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 17 Oct 2022 14:17:23 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/springboot/" rel="self" type="application/rss+xml" /><item>
+  <title>如何快速构建团队SpringBoot脚手架</title>
+  <link>http://example.org/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/</link>
+  <pubDate>Mon, 17 Oct 2022 14:17:23 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/</guid>
+  <description><![CDATA[背景 随着公司业务迅速发展，团队人员也逐渐壮大，我们需要一种方式去规范大家的工程结构以及代码依赖pom，更需要一种模板工具可以快速搭建项目的能]]></description>
+</item>
+<item>
+  <title>如何写一个自己的Spring Boot Starter</title>
+  <link>http://example.org/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/</link>
+  <pubDate>Sun, 12 Jun 2022 14:10:04 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/</guid>
+  <description><![CDATA[背景 我们知道可以使用SpringBoot快速开发基于Spring框架的项目，由于围绕SpringBoot存在很多开箱即用的Starter依赖]]></description>
+</item>
+<item>
+  <title>SpringBoot的前世今生</title>
+  <link>http://example.org/posts/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/</link>
+  <pubDate>Tue, 10 May 2022 14:12:46 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/springboot%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/</guid>
+  <description><![CDATA[背景 作为一名Java开发人员，我们最常打交道的就是Spring、SpringBoot这类的开发框架，你知道Spring Boot的由来吗，它和]]></description>
+</item>
+</channel>
+</rss>

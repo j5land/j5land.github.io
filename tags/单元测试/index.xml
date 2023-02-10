@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>单元测试 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/</link>
+    <description>单元测试 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 21 Nov 2022 14:02:25 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" rel="self" type="application/rss+xml" /><item>
+  <title>单元测试最佳实践</title>
+  <link>http://example.org/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link>
+  <pubDate>Mon, 21 Nov 2022 14:02:25 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid>
+  <description><![CDATA[背景 在近期的代码重构的过程中，遇到各式各样的问题，比如调整代码顺序导致的bug，方法重构参数校验逻辑的移除等。 在上线前需要花大量时间进行测试]]></description>
+</item>
+</channel>
+</rss>

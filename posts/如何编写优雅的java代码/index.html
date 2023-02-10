@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>如何编写优雅的Java代码 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 随着软件代码日积月累，系统维护成本变得越来越高，是所有开发团队面临的问题。持续优化代码，提高代码质量是提升系统生命力有效手段之一。在编码" /><meta name="keywords" content='Java, 编码方式' /><meta itemprop="name" content="如何编写优雅的Java代码">
+<meta itemprop="description" content="背景 随着软件代码日积月累，系统维护成本变得越来越高，是所有开发团队面临的问题。持续优化代码，提高代码质量是提升系统生命力有效手段之一。在编码"><meta itemprop="datePublished" content="2022-09-09T14:14:50+08:00" />
+<meta itemprop="dateModified" content="2022-09-09T14:14:50+08:00" />
+<meta itemprop="wordCount" content="2410">
+<meta itemprop="keywords" content="Java,编码方式," /><meta property="og:title" content="如何编写优雅的Java代码" />
+<meta property="og:description" content="背景 随着软件代码日积月累，系统维护成本变得越来越高，是所有开发团队面临的问题。持续优化代码，提高代码质量是提升系统生命力有效手段之一。在编码" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-09T14:14:50+08:00" />
+<meta property="article:modified_time" content="2022-09-09T14:14:50+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="如何编写优雅的Java代码"/>
+<meta name="twitter:description" content="背景 随着软件代码日积月累，系统维护成本变得越来越高，是所有开发团队面临的问题。持续优化代码，提高代码质量是提升系统生命力有效手段之一。在编码"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/" /><link rel="prev" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/" /><link rel="next" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "如何编写优雅的Java代码",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81\/"
+    },"genre": "posts","keywords": "Java, 编码方式","wordcount":  2410 ,
+    "url": "http:\/\/example.org\/posts\/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81\/","datePublished": "2022-09-09T14:14:50+08:00","dateModified": "2022-09-09T14:14:50+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>如何编写优雅的Java代码</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/java/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Java</a></span></div>
+      <div class="post-meta-line"><span title=2022-09-09&#32;14:14:50><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-09">2022-09-09</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2410 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#价值">价值</a></li>
+    <li><a href="#坏味道">坏味道</a>
+      <ul>
+        <li><a href="#减少函数代码层级">减少函数代码层级</a></li>
+        <li><a href="#封装条件表达式函数">封装条件表达式函数</a></li>
+        <li><a href="#拆分大函数">拆分大函数</a></li>
+        <li><a href="#封装相同功能代码为函数">封装相同功能代码为函数</a></li>
+        <li><a href="#封装获取参数值函数">封装获取参数值函数</a></li>
+        <li><a href="#同一函数内代码块级别尽量一致">同一函数内代码块级别尽量一致</a></li>
+        <li><a href="#使用通用工具函数">使用通用工具函数</a></li>
+        <li><a href="#封装函数传入参数">封装函数传入参数</a></li>
+        <li><a href="#尽量用函数替换匿名内部类的实现">尽量用函数替换匿名内部类的实现</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>随着软件代码日积月累，系统维护成本变得越来越高，是所有开发团队面临的问题。持续优化代码，提高代码质量是提升系统生命力有效手段之一。在编码中多思考多总结，提升编码水平才能编写出优雅、高质量、更高效的代码。</p>
+<h2 id="价值">价值</h2>
+<blockquote>
+<p>如果我纯粹为今天工作，明天我将完全无法工作。</p>
+</blockquote>
+<p>一个系统在上线初期，向系统中增加功能时，完成速度非常快，但如果不注重代码质量，后期向代码中添加一个很小的功能时可能需要花上一周或更长的时间。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/productivity.png"
+    data-srcset="../images/productivity.png, ../images/productivity.png 1.5x, ../images/productivity.png 2x"
+    data-sizes="auto"
+    alt="productivity"
+    title="productivity"/></p>
+<p>优雅的、良好设计的、高质量的代码，可增加可维护性，让软件代码更容易理解。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/function.png"
+    data-srcset="../images/function.png, ../images/function.png 1.5x, ../images/function.png 2x"
+    data-sizes="auto"
+    alt="function"
+    title="function"/></p>
+<h2 id="坏味道">坏味道</h2>
+<h3 id="减少函数代码层级">减少函数代码层级</h3>
+<p>如果要使函数优美，建议函数代码层级在1-4之间，过多的缩进会让函数难以阅读。</p>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>代码层级减少，代码缩进减少；</li>
+<li>模块划分清晰，方便阅读维护。</li>
+</ul>
+<p><strong>案例：利用return提前返回函数</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 获取用户余额函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="n">Double</span> <span class="nf">getUserBalance</span><span class="o">(</span><span class="n">Long</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="n">getUser</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">user</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserAccount</span> <span class="n">account</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getAccount</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">account</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">account</span><span class="o">.</span><span class="na">getBalance</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 获取用户余额函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="n">Double</span> <span class="nf">getUserBalance</span><span class="o">(</span><span class="n">Long</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取用户信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="n">getUser</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">user</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取用户账户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">UserAccount</span> <span class="n">account</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getAccount</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">account</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 返回账户余额
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">account</span><span class="o">.</span><span class="na">getBalance</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="封装条件表达式函数">封装条件表达式函数</h3>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>把条件表达式从业务函数中独立，使业务逻辑更清晰；</li>
+<li>封装的条件表达式为独立函数，可以在代码中重复使用。</li>
+</ul>
+<p><strong>案例一：把简单条件表达式封装为函数</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 获取门票价格函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">double</span> <span class="nf">getTicketPrice</span><span class="o">(</span><span class="n">Date</span> <span class="n">currDate</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">currDate</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">currDate</span><span class="o">.</span><span class="na">after</span><span class="o">(</span><span class="n">DISCOUNT_BEGIN_DATE</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&amp;&amp;</span> <span class="n">currDate</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">DISCOUNT_END_DATE</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">TICKET_PRICE</span> <span class="o">*</span> <span class="n">DISCOUNT_RATE</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">TICKET_PRICE</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 获取门票价格函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">double</span> <span class="nf">getTicketPrice</span><span class="o">(</span><span class="n">Date</span> <span class="n">currDate</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">isDiscountDate</span><span class="o">(</span><span class="n">currDate</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">TICKET_PRICE</span> <span class="o">*</span> <span class="n">DISCOUNT_RATE</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">TICKET_PRICE</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 是否折扣日期函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isDiscountDate</span><span class="o">(</span><span class="n">Date</span> <span class="n">currDate</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">currDate</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">currDate</span><span class="o">.</span><span class="na">after</span><span class="o">(</span><span class="n">DISCOUNT_BEGIN_DATE</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&amp;&amp;</span> <span class="n">currDate</span><span class="o">.</span><span class="na">before</span><span class="o">(</span><span class="n">DISCOUNT_END_DATE</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p><strong>案例二：把复杂条件表达式封装为函数</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 获取土豪用户列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">getRichUserList</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">userList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 初始土豪用户列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">richUserList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 依次查找土豪用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="n">User</span> <span class="n">user</span> <span class="o">:</span> <span class="n">userList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 获取用户账户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">UserAccount</span> <span class="n">account</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getAccount</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">account</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 判断用户余额
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">Double</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="na">getBalance</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">balance</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">balance</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">RICH_THRESHOLD</span><span class="o">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// 添加土豪用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">richUserList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 返回土豪用户列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">richUserList</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 获取土豪用户列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">getRichUserList</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">userList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 初始土豪用户列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">richUserList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 依次查找土豪用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="n">User</span> <span class="n">user</span> <span class="o">:</span> <span class="n">userList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 判断土豪用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">isRichUser</span><span class="o">(</span><span class="n">user</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 添加土豪用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">richUserList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 返回土豪用户列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">richUserList</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 是否土豪用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isRichUser</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取用户账户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">UserAccount</span> <span class="n">account</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getAccount</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">account</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取用户余额
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Double</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">account</span><span class="o">.</span><span class="na">getBalance</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">balance</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 比较用户余额
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">balance</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">RICH_THRESHOLD</span><span class="o">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="拆分大函数">拆分大函数</h3>
+<p>当一个函数超过80行后，就属于大函数，需要进行拆分。</p>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>函数越短小精悍，功能就越单一，往往生命周期较长；</li>
+<li>一个函数越长，就越不容易理解和维护，维护人员不敢轻易修改；</li>
+<li>在过长函数中，往往含有难以发现的重复代码。</li>
+</ul>
+<p><strong>案例一：每一个代码块都可以封装为一个函</strong></p>
+<p>如果代码块前方有一行注释，就是在提醒你——可以将这段代码替换成一个函数，而且可以在注释的基础上给这个函数命名。如果函数有一个描述恰当的名字，就不需要去看内部代码究竟是如何实现的。</p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 每日生活
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">liveDaily</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 吃饭
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 吃饭相关代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 编码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 编码相关代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 睡觉
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 睡觉相关代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 每日生活函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">liveDaily</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 吃饭
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">eat</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 编码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">code</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 睡觉
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">sleep</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 吃饭函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">eat</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 吃饭相关代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 编码函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">code</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 编码相关代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 睡觉函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">sleep</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 睡觉相关代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><p><strong>案例二：每一个条件体都可以封装为一个函</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 外出函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">goOut</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 判断是否周末
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 判断是否周末: 是周末则游玩
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">isWeekday</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 游玩代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 判断是否周末: 非周末则工作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 工作代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 外出函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">goOut</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 判断是否周末
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 判断是否周末: 是周末则游玩
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">isWeekday</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">play</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 判断是否周末: 非周末则工作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">work</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 游玩函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">play</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 游玩代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 工作函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">work</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 工作代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><h3 id="封装相同功能代码为函数">封装相同功能代码为函数</h3>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>封装公共函数，减少代码行数，提高代码质量；</li>
+<li>封装公共函数，使业务代码更精炼，可读性可维护性更强。</li>
+</ul>
+<p><strong>案例：封装相同代码为函数</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 禁用用户函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">disableUser</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 禁用黑名单用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">userIdList</span> <span class="o">=</span> <span class="n">queryBlackUser</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="n">Long</span> <span class="n">userId</span> <span class="o">:</span> <span class="n">userIdList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">userUpdate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">userUpdate</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">userUpdate</span><span class="o">.</span><span class="na">setEnable</span><span class="o">(</span><span class="n">Boolean</span><span class="o">.</span><span class="na">FALSE</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">userDAO</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">userUpdate</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 禁用过期用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">userIdList</span> <span class="o">=</span> <span class="n">queryExpiredUser</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="n">Long</span> <span class="n">userId</span> <span class="o">:</span> <span class="n">userIdList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">userUpdate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">userUpdate</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">userUpdate</span><span class="o">.</span><span class="na">setEnable</span><span class="o">(</span><span class="n">Boolean</span><span class="o">.</span><span class="na">FALSE</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">userDAO</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">userUpdate</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 禁用用户函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">disableUser</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 禁用黑名单用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">userIdList</span> <span class="o">=</span> <span class="n">queryBlackUser</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="n">Long</span> <span class="n">userId</span> <span class="o">:</span> <span class="n">userIdList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">disableUser</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 禁用过期用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">userIdList</span> <span class="o">=</span> <span class="n">queryExpiredUser</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="o">(</span><span class="n">Long</span> <span class="n">userId</span> <span class="o">:</span> <span class="n">userIdList</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">disableUser</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 禁用用户函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">disableUser</span><span class="o">(</span><span class="n">Long</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">User</span> <span class="n">userUpdate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">userUpdate</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">userUpdate</span><span class="o">.</span><span class="na">setEnable</span><span class="o">(</span><span class="n">Boolean</span><span class="o">.</span><span class="na">FALSE</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">userDAO</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">userUpdate</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="封装获取参数值函数">封装获取参数值函数</h3>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>把获取参数值从业务函数中独立，使业务逻辑更清晰；</li>
+<li>封装的获取参数值为独立函数，可以在代码中重复使用。</li>
+</ul>
+<p><strong>案例</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 是否通过函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isPassed</span><span class="o">(</span><span class="n">Long</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取通过阈值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">thisPassThreshold</span> <span class="o">=</span> <span class="n">PASS_THRESHOLD</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">passThreshold</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">thisPassThreshold</span> <span class="o">=</span> <span class="n">passThreshold</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取通过率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">passRate</span> <span class="o">=</span> <span class="n">getPassRate</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 判读是否通过
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">passRate</span> <span class="o">&gt;=</span> <span class="n">thisPassThreshold</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 是否通过函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isPassed</span><span class="o">(</span><span class="n">Long</span> <span class="n">userId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取通过阈值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">thisPassThreshold</span> <span class="o">=</span> <span class="n">getPassThreshold</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取通过率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">double</span> <span class="n">passRate</span> <span class="o">=</span> <span class="n">getPassRate</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 判读是否通过
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">passRate</span> <span class="o">&gt;=</span> <span class="n">thisPassThreshold</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 获取通过阈值函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">double</span> <span class="nf">getPassThreshold</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">nonNull</span><span class="o">(</span><span class="n">passThreshold</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">passThreshold</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">PASS_THRESHOLD</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="同一函数内代码块级别尽量一致">同一函数内代码块级别尽量一致</h3>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>函数调用表明用途，函数实现表达逻辑，层次分明便于理解；</li>
+<li>不用层次的代码块放在一个函数中，容易让人觉得代码头重脚轻。</li>
+</ul>
+<p><strong>案例</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 每日生活函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">liveDaily</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 吃饭
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">eat</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 编码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">code</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 睡觉
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 睡觉相关代码几十行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">liveDaily</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 吃饭
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">eat</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 编码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">code</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 睡觉
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">sleep</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 睡觉
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kt">void</span> <span class="nf">sleep</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 睡觉相关代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><h3 id="使用通用工具函数">使用通用工具函数</h3>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>函数式编程，业务代码减少，逻辑一目了然；</li>
+<li>通用工具函数，逻辑考虑周全，出问题概率低。</li>
+</ul>
+<p><strong>案例一</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">thisName</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">thisName</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Objects</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">thisName</span><span class="o">);</span>
+</span></span></code></pre></div><p><strong>案例二</strong></p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="o">!(</span><span class="n">list</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">list</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">());</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.commons.collections4.CollectionUtils</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">CollectionUtils</span><span class="o">.</span><span class="na">isNotEmpty</span><span class="o">(</span><span class="n">list</span><span class="o">);</span>
+</span></span></code></pre></div><h3 id="封装函数传入参数">封装函数传入参数</h3>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>封装过多函数参数为类，使函数更便于扩展和维护；</li>
+<li>封装成组函数参数为类，使业务概念更明确更清晰。</li>
+</ul>
+<p><strong>案例：当传入参数过多时，应封装为参数类</strong></p>
+<p>Java规范不允许函数参数太多，不便于维护也不便于扩展。</p>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 修改用户函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">modifyUser</span><span class="o">(</span><span class="n">Long</span> <span class="n">id</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">String</span> <span class="n">phone</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">Integer</span> <span class="n">sex</span><span class="o">,</span> <span class="n">String</span> <span class="n">address</span><span class="o">,</span> <span class="n">String</span> <span class="n">description</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 具体实现逻辑
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 修改用户函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">modifyUser</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 具体实现内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 用户类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Getter</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Setter</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@ToString</span>
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="kd">class</span> <span class="nc">User</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Long</span> <span class="n">id</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">phone</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">sex</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">address</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">description</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="尽量用函数替换匿名内部类的实现">尽量用函数替换匿名内部类的实现</h3>
+<p><strong>主要收益</strong></p>
+<ul>
+<li>定义函数并指定参数，明确规定了匿名内部类的代码边界；</li>
+<li>利用Lambda表达式简化匿名内部类实现，使代码更简洁。</li>
+</ul>
+<p>现象描述：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 发送结算数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sendWorkerSettleData</span><span class="o">(</span><span class="n">WorkerPushDataType</span><span class="o">.</span><span class="na">CHECKER</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Date</span> <span class="n">beginDate</span> <span class="o">=</span> <span class="n">DateUtils</span><span class="o">.</span><span class="na">addDays</span><span class="o">(</span><span class="n">currDate</span><span class="o">,</span> <span class="o">-</span><span class="n">aheadDays</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Date</span> <span class="n">endDate</span> <span class="o">=</span> <span class="n">DateUtils</span><span class="o">.</span><span class="na">addDays</span><span class="o">(</span><span class="n">currDate</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">auditTaskDAO</span><span class="o">.</span><span class="na">statCheckerSettleData</span><span class="o">(</span><span class="n">beginDate</span><span class="o">,</span> <span class="n">endDate</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">});</span>
+</span></span></code></pre></div><p>建议方案：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 发送结算数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sendWorkerSettleData</span><span class="o">(</span><span class="n">WorkerPushDataType</span><span class="o">.</span><span class="na">CHECKER</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">statCheckerSettleData</span><span class="o">(</span><span class="n">currDate</span><span class="o">,</span> <span class="n">aheadDays</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 统计验收员结算数据函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">WorkerSettleData</span><span class="o">&gt;</span> <span class="nf">statCheckerSettleData</span><span class="o">(</span><span class="n">Date</span> <span class="n">currDate</span><span class="o">,</span> <span class="kt">int</span> <span class="n">aheadDays</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Date</span> <span class="n">beginDate</span> <span class="o">=</span> <span class="n">DateUtils</span><span class="o">.</span><span class="na">addDays</span><span class="o">(</span><span class="n">currDate</span><span class="o">,</span> <span class="o">-</span><span class="n">aheadDays</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Date</span> <span class="n">endDate</span> <span class="o">=</span> <span class="n">DateUtils</span><span class="o">.</span><span class="na">addDays</span><span class="o">(</span><span class="n">currDate</span><span class="o">,</span> <span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">auditTaskDAO</span><span class="o">.</span><span class="na">statCheckerSettleData</span><span class="o">(</span><span class="n">beginDate</span><span class="o">,</span> <span class="n">endDate</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>参考文档：</p>
+<ol>
+<li><a href="https://juejin.cn/post/6844903908469374984#heading-0"target="_blank" rel="external nofollow noopener noreferrer">https://juejin.cn/post/6844903908469374984#heading-0</a></li>
+<li><a href="https://juejin.cn/post/6844903911258587144"target="_blank" rel="external nofollow noopener noreferrer">https://juejin.cn/post/6844903911258587144</a></li>
+<li><a href="https://google.github.io/styleguide/javaguide.html"target="_blank" rel="external nofollow noopener noreferrer">https://google.github.io/styleguide/javaguide.html</a></li>
+<li><a href="https://github.com/twitter-archive/commons/blob/master/src/java/com/twitter/common/styleguide.md"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/twitter-archive/commons/blob/master/src/java/com/twitter/common/styleguide.md</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/104253155"target="_blank" rel="external nofollow noopener noreferrer">https://zhuanlan.zhihu.com/p/104253155</a></li>
+<li><a href="https://mp.weixin.qq.com/s/5Qxll-uxj4eCAl7pQ2PAwg"target="_blank" rel="external nofollow noopener noreferrer">https://mp.weixin.qq.com/s/5Qxll-uxj4eCAl7pQ2PAwg</a></li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-09-09&#32;14:14:50>更新于 2022-09-09&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/java/' class="post-tag">Java</a><a href='/tags/%E7%BC%96%E7%A0%81%E6%96%B9%E5%BC%8F/' class="post-tag">编码方式</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/" class="post-nav-item" rel="prev" title="如何写一个自己的Spring Boot Starter"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>如何写一个自己的Spring Boot Starter</a>
+      <a href="/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/" class="post-nav-item" rel="next" title="如何快速构建团队SpringBoot脚手架">如何快速构建团队SpringBoot脚手架<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
