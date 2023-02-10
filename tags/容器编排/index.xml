@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>容器编排 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</link>
+    <description>容器编排 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 23 Aug 2021 23:55:03 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/" rel="self" type="application/rss+xml" /><item>
+  <title>Kubernetes的架构与核心概念</title>
+  <link>http://example.org/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/</link>
+  <pubDate>Mon, 23 Aug 2021 23:55:03 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/k8s_architecture.png" referrerpolicy="no-referrer">
+      </div>一文让你了解Kubernetes架构与核心概念 本篇文章我会探讨Kubernetes的整体架构与核心概念。 架构 与很多基础设施领域现有工程实践、]]></description>
+</item>
+</channel>
+</rss>

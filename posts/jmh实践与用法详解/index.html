@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>JMH实践与用法详解 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 ”If you cannot measure it, you cannot improve it“ 在日常开发中，我们对一些代码的调用或者工具的使用会存在多种选择，在不确定他们性能的时候，我们首先想要做的就是先" /><meta name="keywords" content='JMH, 基准测试' /><meta itemprop="name" content="JMH实践与用法详解">
+<meta itemprop="description" content="背景 ”If you cannot measure it, you cannot improve it“ 在日常开发中，我们对一些代码的调用或者工具的使用会存在多种选择，在不确定他们性能的时候，我们首先想要做的就是先"><meta itemprop="datePublished" content="2022-04-30T00:01:51+08:00" />
+<meta itemprop="dateModified" content="2022-04-30T00:01:51+08:00" />
+<meta itemprop="wordCount" content="2273">
+<meta itemprop="keywords" content="JMH,基准测试," /><meta property="og:title" content="JMH实践与用法详解" />
+<meta property="og:description" content="背景 ”If you cannot measure it, you cannot improve it“ 在日常开发中，我们对一些代码的调用或者工具的使用会存在多种选择，在不确定他们性能的时候，我们首先想要做的就是先" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-30T00:01:51+08:00" />
+<meta property="article:modified_time" content="2022-04-30T00:01:51+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JMH实践与用法详解"/>
+<meta name="twitter:description" content="背景 ”If you cannot measure it, you cannot improve it“ 在日常开发中，我们对一些代码的调用或者工具的使用会存在多种选择，在不确定他们性能的时候，我们首先想要做的就是先"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/" /><link rel="prev" href="http://example.org/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" /><link rel="next" href="http://example.org/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "JMH实践与用法详解",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3\/"
+    },"genre": "posts","keywords": "JMH, 基准测试","wordcount":  2273 ,
+    "url": "http:\/\/example.org\/posts\/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3\/","datePublished": "2022-04-30T00:01:51+08:00","dateModified": "2022-04-30T00:01:51+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>JMH实践与用法详解</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/java/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Java</a></span></div>
+      <div class="post-meta-line"><span title=2022-04-30&#32;00:01:51><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-04-30">2022-04-30</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2273 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/jmh_flow.png"
+    data-srcset="/posts/images/jmh_flow.png, /posts/images/jmh_flow.png 1.5x, /posts/images/jmh_flow.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/jmh_flow.png"
+    title="/posts/images/jmh_flow.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#背景">背景</a></li>
+        <li><a href="#jmh-应用场景">JMH 应用场景</a></li>
+        <li><a href="#jmh-快速开始">JMH 快速开始</a></li>
+        <li><a href="#jmh详解">JMH详解</a></li>
+        <li><a href="#图形化结果分析">图形化结果分析</a></li>
+        <li><a href="#结束">结束</a></li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h3 id="背景">背景</h3>
+<blockquote>
+<p>”If you cannot measure it, you cannot improve it“</p>
+</blockquote>
+<p>在日常开发中，我们对一些代码的调用或者工具的使用会存在多种选择，在不确定他们性能的时候，我们首先想要做的就是先去度量它。大多时候，我们会采用简单的结束时间-开始时间进行测量，这个方法通常不够准确和科学，因为没有经过大量的模拟或者测试。随着JMH的出现，可以很大程度的帮助了开发者，为决策提供主要的科学依据以及数据支撑。</p>
+<h3 id="jmh-应用场景">JMH 应用场景</h3>
+<ol>
+<li>评估一个方法的不同实现，当你想对比两种不同的数据结构哪种性能更好。</li>
+<li>评估第三方库的执行性能，当你想比较两种不同的工具包的实现哪个更优（比如Jackson和Gson实现）。</li>
+<li>度量方法的执行耗时及输入的相关性，当你找到项目热点方法或者代码，想对其进一步进行优化时，也可以使用JMH进行定量分析；</li>
+</ol>
+<h3 id="jmh-快速开始">JMH 快速开始</h3>
+<h4 id="增加maven依赖">增加Maven依赖</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">`<span class="c">&lt;!--jmh 基准测试 --&gt;</span>`
+</span></span><span class="line"><span class="cl">`<span class="nt">&lt;dependency&gt;</span>`
+</span></span><span class="line"><span class="cl">    `<span class="nt">&lt;groupId&gt;</span>org.openjdk.jmh<span class="nt">&lt;/groupId&gt;</span>`
+</span></span><span class="line"><span class="cl">    `<span class="nt">&lt;artifactId&gt;</span>jmh-core<span class="nt">&lt;/artifactId&gt;</span>`
+</span></span><span class="line"><span class="cl">    `<span class="nt">&lt;version&gt;</span>1.23<span class="nt">&lt;/version&gt;</span>`
+</span></span><span class="line"><span class="cl">`<span class="nt">&lt;/dependency&gt;</span>`
+</span></span><span class="line"><span class="cl">`<span class="nt">&lt;dependency&gt;</span>`
+</span></span><span class="line"><span class="cl">    `<span class="nt">&lt;groupId&gt;</span>org.openjdk.jmh<span class="nt">&lt;/groupId&gt;</span>`
+</span></span><span class="line"><span class="cl">    `<span class="nt">&lt;artifactId&gt;</span>jmh-generator-annprocess<span class="nt">&lt;/artifactId&gt;</span>`
+</span></span><span class="line"><span class="cl">    `<span class="nt">&lt;version&gt;</span>1.23<span class="nt">&lt;/version&gt;</span>`
+</span></span><span class="line"><span class="cl">    `<span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>`
+</span></span><span class="line"><span class="cl">`<span class="nt">&lt;/dependency&gt;</span>`
+</span></span></code></pre></div><h4 id="代码示例">代码示例</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/** 基准模式 {@link Mode} */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@BenchmarkMode</span><span class="o">(</span><span class="n">Mode</span><span class="o">.</span><span class="na">AverageTime</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出的时间单位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@OutputTimeUnit</span><span class="o">(</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span> <span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 进程数，默认1即可
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Fork</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 预热次数、时长/次，目前配置为：预热五次，每次1秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Warmup</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">5</span><span class="o">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">1</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 测试次数、时长/次，目前为：执行六次，每次1秒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Measurement</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">6</span><span class="o">,</span><span class="n">time</span> <span class="o">=</span> <span class="mi">1</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TrieBenchmark</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  	<span class="c1">//基准测试
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Benchmark</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">trieInsert_10000</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Trie</span> <span class="n">trie</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Trie</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10000</span> <span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">						<span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">RunnerException</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Options</span> <span class="n">options</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OptionsBuilder</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">include</span><span class="o">(</span><span class="n">TrieBenchmark</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">resultFormat</span><span class="o">(</span><span class="n">ResultFormatType</span><span class="o">.</span><span class="na">CSV</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">new</span> <span class="n">Runner</span><span class="o">(</span><span class="n">options</span><span class="o">).</span><span class="na">run</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="jmh详解">JMH详解</h3>
+<h4 id="什么是jmh">什么是JMH</h4>
+<p>JMH全称 Java Microbenchmark Harness，用于构建、运行和分析以Java和其他基于JVM的其他语言编写的 nano/micro/milli/macro 基准测试的Java工具。</p>
+<blockquote>
+<p>&ldquo;JMH is a Java harness for building, running, and analysing nano/micro/milli/macro benchmarks written in Java and other languages targetting the JVM.&rdquo; &mdash;官方介绍</p>
+</blockquote>
+<h4 id="相关概念">相关概念</h4>
+<ul>
+<li><strong>BeachMark</strong>：基准测试，主要用来测试一些方法的性能，可以根据不同的参数以不同的党委进行计算（可以使用平均时间作为单位，也可以使用吞吐量作为单位，可以在BenchmarkMode值进行调整）。</li>
+<li><strong>MIcro Benchmark</strong>：简单地说就是在method层面上的benchmark，精度可以精确到微秒级。</li>
+<li><strong>OPS</strong>，Operation Per Second：每秒操作量，是衡量性能的重要指标，数值月的性能越好。类似的有：TPS、QPS。</li>
+<li><strong>Throughput</strong>：吞吐量。</li>
+<li><strong>Warmup</strong>：预热，因为JVM的JIT机制的存储，如果某个函数被调用多次之后，JVM会尝试将其编译称为机器码从而提高执行速度。为了让结果更加接近真实情况就需要进行预热。</li>
+</ul>
+<h4 id="注解详细介绍">注解详细介绍</h4>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>注解说明</th>
+<th>使用方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@BenchmarkMode</td>
+<td>表示JMH进行Bechmark时锁使用得模式，测量维度不同于测量的方式不同</td>
+<td>目前有四种模式：1.Throughput：吞吐量模式，例如”1秒内可以执行多少次调用“，单位是操作数/时间。<!-- raw HTML omitted -->2.AverageTime：调用的平均时间，例如”每次调用平耗时x毫秒“，单位是时间/操作数。<!-- raw HTML omitted -->3.SampleTime，随机采样，最后输出采样结果分布，例如”99%的调用在xx毫秒以内“。<!-- raw HTML omitted -->4.SingleShotTime：以上模式都是默认一次iteration是1s，唯有SingleShotTime只运行一次。往往把warmup次数设置为0，用于领启动性能。</td>
+</tr>
+<tr>
+<td>@OutputTimeUnit</td>
+<td>输出的时间单位</td>
+<td>即统计时的时间单位</td>
+</tr>
+<tr>
+<td>@Fork</td>
+<td>进程数，默认1即可</td>
+<td>用于多进程同时基准测试</td>
+</tr>
+<tr>
+<td>@Warmup</td>
+<td>在基准测试前先进行的预热行为</td>
+<td>为了让基准测试结果更加接近真实情况，@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS) <!-- raw HTML omitted -->即预热5次数、每次1秒</td>
+</tr>
+<tr>
+<td>@Measurement</td>
+<td>基准测试阶段</td>
+<td>指定迭代次数与运行时间。@Measurement(iterations = 6,time = 1, timeUnit = TimeUnit.SECONDS)<!-- raw HTML omitted -->即执行六次，每次1秒</td>
+</tr>
+<tr>
+<td>@Threads</td>
+<td>Fork面向进程，Threads则是面向线程。</td>
+<td>如果配置Threads.MAX，则使用和处理器核数相同的线程数</td>
+</tr>
+<tr>
+<td>@Benchmark</td>
+<td>基准测试方法注解</td>
+<td>表示该方法是需要进行基准测试的对象</td>
+</tr>
+<tr>
+<td>@Param</td>
+<td>只能修饰字段，用来测试不同的参数对程序性能的用心，可以配合@State使用</td>
+<td>常用于多参数基准测试，可以生成不同参数的直接结果分析</td>
+</tr>
+<tr>
+<td>@Setup</td>
+<td>用于初始化</td>
+<td>和单元测试JUnit类似，用于基准测试前的初始化动作</td>
+</tr>
+<tr>
+<td>@TearDown</td>
+<td>基准测试后动作</td>
+<td>用于资源释放或者资源回收</td>
+</tr>
+<tr>
+<td>@State</td>
+<td>共享范围</td>
+<td>用于表示状态共享范围，Benchmark(默认)、Thread，Group三种值</td>
+</tr>
+</tbody>
+</table>
+<h3 id="图形化结果分析">图形化结果分析</h3>
+<p>使用JMH测试的结果，可以二次加工，进行图形化展示。结合图表数据，更加直观。通过运行时，指定输出的格式文件，即可获得相应格式的性能测试结果。</p>
+<p>比如下面这行代码，就是指定输出JSON格式的数据。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Options</span> <span class="n">opt</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OptionsBuilder</span><span class="o">()</span>  
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="na">resultFormat</span><span class="o">(</span><span class="n">ResultFormatType</span><span class="o">.</span><span class="na">JSON</span><span class="o">)</span>  
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span></span></code></pre></div><p>JMH支持以下5种格式的结果：</p>
+<ul>
+<li><strong>TEXT</strong> 导出文本文件。</li>
+<li><strong>CSV</strong> 导出csv格式文件。</li>
+<li><strong>SCSV</strong> 导出scsv等格式的文件。</li>
+<li><strong>JSON</strong> 导出成json文件。</li>
+<li><strong>LATEX</strong> 导出到latex，一种基于ΤΕΧ的排版系统。</li>
+</ul>
+<p>一般来说，我们导出成CSV文件，直接在Excel中操作，生成相应的图形就可以了。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/jmh_excel.png"
+    data-srcset="../images/jmh_excel.png, ../images/jmh_excel.png 1.5x, ../images/jmh_excel.png 2x"
+    data-sizes="auto"
+    alt="jmh_excel"
+    title="jmh_excel"/></p>
+<p>另外介绍几个可以做图的工具：</p>
+<p><strong>JMH Visualizer</strong>这里有一个开源的项目（https://jmh.morethan.io/） ，通过导出json文件，上传之后，可得到简单的统计结果。个人认为它的展示方式并不是很好。</p>
+<p><strong>jmh-visual-chart</strong></p>
+<p>相比较而言，下面这个工具（http://deepoove.com/jmh-visual-chart） ，就相对直观一些。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/jmh_chart.png"
+    data-srcset="../images/jmh_chart.png, ../images/jmh_chart.png 1.5x, ../images/jmh_chart.png 2x"
+    data-sizes="auto"
+    alt="jmh_chart"
+    title="jmh_chart"/></p>
+<p><strong>meta-chart</strong></p>
+<p>一个通用的在线图表生成器。（https://www.meta-chart.com/），导出CSV文件后，做适当处理，即可导出精美图像。</p>
+<h3 id="结束">结束</h3>
+<p>JMH 进行基准测试的使用过程并不复杂，同为 Java 虚拟机团队开发，准确性毋容置疑。</p>
+<p>但是在进行基准测试时还是要注意自己的代码问题，如果编写的要进行测试的代码本身存在问题，那么测试的结果必定是不准的。</p>
+<p>了解了 JMH 基准测试之后，可以尝试测试一些常用的工具或者框架的性能如何，看看哪个工具的性能最好，比如 FastJSON 真的比 Jackson / Gson在进行 JSON 转换时更快吗？</p>
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="https://segmentfault.com/a/1190000039902797"target="_blank" rel="external nofollow noopener noreferrer">https://segmentfault.com/a/1190000039902797</a></li>
+<li><a href="https://www.redoc.top/article/833/%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95JMH"target="_blank" rel="external nofollow noopener noreferrer">https://www.redoc.top/article/833/%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95JMH</a></li>
+<li><a href="https://www.wdbyte.com/2020/08/develop/tool-jmh/#jmh-%E4%BD%BF%E7%94%A8"target="_blank" rel="external nofollow noopener noreferrer">https://www.wdbyte.com/2020/08/develop/tool-jmh/#jmh-%E4%BD%BF%E7%94%A8</a></li>
+<li><a href="https://openjdk.java.net/projects/code-tools/jmh/"target="_blank" rel="external nofollow noopener noreferrer">https://openjdk.java.net/projects/code-tools/jmh/</a></li>
+<li><a href="http://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/"target="_blank" rel="external nofollow noopener noreferrer">http://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/</a></li>
+<li><a href="https://lexburner.github.io/java-jmh/"target="_blank" rel="external nofollow noopener noreferrer">https://lexburner.github.io/java-jmh/</a></li>
+<li><a href="http://www.hollischuang.com/archives/1072"target="_blank" rel="external nofollow noopener noreferrer">http://www.hollischuang.com/archives/1072</a></li>
+<li><a href="https://www.jianshu.com/p/f106e92b52ce"target="_blank" rel="external nofollow noopener noreferrer">https://www.jianshu.com/p/f106e92b52ce</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-04-30&#32;00:01:51>更新于 2022-04-30&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/jmh/' class="post-tag">JMH</a><a href='/tags/%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95/' class="post-tag">基准测试</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" class="post-nav-item" rel="prev" title="Kubernetes的架构与核心概念"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Kubernetes的架构与核心概念</a>
+      <a href="/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" class="post-nav-item" rel="next" title="WebClient性能分析与对比测试">WebClient性能分析与对比测试<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

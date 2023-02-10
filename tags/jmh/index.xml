@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>JMH - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/jmh/</link>
+    <description>JMH - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 30 Apr 2022 00:01:51 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/jmh/" rel="self" type="application/rss+xml" /><item>
+  <title>JMH实践与用法详解</title>
+  <link>http://example.org/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/</link>
+  <pubDate>Sat, 30 Apr 2022 00:01:51 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/jmh_flow.png" referrerpolicy="no-referrer">
+      </div>背景 ”If you cannot measure it, you cannot improve it“ 在日常开发中，我们对一些代码的调用或者工具的使用会存在多种选择，在不确定他们性能的时候，我们首先想要做的就是先]]></description>
+</item>
+</channel>
+</rss>
