@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>分布式系统唯一ID如何设计 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="为什么需要全局唯一ID 传统的单体应用架构时，我们基本是单库单业务表的数据结构，每个业务表的ID都是默认自增的，但是在分布式服务架构模式下我们" /><meta name="keywords" content='架构, 分布式ID' /><meta itemprop="name" content="分布式系统唯一ID如何设计">
+<meta itemprop="description" content="为什么需要全局唯一ID 传统的单体应用架构时，我们基本是单库单业务表的数据结构，每个业务表的ID都是默认自增的，但是在分布式服务架构模式下我们"><meta itemprop="datePublished" content="2022-05-07T11:22:46+08:00" />
+<meta itemprop="dateModified" content="2022-05-07T11:22:46+08:00" />
+<meta itemprop="wordCount" content="4074">
+<meta itemprop="keywords" content="架构,分布式ID," /><meta property="og:title" content="分布式系统唯一ID如何设计" />
+<meta property="og:description" content="为什么需要全局唯一ID 传统的单体应用架构时，我们基本是单库单业务表的数据结构，每个业务表的ID都是默认自增的，但是在分布式服务架构模式下我们" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%94%AF%E4%B8%80id%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-07T11:22:46+08:00" />
+<meta property="article:modified_time" content="2022-05-07T11:22:46+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="分布式系统唯一ID如何设计"/>
+<meta name="twitter:description" content="为什么需要全局唯一ID 传统的单体应用架构时，我们基本是单库单业务表的数据结构，每个业务表的ID都是默认自增的，但是在分布式服务架构模式下我们"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%94%AF%E4%B8%80id%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1/" /><link rel="prev" href="http://example.org/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/" /><link rel="next" href="http://example.org/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "分布式系统唯一ID如何设计",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%94%AF%E4%B8%80id%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1\/"
+    },"genre": "posts","keywords": "架构, 分布式ID","wordcount":  4074 ,
+    "url": "http:\/\/example.org\/posts\/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%94%AF%E4%B8%80id%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1\/","datePublished": "2022-05-07T11:22:46+08:00","dateModified": "2022-05-07T11:22:46+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>分布式系统唯一ID如何设计</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 微服务架构</a></span></div>
+      <div class="post-meta-line"><span title=2022-05-07&#32;11:22:46><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-07">2022-05-07</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 4074 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 9 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/%e5%88%86%e5%b8%83%e5%bc%8fID.jpg"
+    data-srcset="/posts/images/%e5%88%86%e5%b8%83%e5%bc%8fID.jpg, /posts/images/%e5%88%86%e5%b8%83%e5%bc%8fID.jpg 1.5x, /posts/images/%e5%88%86%e5%b8%83%e5%bc%8fID.jpg 2x"
+    data-sizes="auto"
+    alt="/posts/images/分布式ID.jpg"
+    title="/posts/images/分布式ID.jpg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#为什么需要全局唯一id">为什么需要全局唯一ID</a></li>
+        <li><a href="#分布式全局id的特性">分布式全局ID的特性</a></li>
+        <li><a href="#技术选型">技术选型</a></li>
+        <li><a href="#4leaf美团">4.Leaf（美团）</a></li>
+        <li><a href="#5tinyid滴滴">5.TinyId（滴滴）</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h3 id="为什么需要全局唯一id">为什么需要全局唯一ID</h3>
+<p>传统的单体应用架构时，我们基本是单库单业务表的数据结构，每个业务表的ID都是默认自增的，但是在分布式服务架构模式下我们会基于分库分表的设计，这种情况下根据数据库自增ID就无法确认业务主键的唯一性。</p>
+<p>那么针对分布式系统如何做到业务主键的唯一性呢</p>
+<h3 id="分布式全局id的特性">分布式全局ID的特性</h3>
+<ol>
+<li>唯一性：确保生产的ID是全局唯一的。</li>
+<li>高可用：确保任何时候都能正确的生成ID。</li>
+<li>带时间：ID包含时间，看一眼就知道是哪天的。</li>
+<li>有序递增性：确保生成的ID对于某个用户或者业务是按一定的数字有序递增的。</li>
+<li>信息安全：如果ID是连续的，存在信息风险，直接按照顺序下载指定URL即可；如果是订单号，容易泄露商业信息即每日订单量。所以在一些应用场景下，会需要ID不规则。</li>
+</ol>
+<p>4和5需求还是互斥的，无法使用同一个方案同时满足。</p>
+<h3 id="技术选型">技术选型</h3>
+<h4 id="1uuid">1.UUID</h4>
+<p>UUID(Universally Unique Identifier)，通用唯一识别码的缩写。UUID标准型含32个16进制数字，以连字号分五段，形式为8-4-4-4-12的36个字符，示例：550e8400-e29b-41d4-a716-446655440000。
+UUID由以下几部分的组合：</p>
+<ul>
+<li>当前日期和时间，UUID的第一个部分与时间有关，如果你在生成一个UUID之后，过几秒又生成一个UUID，则第一个部分不同，其余相同。</li>
+<li>时钟序列。</li>
+<li>全局唯一的IEEE机器识别号，如果有网卡，从网卡MAC地址获得，没有网卡以其他方式获得。通常在Microsoft创建的软件中也使用术语全球唯一标识符（GUID）。</li>
+</ul>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>生成方便；</li>
+<li>本地生成没有网络消耗；</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>不易存储：UUID太长，通常需要36长度的字符串表示，占用过多的存储空间。</li>
+<li>对MySQL索引不利：如果作为数据库主键，在InnoDB索引下，UUID的无序性可能会引擎索引位置频繁变动，影响性能。</li>
+</ul>
+<h4 id="2snowflake雪花算法">2.Snowflake（雪花算法）</h4>
+<p>Snowflake，雪花算法是由Twitter开源的分布式ID生成算法，以划分命名空间的方式将64-bit位分割成过个部分，每个部分代表不同的含义。所以在Java中SnowFlake算法生成的ID是long类型来存储的。
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/snowflake-64bit.png"
+    data-srcset="../images/snowflake-64bit.png, ../images/snowflake-64bit.png 1.5x, ../images/snowflake-64bit.png 2x"
+    data-sizes="auto"
+    alt="snowflake-64bit"
+    title="snowflake-64bit"/>
+Twitter 的 Snowflake 算法由下面几部分组成：</p>
+<ul>
+<li>1位符号位：
+由于 long 类型在 java 中带符号的，最高位为符号位，正数为 0，负数为 1，且实际系统中所使用的ID一般都是正数，所以最高位为 0。</li>
+<li>41位时间戳（毫秒级）：
+需要注意的是此处的 41 位时间戳并非存储当前时间的时间戳，而是存储时间戳的差值（当前时间戳 - 起始时间戳），这里的起始时间戳一般是ID生成器开始使用的时间戳，由程序来指定，所以41位毫秒时间戳最多可以使用 (1 &laquo; 41) / (1000x60x60x24x365) = 69年。</li>
+<li>10位数据机器位：
+包括5位数据标识位和5位机器标识位，这10位决定了分布式系统中最多可以部署 1 &laquo; 10 = 1024 个节点。超过这个数量，生成的ID就有可能会冲突，但一般情况下我们不会部署那么多台机器。</li>
+<li>12位毫秒内的序列：
+这 12 位计数支持每个节点每毫秒（同一台机器，同一时刻）最多生成 1 &laquo; 12 = 4096个ID数</li>
+</ul>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>雪花算法生成的ID是趋势递增的；</li>
+<li>不依赖数据库等第三方中间件；</li>
+<li>本地生成，性能好；</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>依赖机器时钟，如果时间回调会存在重复。</li>
+<li>1台机器每毫秒最多生成4096个（不过每秒也可以达到4百万，一般中大型公司完全够用）。</li>
+</ul>
+<h4 id="3uidgenerator百度">3.UidGenerator（百度）</h4>
+<blockquote>
+<p>UidGenerator是Java实现的，基于Snowflake算法的唯一ID生成器。UidGenerator以组件形式工作在应用项目中，支持自定义workerId位数和初始化策略，从而适用于docker等虚拟化环境下实例自动重启、漂移等场景。</p>
+</blockquote>
+<p>在实现上，UidGenerator通过借用未来时间来解决sequence天然存在的并发限制，采用RingBuffer来缓存已生成的UID，并行化UID的生产和消费，同时对CacheLine补齐，避免了由RingBuffer带来的硬件级「伪共享」问题。最终单机QPS可达600万。</p>
+<p>依赖版本：Java8及以上版本, MySQL(内置WorkerID分配器, 启动阶段通过DB进行分配; 如自定义实现, 则DB非必选依赖）</p>
+<h4 id="snowflake算法">Snowflake算法</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/snowflake-1.png"
+    data-srcset="../images/snowflake-1.png, ../images/snowflake-1.png 1.5x, ../images/snowflake-1.png 2x"
+    data-sizes="auto"
+    alt="snowflake-1"
+    title="snowflake-1"/>
+Snowflake算法描述：指定机器 &amp; 同一时刻 &amp; 某一并发序列，是唯一的。据此可生成一个64 bits的唯一ID（long)。默认采用上图字节分配方式：</p>
+<ul>
+<li>sign(1bit)
+固定1bit符号标识，即生成的UID为正数。</li>
+<li>delta seconds (28 bits)
+当前时间，相对于时间基点&quot;2016-05-20&quot;的增量值，单位：秒，最多可支持约8.7年</li>
+<li>worker id (22 bits)
+机器id，最多可支持约420w次机器启动。内置实现为在启动时由数据库分配，默认分配策略为用后即弃，后续可提供复用策略。</li>
+<li>sequence (13 bits)
+每秒下的并发序列，13 bits可支持每秒8192个并发。</li>
+</ul>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>解决了时间回拨的问题。</li>
+<li>利用RingBuffer存储预生成的ID，提高吞吐量，可达到 6百万/s。</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>有第三方依赖，依赖MySQL数据库存储workId；</li>
+<li>ID生成反解析的时间可能不是准确的时间；</li>
+</ul>
+<h3 id="4leaf美团">4.Leaf（美团）</h3>
+<blockquote>
+<p>Leaf是美团基础研发平台推出的一个分布式ID生成服务，名字取自德国哲学家、数学家莱布尼茨的著名的一句话：“There are no two identical leaves in the world”，世间不可能存在两片相同的叶子。</p>
+</blockquote>
+<p>Leaf 也提供了两种ID生成的方式，分别是 Leaf-segment 数据库方案和 Leaf-snowflake 方案。</p>
+<h4 id="leaf-segment数据库方案">Leaf-segment数据库方案</h4>
+<p>第一种Leaf-segment方案，在使用数据库的方案上，做了如下改变：</p>
+<ul>
+<li>原方案每次获取ID都得读写一次数据库，造成数据库压力大。改为利用proxy server批量获取，每次获取一个segment(step决定大小)号段的值。用完之后再去数据库获取新的号段，可以大大的减轻数据库的压力。</li>
+<li>各个业务不同的发号需求用biz_tag字段来区分，每个biz-tag的ID获取相互隔离，互不影响。如果以后有性能需求需要对数据库扩容，不需要上述描述的复杂的扩容操作，只需要对biz_tag分库分表就行。</li>
+</ul>
+<p>数据库表设计如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">leaf_alloc</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">biz_tag</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span><span class="w">  </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;业务key&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">max_id</span><span class="o">`</span><span class="w"> </span><span class="nb">bigint</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;当前已经分配了的最大id&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">step</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;初始步长，也是动态调整的最小步长&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">description</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span><span class="w">  </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;业务key的描述&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">update_time</span><span class="o">`</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;更新时间&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">biz_tag</span><span class="o">`</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>原来获取ID每次都需要写数据库，现在只需要把step设置得足够大，比如1000。那么只有当1000个号被消耗完了之后才会去重新读写一次数据库。读写数据库的频率从1减小到了1/step，大致架构如下图所示：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/meituan_leaf.png"
+    data-srcset="../images/meituan_leaf.png, ../images/meituan_leaf.png 1.5x, ../images/meituan_leaf.png 2x"
+    data-sizes="auto"
+    alt="meituan_leaf"
+    title="meituan_leaf"/></p>
+<h4 id="leaf-snowflake方案">Leaf-snowflake方案</h4>
+<p>Leaf-snowflake方案完全沿用snowflake方案的bit位设计，即是“1+41+10+12”的方式组装ID号。对于workerID的分配，当服务集群数量较小的情况下，完全可以手动配置。Leaf服务规模较大，动手配置成本太高。所以使用Zookeeper持久顺序节点的特性自动对snowflake节点配置wokerID。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/meituan_leaf-2.png"
+    data-srcset="../images/meituan_leaf-2.png, ../images/meituan_leaf-2.png 1.5x, ../images/meituan_leaf-2.png 2x"
+    data-sizes="auto"
+    alt="meituan_leaf-2"
+    title="meituan_leaf-2"/></p>
+<p>Leaf-snowflake是按照下面几个步骤启动的：</p>
+<ul>
+<li>启动Leaf-snowflake服务，连接Zookeeper，在leaf_forever父节点下检查自己是否已经注册过（是否有该顺序子节点）。</li>
+<li>如果有注册过直接取回自己的workerID（zk顺序节点生成的int类型ID号），启动服务。</li>
+<li>如果没有注册过，就在该父节点下面创建一个持久顺序节点，创建成功后取回顺序号当做自己的workerID号，启动服务。</li>
+</ul>
+<p>为了减少对 Zookeeper的依赖性，会在本机文件系统上缓存一个workerID文件。当ZooKeeper出现问题，恰好机器出现问题需要重启时，能保证服务能够正常启动。</p>
+<h3 id="5tinyid滴滴">5.TinyId（滴滴）</h3>
+<blockquote>
+<p>Tinyid是用Java开发的一款分布式id生成系统，基于数据库号段算法实现，关于这个算法可以参考美团leaf或者tinyid原理介绍。</p>
+</blockquote>
+<p>Tinyid扩展了leaf-segment算法，支持了多db(master)，同时提供了java-client(sdk)使id生成本地化，获得了更好的性能与可用性。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/tinyid.png"
+    data-srcset="../images/tinyid.png, ../images/tinyid.png 1.5x, ../images/tinyid.png 2x"
+    data-sizes="auto"
+    alt="tinyid"
+    title="tinyid"/></p>
+<p><strong>性能</strong></p>
+<ul>
+<li>http方式访问，性能取决于http server的能力，网络传输速度</li>
+<li>java-client方式，id为本地生成，号段长度(step)越长，qps越大，如果将号段设置足够大，则qps可达1000w+</li>
+</ul>
+<p><strong>可用性</strong></p>
+<ul>
+<li>依赖db，当db不可用时，因为server有缓存，所以还可以使用一段时间，如果配置了多个db，则只要有1个db存活，则服务可用。</li>
+<li>使用tiny-client，只要server有一台存活，则理论上可用，server全挂，因为client有缓存，也可以继续使用一段时间。</li>
+</ul>
+<h4 id="tinyid的特性">Tinyid的特性</h4>
+<ol>
+<li>全局唯一的long型id</li>
+<li>趋势递增的id，即不保证下一个id一定比上一个大</li>
+<li>非连续性</li>
+<li>提供http和java client方式接入</li>
+<li>支持批量获取id</li>
+<li>支持生成1,3,5,7,9&hellip;序列的id</li>
+<li>支持多个db的配置，无单点</li>
+</ol>
+<h2 id="总结">总结</h2>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>公司</th>
+<th>生成方式</th>
+<th>规则</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UUID</td>
+<td>Oracle(sun)</td>
+<td>本地JDK</td>
+<td>32个16进制数，示例：550e8400-e29b-41d4-a716-446655440000</td>
+<td>简单，性能高，利于信息安全</td>
+<td>太长不易存储，不易索引</td>
+</tr>
+<tr>
+<td>Snowflake</td>
+<td>Twitter</td>
+<td>本地(依赖中间件分配workId)</td>
+<td>时间戳 + 机器标识 + 自增序列号（64 bits的唯一ID（long）</td>
+<td>性能高。灵活，可以根据自身业务特点分配bit位。</td>
+<td>强依赖机器时钟</td>
+</tr>
+<tr>
+<td>UidGenerator</td>
+<td>Baidu</td>
+<td>类Snowflake</td>
+<td>类Snowflake</td>
+<td>性能高。灵活，可以根据自身业务特点分配bit位</td>
+<td>强依赖机器时钟</td>
+</tr>
+<tr>
+<td>Leaf</td>
+<td>Meituan</td>
+<td>数据库号段模式和类Snowflake</td>
+<td>号段模式与类Snowflake算法</td>
+<td>号段模式支持按bizID划分、Snowflake解决时间回拨的问题</td>
+<td>号段模式暴露业务增长</td>
+</tr>
+<tr>
+<td>TinyId</td>
+<td>滴滴</td>
+<td>参考Leaf号段模式，增加client-sdk</td>
+<td>号段模式</td>
+<td>趋势递增，支持client和http方式，支持多db</td>
+<td>容易被扫库、测算订单量</td>
+</tr>
+</tbody>
+</table>
+<h4 id="附录">附录</h4>
+<ol>
+<li>美团Leaf 简介 <a href="https://github.com/Meituan-Dianping/Leaf/blob/master/README_CN.md"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/Meituan-Dianping/Leaf/blob/master/README_CN.md</a></li>
+<li>tinyid原理介绍 <a href="https://github.com/didi/tinyid/wiki/tinyid"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/didi/tinyid/wiki/tinyid</a></li>
+<li>uid-generator原理简介 <a href="https://github.com/baidu/uid-generator/blob/master/README.zh_cn.md"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/baidu/uid-generator/blob/master/README.zh_cn.md</a></li>
+<li>美团点评分布式ID生成系统 <a href="https://tech.meituan.com/2017/04/21/mt-leaf.html"target="_blank" rel="external nofollow noopener noreferrer">https://tech.meituan.com/2017/04/21/mt-leaf.html</a></li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-05-07&#32;11:22:46>更新于 2022-05-07&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E6%9E%B6%E6%9E%84/' class="post-tag">架构</a><a href='/tags/%E5%88%86%E5%B8%83%E5%BC%8Fid/' class="post-tag">分布式ID</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/" class="post-nav-item" rel="prev" title="JMH实践与用法详解"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>JMH实践与用法详解</a>
+      <a href="/posts/webclient%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95/" class="post-nav-item" rel="next" title="WebClient性能分析与对比测试">WebClient性能分析与对比测试<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
