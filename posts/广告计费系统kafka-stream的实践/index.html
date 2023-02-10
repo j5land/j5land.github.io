@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>广告计费系统Kafka Stream的实践 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="流式计算 什么是流式计算 流式计算一般和批量计算做比较，批量计算往往有一个固定的数据集作为输入并计算结果。 而流式计算输入往往是”无界“的、持续输" /><meta name="keywords" content='Kafka-Stream, 流计算, 实时计算, 广告计费系统' /><meta itemprop="name" content="广告计费系统Kafka Stream的实践">
+<meta itemprop="description" content="流式计算 什么是流式计算 流式计算一般和批量计算做比较，批量计算往往有一个固定的数据集作为输入并计算结果。 而流式计算输入往往是”无界“的、持续输"><meta itemprop="datePublished" content="2021-12-09T11:39:03+08:00" />
+<meta itemprop="dateModified" content="2021-12-09T11:39:03+08:00" />
+<meta itemprop="wordCount" content="5068">
+<meta itemprop="keywords" content="Kafka-Stream,流计算,实时计算,广告计费系统," /><meta property="og:title" content="广告计费系统Kafka Stream的实践" />
+<meta property="og:description" content="流式计算 什么是流式计算 流式计算一般和批量计算做比较，批量计算往往有一个固定的数据集作为输入并计算结果。 而流式计算输入往往是”无界“的、持续输" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-09T11:39:03+08:00" />
+<meta property="article:modified_time" content="2021-12-09T11:39:03+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="广告计费系统Kafka Stream的实践"/>
+<meta name="twitter:description" content="流式计算 什么是流式计算 流式计算一般和批量计算做比较，批量计算往往有一个固定的数据集作为输入并计算结果。 而流式计算输入往往是”无界“的、持续输"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5/" /><link rel="prev" href="http://example.org/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" /><link rel="next" href="http://example.org/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "广告计费系统Kafka Stream的实践",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5\/"
+    },"genre": "posts","keywords": "Kafka-Stream, 流计算, 实时计算, 广告计费系统","wordcount":  5068 ,
+    "url": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5\/","datePublished": "2021-12-09T11:39:03+08:00","dateModified": "2021-12-09T11:39:03+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>广告计费系统Kafka Stream的实践</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E6%B5%81%E8%AE%A1%E7%AE%97/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 流计算</a></span></div>
+      <div class="post-meta-line"><span title=2021-12-09&#32;11:39:03><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-12-09">2021-12-09</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 5068 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 11 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/streams-architecture-topology.jpeg"
+    data-srcset="/posts/images/streams-architecture-topology.jpeg, /posts/images/streams-architecture-topology.jpeg 1.5x, /posts/images/streams-architecture-topology.jpeg 2x"
+    data-sizes="auto"
+    alt="/posts/images/streams-architecture-topology.jpeg"
+    title="/posts/images/streams-architecture-topology.jpeg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#流式计算">流式计算</a>
+      <ul>
+        <li><a href="#什么是流式计算">什么是流式计算</a></li>
+        <li><a href="#为什么要有kafka-streams">为什么要有Kafka Streams</a></li>
+        <li><a href="#kafka-streams的特点">Kafka Streams的特点</a></li>
+      </ul>
+    </li>
+    <li><a href="#kafka-streams模型">Kafka Streams模型</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#kafka-streams架构">Kafka Streams架构</a>
+      <ul>
+        <li><a href="#stream-partitions">Stream Partitions</a></li>
+      </ul>
+    </li>
+    <li><a href="#kafka-stream-dsl">Kafka Stream DSL</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#参考文献">参考文献</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="流式计算">流式计算</h2>
+<h3 id="什么是流式计算">什么是流式计算</h3>
+<p>流式计算一般和批量计算做比较，批量计算往往有一个固定的数据集作为输入并计算结果。</p>
+<p>而流式计算输入往往是”无界“的、持续输入的、即永远拿不到全量数据去做的计算。同时，流式计算是持续输出的，只能拿到某一个时刻的结果，而不是最终的结果。</p>
+<p>（PS：批量计算是全量的，那一批数据计算一个结果；流式计算是增量的，数据持续输入，持续计算最新的结果）</p>
+<h4 id="流式计算和实时计算">流式计算和实时计算</h4>
+<p>流式计算的实时性较高，有时候容易和实时计算混淆。流式计算对比的对象应该是批量计算，而实时计算对应离线计算，流式计算强调的是计算的方式，而事实计算强调计算结果的响应时间。</p>
+<h3 id="为什么要有kafka-streams">为什么要有Kafka Streams</h3>
+<p>当前已经有非常多的不错流式处理系统，开源的流式处理系统有Spark Streaming、Apache Storm、Apache Flink 应用广泛，既然有那么多成熟流处理系统为什么还需要Kafka Streams呢？</p>
+<ol>
+<li>开发调试，Spark、Storm和FLink 都是流处理框架，而Kafka Streams提供的是一个基于Kafka的流处理类库。框架要求开发者按照特定的方式开发逻辑部分，供框架调用。开发者很难了解框架的具体运行方式，从而使得调试成本高。而Kafka Streams 作为流处理类库，直接提供具体的类给开发者使用，整个应用的运行方式主要由开发者控制，方便使用、调试和监控。</li>
+<li>运维，这些流处理框架的部署相对复杂，而Kafka Streams作为类库，可以非常方便的嵌入应用程序中。更为重要的是Kafka Streams利用Kafka的分区机制和Consumer的Rebalance机制，使得Kafka Streams可以非常方便的水平扩展。</li>
+<li>易用，Kafka基本上市主流的流式计算系统的标准数据源，大部分公司都部署了Kafka，因此使用Kafka Streams的成本非常低。</li>
+<li>重新计算与并行度，由于Kafka本周提供数据持久化Kafka Streams就提供了重新计算能力，由于Kafka Consumer Rebalance机制，Kafka Streams可以在调整并行度。</li>
+</ol>
+<h3 id="kafka-streams的特点">Kafka Streams的特点</h3>
+<h4 id="kafka-streams是什么">Kafka Streams是什么</h4>
+<p>Kafka Streams是Apache Kafka从0.10版本引入的一个新Feature，它提供了对存储于Kafka内的数据进行流式处理和分析的功能。</p>
+<h4 id="kafka-streams的特点-1">Kafka Streams的特点</h4>
+<ul>
+<li>Kafka Streams提供了简单的、轻量级的客户端类库，能被集成到任何Java应用中</li>
+<li>除了Kafka之前没有任何额外的依赖，利用Kafka的分区模型支持水平扩容和保证顺序性</li>
+<li>通过可容错的状态存储实现高效的状态操作（如windowed、join、aggregation）</li>
+<li>支持exactly-once语义（只处理一次）</li>
+<li>提供记录级的处理能力及实现毫秒级的延迟</li>
+<li>提供高层抽象的Stream DSL 和 底层原语的Processor API</li>
+</ul>
+<h2 id="kafka-streams模型">Kafka Streams模型</h2>
+<h4 id="stream">Stream</h4>
+<p>stream是Kafka Streams中重要的抽象概念，代表一个无界、持续更新的数据集。stream是有序的、可重放的、容错的、不可变数据记录的序列，其中的数据记录为键值对类型。</p>
+<h4 id="processor-topology">Processor Topology</h4>
+<p>processor topology定义了应用程序的流处理计算逻辑，即输入数据如何转化为输出数据，topology 是由 stream processors 连接 streams 以及 shared state stores组成的一个图。</p>
+<h4 id="stream-processor">Stream Processor</h4>
+<p>stream processor 是 processor topology中的节点，代表一个处理步骤，通过接收上游的processor的输入，应用计算逻辑，产生一个或多个校友的processor。</p>
+<p>Kafka Streams 提供了两个API来定义流处理器：</p>
+<ol>
+<li>Kafka Streams DSL（高级抽象），提供了基础的、通用的数据操作，比如map、filter、join、aggregation。</li>
+<li>Processor API（底层原语），定义和连接用户自定义的processor，并且和state store交互，比DSL更灵活。</li>
+</ol>
+<h4 id="stream-processing-application">Stream Processing Application</h4>
+<p>流处理应用程序，可以定义一个或者多个这样的processor topology，开发人员可以通过高层抽象的Stream DSL 和 底层原语的Processor API 来定义topology。可以单独运行或者在机器运行。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/streams-architecture-topology.jpeg"
+    data-srcset="../images/streams-architecture-topology.jpeg, ../images/streams-architecture-topology.jpeg 1.5x, ../images/streams-architecture-topology.jpeg 2x"
+    data-sizes="auto"
+    alt="streams-architecture-topology"
+    title="streams-architecture-topology"/></p>
+<h4 id="time">Time</h4>
+<p>流处理中一个关键的方面就是时间的概念，以及它如何建模和整合，例如 windowing操作就是基于时间边界定义的。从Kafka 0.10开始，每条记录除了Key和Value之外还增加了timestamp属性。目前Kafka Streams支持三种时间：</p>
+<ul>
+<li>Event time：事件发生的时间，产生在”客户端“。</li>
+<li>Processing time：流处理应用处理时的时间，Processing time 可能落后于 Event time几毫秒、几分钟、几小时、或者几天都有可能。</li>
+<li>Ingestion time：数据存储到Kafka Topic的时间，同样落后于Event time。</li>
+</ul>
+<h4 id="windowing">Windowing</h4>
+<p>流式数据是在时间上无界的数据，而聚合操作只能作用在特定的数据集，即有界的数据集上。因此需要通过某种方式从无界的数据集上按特定的语义选取出有界的数据。窗口是一种非常常用的设定计算边界的方式。</p>
+<p>Kafka Streams支持的Windowing如下：</p>
+<p>1.<strong>Hopping Time Widow</strong> 该窗口定义如下图。它有两个属性，一个是Window size，一个是Advance interval。Window size 指定了窗口的大小，也即每次计算的数据集大小。而Advance interval定义输出的诗句间隔。一个典型的场景：每个5秒钟输出过去1小时内访问网站的PV或者UV。</p>
+<p>![Hopping Time Window](../images/Hopping Time Window.gif)</p>
+<p>2.Tumbling Time Window 该窗口定义如下图，可以认为它是Hopping Time Window的一种特例。同样有两个属性，一个是Window size，一个是Advance interval。</p>
+<p>![Tumbling Time Window](../images/Tumbling Time Window.gif)</p>
+<p>3.Sliding Window 该窗口用于两个KStream进行Join计算。该窗口定义了Join两侧KStream的数据记录被认为在同一个窗口的最大时间差。</p>
+<p>4.Session Window 该窗口对于Key做Group后的聚合操作中。它需要对Key进行分组，然后对组内的数据根据业务需求定义一个窗口的起始点和结束点。</p>
+<h2 id="kafka-streams架构">Kafka Streams架构</h2>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/streams-architecture-overview.jpeg"
+    data-srcset="../images/streams-architecture-overview.jpeg, ../images/streams-architecture-overview.jpeg 1.5x, ../images/streams-architecture-overview.jpeg 2x"
+    data-sizes="auto"
+    alt="streams-architecture-overview"
+    title="streams-architecture-overview"/></p>
+<h3 id="stream-partitions">Stream Partitions</h3>
+<p>Kafka消息层为了进行存储和传输数据进行分区，Kafka Streams为了处理数据而分区。在两种场景下，分区保证了数据的可扩展性、容错性、高性能。</p>
+<p>Kafka Streams使用了基于Topic Partition的Partitions和Tasks概念作为并行模型中的逻辑单元，在并发环境Kafka Streams和Kafka有赞紧密的联系：</p>
+<ul>
+<li>每个stream partition是顺序的数据记录集合，并且被映射到一个topic partition</li>
+<li>stream中的每个data record对应topic中的一条消息</li>
+<li>数据记录中的keys决定了Kafka和Kafka Streams中的数据分区。</li>
+</ul>
+<h4 id="tasks">Tasks</h4>
+<p>流处理应用的processor topology 通过拆分成功多个task来完成扩容。更具体的，Kafka Streams根据输入的 stream partitions 创建固定的task，每个task分配来自stream的一个分区列表。分配结果不会变更，所以tasks是应用程序固定的并行单元。Tasks可以根据分配的分区初始化自己的processor topology。分区和tasks的分配关系不会变更，如果应用实例宕机，实例分配的任务会自动在其他实例上重启并从相同的stream partition开始消费数据。</p>
+<h4 id="threading-model">Threading Model</h4>
+<p>Kafka Streams允许用户配置应用实例中类库可以用于并行处理的线程数。每个线程可以执行一个或者多个task。下图中一个线程执行了两个stream task：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/streams-architecture-threads.jpeg"
+    data-srcset="../images/streams-architecture-threads.jpeg, ../images/streams-architecture-threads.jpeg 1.5x, ../images/streams-architecture-threads.jpeg 2x"
+    data-sizes="auto"
+    alt="streams-architecture-threads"
+    title="streams-architecture-threads"/></p>
+<p>启动多个stream线程或者实例，仅仅只是增加了topology，使得它们并行处理不同的分区。值得注意的树这些线程之间不共享状态，无需协调内部线程。Kafka topic partition的分配通过Kafka的下跳棋完成，对Kafka Streams是透明的。</p>
+<h4 id="state-store">State Store</h4>
+<p>流式处理中部分操作是无状态的，例如过滤操作（DSL中用filter方法实现）。而部分操作是有状态的，需要记录中间状态，如Window操作和聚合计算。State Store被用来存储中间状态。它可以是一个持久化的Key-Value存储，也可以是内存的HashMap或者数据库。Kafka提供了基于Topic的状态存储。</p>
+<p>Topic中存储的数据记录本身是Key-Value形式的，同时Kafka的logcompaction机制可对历史数据compact操作，保留每个Key对应的最后一个Value，从而在保证Key不丢失的前提下，减少总数据量，从而提供查询效率。</p>
+<p>构造KTable时，需要指定其State Store Name。默认情况下，该名字也即用于存储该KTable的状态的Topic的名字，遍历KTable的过程，实际就是遍历它对应的State Store，或者说遍历Topic的所有Key，并取每个Key最新值得过程。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/streams-architecture-states.jpeg"
+    data-srcset="../images/streams-architecture-states.jpeg, ../images/streams-architecture-states.jpeg 1.5x, ../images/streams-architecture-states.jpeg 2x"
+    data-sizes="auto"
+    alt="streams-architecture-states"
+    title="streams-architecture-states"/></p>
+<h4 id="fault-tolerance">Fault Tolerance</h4>
+<p>Kafka Streams的容错依赖于Kafka自身的容错能力，Kafka 的 partition提供了高可用复制的能力，所以如果将Kafka Streams的数据存储在partition中那自然实现了容错，Kafka Streams中的task的容错实际上是依赖Kafka Consumer 的容错能力，如果task所在机器故障，Kafka Streams 自动的在可用的应用上重启task。</p>
+<p>对于每个State Store，保持一个可复制的change log Kafka Topic用于跟踪state的任何变更，这些 change log Topic同样是被分区的。change log的topic 是开启压缩的，所以历史数据会被清除，这避免的数据无线增值。如果一个task所在的机器发生故障，task转移到另一个机器，Kafka Streams将通过 change log 重建Local State Store。整个失败处理过程对用户来说是透明的。</p>
+<p>task初始化（或重新初始化）的耗时，通常主要取决于通过重播 change log来恢复 state store 的时间。为了减少恢复时间，用户可以配置他们的应用有一个备用的local states的副本（也就是说，一个state的腐败的完全拷贝）。当发生了一个task迁移，Kafka Streams视图将task分配到一个应用程序的实例上，这个实例上以及存在一个备用的副本最小task初始化的时间消耗。</p>
+<h4 id="duality-of-streams-and-tables">Duality of Streams and Tables</h4>
+<p>Table 的简单形式是键值对的集合，如下图：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/streams-table-duality-01.jpeg"
+    data-srcset="../images/streams-table-duality-01.jpeg, ../images/streams-table-duality-01.jpeg 1.5x, ../images/streams-table-duality-01.jpeg 2x"
+    data-sizes="auto"
+    alt="streams-table-duality-01"
+    title="streams-table-duality-01"/></p>
+<p>流表二元性描述了 streams 和 tables 的关系：</p>
+<ul>
+<li>Stream as Table：流可以被认为表的变更日志，其中流的每条数据记录都捕获了表的变更。因此可以认为流是变相的表。通过从头到尾重放变更日志可以重建表。我们通常对stream 进行聚合则得到 table 记录。</li>
+<li>Table as Stream：表可以认为是在某个时间点，流中每个key的最新值的快照。因此表示变相的流。</li>
+</ul>
+<p>表不同时间点的变化，可以表示为一个changelog stream：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/streams-table-duality-02.jpeg"
+    data-srcset="../images/streams-table-duality-02.jpeg, ../images/streams-table-duality-02.jpeg 1.5x, ../images/streams-table-duality-02.jpeg 2x"
+    data-sizes="auto"
+    alt="streams-table-duality-02"
+    title="streams-table-duality-02"/></p>
+<p>由于流表二元性，可以使用相同的流来重新构建原始表：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/streams-table-duality-03.jpeg"
+    data-srcset="../images/streams-table-duality-03.jpeg, ../images/streams-table-duality-03.jpeg 1.5x, ../images/streams-table-duality-03.jpeg 2x"
+    data-sizes="auto"
+    alt="streams-table-duality-03"
+    title="streams-table-duality-03"/></p>
+<h2 id="kafka-stream-dsl">Kafka Stream DSL</h2>
+<p>Kafka Streams DSL 是构建在 Streams Processor API之上的高级抽象，大多数据处理少量的DSL代码即可。与Processor API相比，只有DSL支持：</p>
+<ul>
+<li>KStream、KTable 和 GlobalKTable 形式的 流与表内置抽象。</li>
+<li>具有无状态转换 (如 map、filter) 以及 有状态转换聚合（如 count、reduce ）、连接（join） 和 窗口化(session window)。</li>
+</ul>
+<h4 id="kstream">KStream</h4>
+<p><strong>KStream是只有Kafka Streams DSL拥有的概念</strong>，KStream是对记录流的抽象，其中每个数据记录代表无界数据集中的一个独立的数据。可以认为所有记录都通过Insert only的方式插入到这个数据流里。</p>
+<h4 id="ktable">KTable</h4>
+<p><strong>KTable是只有Kafka Streams DSL拥有的概念</strong>，KTable是 changelog stream的抽象，其中每个记录代表一个更新。数据记录中的值可以理解为同一key最后一次值的更新。有点类似数据操作 upsert，具有相同key 记录会被覆盖。</p>
+<h4 id="aggregation">Aggregation</h4>
+<p>具体化操作可应用于KStream和KTable，当聚合发生在KStream上时必须指定窗口，从而限定计算的目标数据集。聚合操作的结果肯定是KTable，因为KTable是可更新的，可以在晚到的数据到来时更新结果KTable（乱序场景）。</p>
+<p>需要说明的是，Kafka Streams并不会对晚到的数据都重新计算并更新结果集，而是让用户设置一个retention period，将每个窗口的结果在内存中保留一定时间，该窗口的数据晚到时，直接合并计算并更新KTable。</p>
+<h4 id="join">Join</h4>
+<p>Kafka Stream 由于包含 KStream 和 KTable两种数据集，因此提供了如下Join计算</p>
+<ul>
+<li>KTable Join KTable 结果仍为KTable。任意一边更新，结果KTable都会更新。</li>
+<li>KStream Join KStream 结果为 KStream。必须带时间窗口操作，否则会造成Join操作一直不结束。</li>
+<li>KStream Join KTable / GlobalTable 结果为 KStream。 只有当KStream中有新数据时，才会触发Join计算并输出结果。</li>
+</ul>
+<h4 id="windowing-1">Windowing</h4>
+<p>windowing 可以使得有相同 key 的数据进行有状态操作，比如 Aggregation 或者 Join。</p>
+<h2 id="参考文献">参考文献</h2>
+<ol>
+<li><a href="https://docs.confluent.io/platform/current/streams/architecture.html"target="_blank" rel="external nofollow noopener noreferrer">https://docs.confluent.io/platform/current/streams/architecture.html</a></li>
+<li><a href="https://developer.confluent.io/learn-kafka/kafka-streams/"target="_blank" rel="external nofollow noopener noreferrer">https://developer.confluent.io/learn-kafka/kafka-streams/</a></li>
+<li><a href="http://www.jasongj.com/kafka/kafka_stream/"target="_blank" rel="external nofollow noopener noreferrer">http://www.jasongj.com/kafka/kafka_stream/</a></li>
+<li><a href="http://ifeve.com/%E5%88%9D%E6%8E%A2kafka-streams/"target="_blank" rel="external nofollow noopener noreferrer">http://ifeve.com/%E5%88%9D%E6%8E%A2kafka-streams/</a></li>
+<li><a href="https://www.orchome.com/335"target="_blank" rel="external nofollow noopener noreferrer">https://www.orchome.com/335</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1702391"target="_blank" rel="external nofollow noopener noreferrer">https://cloud.tencent.com/developer/article/1702391</a></li>
+<li><a href="https://docs.confluent.io/platform/current/streams/concepts.html"target="_blank" rel="external nofollow noopener noreferrer">https://docs.confluent.io/platform/current/streams/concepts.html</a></li>
+<li><a href="https://www.confluent.io/blog/kafka-streams-tables-part-1-event-streaming/"target="_blank" rel="external nofollow noopener noreferrer">https://www.confluent.io/blog/kafka-streams-tables-part-1-event-streaming/</a></li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2021-12-09&#32;11:39:03>更新于 2021-12-09&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/kafka-stream/' class="post-tag">Kafka-Stream</a><a href='/tags/%E6%B5%81%E8%AE%A1%E7%AE%97/' class="post-tag">流计算</a><a href='/tags/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/' class="post-tag">实时计算</a><a href='/tags/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9F/' class="post-tag">广告计费系统</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" class="post-nav-item" rel="prev" title="Kubernetes的架构与核心概念"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Kubernetes的架构与核心概念</a>
+      <a href="/posts/jmh%E5%AE%9E%E8%B7%B5%E4%B8%8E%E7%94%A8%E6%B3%95%E8%AF%A6%E8%A7%A3/" class="post-nav-item" rel="next" title="JMH实践与用法详解">JMH实践与用法详解<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

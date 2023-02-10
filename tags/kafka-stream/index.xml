@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Kafka-Stream - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/kafka-stream/</link>
+    <description>Kafka-Stream - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 09 Dec 2021 11:39:03 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/kafka-stream/" rel="self" type="application/rss+xml" /><item>
+  <title>广告计费系统Kafka Stream的实践</title>
+  <link>http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5/</link>
+  <pubDate>Thu, 09 Dec 2021 11:39:03 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/streams-architecture-topology.jpeg" referrerpolicy="no-referrer">
+      </div>流式计算 什么是流式计算 流式计算一般和批量计算做比较，批量计算往往有一个固定的数据集作为输入并计算结果。 而流式计算输入往往是”无界“的、持续输]]></description>
+</item>
+</channel>
+</rss>
