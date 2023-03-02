@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>十分钟了解Hbase基础概念和存储架构 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="HBase 基础概念和架构 HBase 介绍 HBase 是 BigTable 的开源 Java 版本。是建立在 HDFS 之上，提供高可靠性、高性能、列存储、可伸缩、实时读写 NoSql 的数据库系统。 它介于 NoSql 和 RDBMS 之间，仅" /><meta name="keywords" content='HBase, NoSQL' /><meta itemprop="name" content="十分钟了解Hbase基础概念和存储架构">
+<meta itemprop="description" content="HBase 基础概念和架构 HBase 介绍 HBase 是 BigTable 的开源 Java 版本。是建立在 HDFS 之上，提供高可靠性、高性能、列存储、可伸缩、实时读写 NoSql 的数据库系统。 它介于 NoSql 和 RDBMS 之间，仅"><meta itemprop="datePublished" content="2023-03-01T16:05:44+08:00" />
+<meta itemprop="dateModified" content="2023-03-01T16:05:44+08:00" />
+<meta itemprop="wordCount" content="3003">
+<meta itemprop="keywords" content="HBase,NoSQL," /><meta property="og:title" content="十分钟了解Hbase基础概念和存储架构" />
+<meta property="og:description" content="HBase 基础概念和架构 HBase 介绍 HBase 是 BigTable 的开源 Java 版本。是建立在 HDFS 之上，提供高可靠性、高性能、列存储、可伸缩、实时读写 NoSql 的数据库系统。 它介于 NoSql 和 RDBMS 之间，仅" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E4%BA%86%E8%A7%A3hbase%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-01T16:05:44+08:00" />
+<meta property="article:modified_time" content="2023-03-01T16:05:44+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="十分钟了解Hbase基础概念和存储架构"/>
+<meta name="twitter:description" content="HBase 基础概念和架构 HBase 介绍 HBase 是 BigTable 的开源 Java 版本。是建立在 HDFS 之上，提供高可靠性、高性能、列存储、可伸缩、实时读写 NoSql 的数据库系统。 它介于 NoSql 和 RDBMS 之间，仅"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E4%BA%86%E8%A7%A3hbase%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84/" /><link rel="prev" href="http://example.org/posts/%E6%8F%AD%E7%A7%98%E5%B9%BF%E5%91%8A%E6%9E%B6%E6%9E%84%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "十分钟了解Hbase基础概念和存储架构",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%8D%81%E5%88%86%E9%92%9F%E4%BA%86%E8%A7%A3hbase%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84\/"
+    },"genre": "posts","keywords": "HBase, NoSQL","wordcount":  3003 ,
+    "url": "http:\/\/example.org\/posts\/%E5%8D%81%E5%88%86%E9%92%9F%E4%BA%86%E8%A7%A3hbase%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AD%98%E5%82%A8%E6%9E%B6%E6%9E%84\/","datePublished": "2023-03-01T16:05:44+08:00","dateModified": "2023-03-01T16:05:44+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>十分钟了解Hbase基础概念和存储架构</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/hbase/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> HBase</a></span></div>
+      <div class="post-meta-line"><span title=2023-03-01&#32;16:05:44><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-01">2023-03-01</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 3003 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/hbase-2.png"
+    data-srcset="/posts/images/hbase-2.png, /posts/images/hbase-2.png 1.5x, /posts/images/hbase-2.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/hbase-2.png"
+    title="/posts/images/hbase-2.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#hbase-基础概念和架构">HBase 基础概念和架构</a>
+      <ul>
+        <li><a href="#hbase-介绍">HBase 介绍</a></li>
+        <li><a href="#hbase-数据模型">HBase 数据模型</a></li>
+        <li><a href="#hbase-物理存储方式">HBase 物理存储方式</a></li>
+        <li><a href="#hbase-读写数据流程">HBase 读写数据流程</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="hbase-基础概念和架构">HBase 基础概念和架构</h2>
+<h3 id="hbase-介绍">HBase 介绍</h3>
+<p>HBase 是 BigTable 的开源 Java 版本。是建立在 HDFS 之上，提供高可靠性、高性能、列存储、可伸缩、实时读写 NoSql 的数据库系统。</p>
+<p>它介于 NoSql 和 RDBMS 之间，仅能通过主键(row key)和主键的 range 来检索数据，仅支持单行事务(可通过 hive 支持来实现多表 join 等复杂操作)。主要用来存储结构化和半结构化的松散数据。</p>
+<p>Hbase 查询数据功能很简单，不支持 join 等复杂操作，不支持复杂的事务（行级的事务） Hbase 中支持的数据类型：byte[] 与 hadoop 一样，Hbase 目标主要依靠横向扩展，通过不断增加廉价的商用服务器，来增加计算和存储能力。</p>
+<p>HBase 中的表一般有这样的特点：</p>
+<ul>
+<li>大：一个表可以有上十亿行，上百万列</li>
+<li>面向列：面向列(族)的存储和权限控制，列(族)独立检索。</li>
+<li>稀疏：对于为空(null)的列，并不占用存储空间，因此，表可以设计的非常稀疏。</li>
+</ul>
+<h3 id="hbase-数据模型">HBase 数据模型</h3>
+<p>HBase是一个面向列的数据库，在表中它由行排序。表模式定义只能列族，也就是键值对。一个表有多个列族以及每一个列族可以有任意数量的列。后续列的值连续存储在磁盘上。表中的每个单元格都具有时间戳。总之，在一个HBase：</p>
+<ul>
+<li>表示行的集合；</li>
+<li>行是列族的集合；</li>
+<li>列族是列的集合；</li>
+<li>列是键值对的集合；</li>
+</ul>
+<p>这里的列式存储或者面向列，说的是列族存储，HBase根据列族来存储数据的。列族下面可以有非常多的列，列族在创建表的时候必须指定。</p>
+<p>HBase 和 RMBMS的比较</p>
+<table>
+<thead>
+<tr>
+<th>差异类别</th>
+<th>HBase</th>
+<th>RDBMS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据类型</td>
+<td>Bytes</td>
+<td>丰富的数据类型</td>
+</tr>
+<tr>
+<td>数据操作</td>
+<td>简单CRUD</td>
+<td>丰富的SQL支持</td>
+</tr>
+<tr>
+<td>数据模式</td>
+<td>列存储</td>
+<td>行存储</td>
+</tr>
+<tr>
+<td>数据保护</td>
+<td>保留</td>
+<td>替换可</td>
+</tr>
+<tr>
+<td>可伸缩性</td>
+<td>好</td>
+<td>差</td>
+</tr>
+<tr>
+<td>吞吐量</td>
+<td>百万查询/每秒</td>
+<td>数钱查询/每秒</td>
+</tr>
+<tr>
+<td>索引</td>
+<td>仅支持Row-key</td>
+<td>支持</td>
+</tr>
+</tbody>
+</table>
+<p>RDBMS</p>
+<table>
+<thead>
+<tr>
+<th>Primary key</th>
+<th>name</th>
+<th>age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>张三</td>
+<td>20</td>
+</tr>
+<tr>
+<td>2</td>
+<td>李四</td>
+<td>25</td>
+</tr>
+<tr>
+<td>3</td>
+<td>王五</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<p>HBase表</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>info(列族)</th>
+<th>info(列族)</th>
+<th>Job(列族)</th>
+<th>Job(列族)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rowkey(行键)</td>
+<td>info:name(列)</td>
+<td>info:age(列)</td>
+<td>job:position(列)</td>
+<td>job:exp(列)</td>
+</tr>
+<tr>
+<td>Rk001</td>
+<td>张三</td>
+<td>20</td>
+<td>CEO</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Rk002</td>
+<td>李四</td>
+<td>25</td>
+<td>CTO</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Rk003</td>
+<td>王五</td>
+<td>30</td>
+<td>CFO</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<h4 id="row-key-行键">Row Key 行键</h4>
+<p>与NoSQL数据库一样，rowkey是用来表示唯一一行记录的主键，HBase的数据是按照RowKey的字典顺序进行全局排序的，所有查询都只依赖这一个排序维度。</p>
+<p>Row key行键可以是任意字符串，在HBase内部row key保存为字节数组。存储时数据按照Row key的字典排序（btye order）。设计key时，要充分利用排序存储这个特性，将经常一起读取的行存储放到一起。</p>
+<p>访问HBase table中的行，只有三种方式：</p>
+<ol>
+<li>通过单个row key访问；</li>
+<li>通过row key的range（正则）；</li>
+<li>全表扫描；</li>
+</ol>
+<h4 id="columns-family-列族">Columns Family 列族</h4>
+<p>列族：HBase表中的每个列都归属于某个列族。列族是表的schema的一部分（而列不是），必须在使用表之前定义。列名都以列族作为前缀。例如 info:name、info:age，都输入Info这个列族。</p>
+<h4 id="cell">Cell</h4>
+<p>由{row key、column family、version} 唯一确定的单元，cell中的数据是没有类型的，全是字节码形式存储。</p>
+<h4 id="time-stamp-时间戳">Time Stamp 时间戳</h4>
+<p>HBase通过rowkey和columns确定为一个存储单元称为cell，每个cell保持着同一份数据的多个版本。版本通过时间戳来索引，时间戳类型是64位整形，时间戳由HBase数据写入时自动赋值。时间戳也可以由客户端显示赋值。</p>
+<p>为避免数据存在过多的版本造成管理负担，HBase提供了两种数据版本回收方式，一是保存数据的最后n个版本，二是保存最近一段时间内的版本（比如最近7天），可以针对每个列族设置。</p>
+<h3 id="hbase-物理存储方式">HBase 物理存储方式</h3>
+<h4 id="整体结构">整体结构</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/hbase-2.png"
+    data-srcset="../images/hbase-2.png, ../images/hbase-2.png 1.5x, ../images/hbase-2.png 2x"
+    data-sizes="auto"
+    alt="hbase-2"
+    title="hbase-2"/></p>
+<ul>
+<li>Table中的所有行都按照Row Key的字典序排列；</li>
+<li>Table在行的方向上分割为多个HRegion；</li>
+<li>HRegion按大小分割的（默认10G），每个表一开始只有一个HRegion，随着数据不断插入表，HRegion不断增大，当增大到一个阈值时，HRegion就会等分成两个新的HRegion，当Table中的行不断增多，就会有越来越多的HRegion；</li>
+<li>HRegion是HBase中分布式存储和负载均衡的最小单元。就表示不同的HRegion可以分布在不同的HRegion Server上，但是一个HRegion是不会拆分到多个Server上的。</li>
+<li>HRegion是负载均衡的最小单位但不是物理存储的最小单位，HRegion由一个或者多个Store组成，每个Store保存一个Column Family，每个Store又由一个MemStore和 0至多个StoreFIle组成。</li>
+</ul>
+<h4 id="storefile-和-hfile结构">StoreFile 和 HFile结构</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/hbase-3.jpeg"
+    data-srcset="../images/hbase-3.jpeg, ../images/hbase-3.jpeg 1.5x, ../images/hbase-3.jpeg 2x"
+    data-sizes="auto"
+    alt="hbase-3"
+    title="hbase-3"/></p>
+<p>HBase中所有数据都存储在Hadoop HDFS文件系统上，格式主要有两种：</p>
+<ol>
+<li>HFile，HBase中Key-Value数据的存储格式，HFile是Hadoop的二进制格式文件，实际上StoreFIle就是对HFile轻量级包装，即StoreFile底层就是HFile。</li>
+<li>HLog FIle，HBase中WAL（Write Ahead Log）的存储格式，物理上市Hadoop的Sequence File。</li>
+</ol>
+<h4 id="hlog-file">HLog File</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/hbase-4.jpeg"
+    data-srcset="../images/hbase-4.jpeg, ../images/hbase-4.jpeg 1.5x, ../images/hbase-4.jpeg 2x"
+    data-sizes="auto"
+    alt="hbase-4"
+    title="hbase-4"/></p>
+<p>HLog文件就是一个普通的Hadoop Sequence File，Sequence File 的Key是HLogKey对象，HLogKey中记录了写入数据的归属信息，除了table和region名字外，同时还包括 sequence number和timestamp，timestamp是“写入时间”，sequence number的起始值为0，或者是最近一次存入文件系统中sequence number。 HLog Sequece File的Value是HBase的KeyValue对象，即对应HFile中的KeyValue。</p>
+<h3 id="hbase-读写数据流程">HBase 读写数据流程</h3>
+<h4 id="写数据流程">写数据流程</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/hbase-5.png"
+    data-srcset="../images/hbase-5.png, ../images/hbase-5.png 1.5x, ../images/hbase-5.png 2x"
+    data-sizes="auto"
+    alt="hbase-5"
+    title="hbase-5"/></p>
+<ol>
+<li>Client通过Zookeeper的调度，想RegionServer发出写请求，在Region中写入数据；</li>
+<li>数据被写入Region的MemStore，指导MemStore达到阈值（即MemStroe满）；</li>
+<li>MemStore中的数据被Flush成一个StoreFIle；</li>
+<li>随着StoreFIle文件不断增多，当其数量增长到一定阈值后，触发Compact合并操作，将多个StoreFIle合并成一个StoreFIle，同时进行版本合并和数据删除；</li>
+<li>StroeFIles随着不断Compact合并操作，逐步形成越来越大的StoreFIle；</li>
+<li>单个StoreFIle大小超过一定阈值后，触发Split操作，把当前Region Split成功2个新的Region，父Region会下线，新split出2个子Region会被HMaster分配到相应的RegionServer上，使原来1个Region的压力分流到2个Region上。</li>
+</ol>
+<p>可以看出HBase只有增添数据，所有更新和删除操作都是在后续Compact历程中进行的，使得用户的写操作是要进入内存就可以立刻返回，实现了HBase I/O的高性能。</p>
+<h4 id="读数据流程">读数据流程</h4>
+<ol>
+<li>Client访问Zookeeper，查找ROOT表，获取META表信息；</li>
+<li>从META表查询获取存放目标数据的Region信息，从而找到对应的RegionServer；</li>
+<li>通过RegionServer获取需要找到的数据；</li>
+<li>RegionServer内存分为MemStore和BlockCache两部分，MemStore主要用于写数据，BlockCache主要用于读数据，读请求先到MemStore中查数据，查不到就到BlockCache中查，再查不到就会到StoreFIle上读，并把读的结果放入BlockCache。</li>
+<li>寻址过程：client -&gt; zookeeper -&gt; root表 -&gt; meta表 -&gt; RegionServer -&gt; Region -&gt;client</li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-03-01&#32;16:05:44>更新于 2023-03-01&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/hbase/' class="post-tag">HBase</a><a href='/tags/nosql/' class="post-tag">NoSQL</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E6%8F%AD%E7%A7%98%E5%B9%BF%E5%91%8A%E6%9E%B6%E6%9E%84%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" class="post-nav-item" rel="prev" title="揭秘广告架构与系统设计"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>揭秘广告架构与系统设计</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
