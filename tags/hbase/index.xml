@@ -3,7 +3,17 @@
     <title>HBase - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/tags/hbase/</link>
     <description>HBase - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 01 Mar 2023 16:00:18 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/hbase/" rel="self" type="application/rss+xml" /><item>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 06 Mar 2023 18:21:46 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/hbase/" rel="self" type="application/rss+xml" /><item>
+  <title>HBase性能优化最佳实践</title>
+  <link>http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link>
+  <pubDate>Mon, 06 Mar 2023 18:21:46 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/hbase-1.png" referrerpolicy="no-referrer">
+      </div>HBase写入优化 客户端优化 批量写 采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成]]></description>
+</item>
+<item>
   <title>深入了解HBase的存储设计及伸缩性与高可用</title>
   <link>http://example.org/posts/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3hbase%E7%9A%84%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BC%B8%E7%BC%A9%E6%80%A7%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/</link>
   <pubDate>Wed, 01 Mar 2023 16:00:18 &#43;0800</pubDate>

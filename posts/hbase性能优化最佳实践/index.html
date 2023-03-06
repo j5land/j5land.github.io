@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>HBase性能优化最佳实践 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="HBase写入优化 客户端优化 批量写 采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成" /><meta name="keywords" content='HBase, HBase性能优化' /><meta itemprop="name" content="HBase性能优化最佳实践">
+<meta itemprop="description" content="HBase写入优化 客户端优化 批量写 采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成"><meta itemprop="datePublished" content="2023-03-06T18:21:46+08:00" />
+<meta itemprop="dateModified" content="2023-03-06T18:21:46+08:00" />
+<meta itemprop="wordCount" content="4786">
+<meta itemprop="keywords" content="HBase,HBase性能优化," /><meta property="og:title" content="HBase性能优化最佳实践" />
+<meta property="og:description" content="HBase写入优化 客户端优化 批量写 采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-06T18:21:46+08:00" />
+<meta property="article:modified_time" content="2023-03-06T18:21:46+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HBase性能优化最佳实践"/>
+<meta name="twitter:description" content="HBase写入优化 客户端优化 批量写 采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><link rel="prev" href="http://example.org/posts/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3hbase%E7%9A%84%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BC%B8%E7%BC%A9%E6%80%A7%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "HBase性能优化最佳实践",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5\/"
+    },"genre": "posts","keywords": "HBase, HBase性能优化","wordcount":  4786 ,
+    "url": "http:\/\/example.org\/posts\/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5\/","datePublished": "2023-03-06T18:21:46+08:00","dateModified": "2023-03-06T18:21:46+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>HBase性能优化最佳实践</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/hbase/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> HBase</a></span></div>
+      <div class="post-meta-line"><span title=2023-03-06&#32;18:21:46><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-06">2023-03-06</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 4786 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 10 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/hbase-1.png"
+    data-srcset="/posts/images/hbase-1.png, /posts/images/hbase-1.png 1.5x, /posts/images/hbase-1.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/hbase-1.png"
+    title="/posts/images/hbase-1.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#hbase写入优化">HBase写入优化</a>
+      <ul>
+        <li><a href="#客户端优化">客户端优化</a></li>
+        <li><a href="#写数据表设计调优">写数据表设计调优</a></li>
+      </ul>
+    </li>
+    <li><a href="#hbase读取优化">HBase读取优化</a>
+      <ul>
+        <li><a href="#客户端优化-1">客户端优化</a></li>
+        <li><a href="#读数据表设计调优">读数据表设计调优</a></li>
+      </ul>
+    </li>
+    <li><a href="#hbase服务端优化">HBase服务端优化</a>
+      <ul>
+        <li><a href="#gc_opts">GC_OPTS</a></li>
+        <li><a href="#regionserver并发请求处理数量">RegionServer并发请求处理数量</a></li>
+        <li><a href="#控制memstore的大小">控制MemStore的大小</a></li>
+        <li><a href="#split优化">Split优化</a></li>
+        <li><a href="#compaction优化">Compaction优化</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="hbase写入优化">HBase写入优化</h2>
+<h3 id="客户端优化">客户端优化</h3>
+<h4 id="批量写">批量写</h4>
+<p>采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成功返回，要么抛出异常。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">HTable</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Put</span><span class="o">&gt;);</span>
+</span></span></code></pre></div><h4 id="异步批量提交">异步批量提交</h4>
+<p>如果业务可以接受异常情况下丢失少量数据，可以使用异步批量提交方式提交请求。</p>
+<p>用户提交写请求之后，数据会先写入客户端缓存，并返回用户写入成功（此时数据并为提交到RegionServer），当客户端缓存达到阈值（默认2M，可通过<code>hbase.client.write.buffer</code>配置）时才会批量提交给RegionServer。需要注意的是，在某些情况下客户端异常的情况下缓存数据有可能丢失。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">HTable</span><span class="o">.</span><span class="na">setWriteBufferSize</span><span class="o">(</span><span class="n">writeBufferSize</span><span class="o">);</span> <span class="c1">// 设置缓存大小
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">HTable</span><span class="o">.</span><span class="na">setAutoFlush</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span></span></code></pre></div><h4 id="多线程并发写">多线程并发写</h4>
+<p>客户端开启多个HTable写线程，每个写线程负责一个HTable对象的flush操作，这样结合定时flush和写buffer，可以即保证在数据量小的时候，数据可以在较短时间内被flush，同时又保证在数据量大的时候，写buffer一满就即使进行flush。</p>
+<h4 id="使用bulkload写入">使用BulkLoad写入</h4>
+<p>在HBase中数据都是以HFile形式保存在HDFS中的，当有大量数据需要写入到HBase的时候，可以采用BulkLoad方式完成。</p>
+<p>使用MapReduce或者Spark直接生成HFile格式的数据文件，然后再通过RegionServer将HFile数据文件移动到相应的Region上去。</p>
+<h3 id="写数据表设计调优">写数据表设计调优</h3>
+<h4 id="in_memory">IN_MEMORY</h4>
+<p>配置表的数据优先缓存在内存中，这样可以有效提升读取的性能。适合小表，而且需要频繁进行读取操作的。</p>
+<h4 id="预分区">预分区</h4>
+<p>在HBase中数据是分布在各个Region中的，每个Region都负责一个起始RowKey和结束Rowkey的范围，在向HBase中写数据的时候，会根据RowKey请求到对应的Region上，如果写请求都集中在某一个Region或某几个Region上的时候，性能肯定不如写请求均匀分布在各个Region上好。默认情况下，创建的HBase的只有一个Region分区，会随着数据量的变大，进行split，拆分成多个Region，最开始的性能肯定会很不好</p>
+<p>建议在设计HBase的的时候，进行预分区，并设计一个良好的Rowkey生成规则（关于RowKey设计，尽量将数据分散到各个Region上，那样在进行HBase的读写的时候，对性能会有很好的改善。</p>
+<h4 id="合理设置wal存储级别">合理设置WAL存储级别</h4>
+<p>数据在写入HBase的时候，先写WAL，再写入缓存。通常情况下写缓存延迟很低，WAL机制一方面是为了确保数据即使写入缓存后数据丢失也可以通过WAL恢复，另一方面是为了集群之间的复制。默认WAL机制是开启的，并且使用的是同步机制写WAL。</p>
+<p>如果业务不特别关心异常情况下部分数据的丢失，而更关心数据写入吞吐量，可考虑关闭WAL写，这样可以提升2~3倍数据写入的吞吐量。</p>
+<p>如果业务不能接受不写WAL，但是可以接受WAL异步写入，这样可以带了1~2倍性能提升。</p>
+<p>HBase中可以通过设置WAL的持久化等级决定是否开启WAL机制、以及HLog的落盘方式。</p>
+<p>WAL的持久化等级分为如下四个等级：</p>
+<ol>
+<li><strong>SKIP_WAL</strong>：只写缓存，不写HLog日志。这种方式因为只写内存，因此可以极大的提升写入性能，但是数据有丢失的风险。在实际应用过程中并不建议设置此等级，除非确认不要求数据的可靠性。</li>
+<li><strong>ASYNC_WAL</strong>：异步将数据写入HLog日志中。</li>
+<li><strong>SYNC_WAL</strong>：同步将数据写入日志文件中，需要注意的是数据只是被写入文件系统中，并没有真正落盘，默认。</li>
+<li><strong>FSYNC_WAL</strong>：同步将数据写入日志文件并强制落盘。最严格的日志写入等级，可以保证数据不会丢失，但是性能相对比较差。</li>
+</ol>
+<p>同样，除了在创建表的时候直接设置WAL存储级别，也可以通过客户端设置WAL持久化等级，代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">put</span><span class="o">.</span><span class="na">setDurability</span><span class="o">(</span><span class="n">Durability</span><span class="o">.</span><span class="na">SYNC_WAL</span><span class="o">);</span>
+</span></span></code></pre></div><h2 id="hbase读取优化">HBase读取优化</h2>
+<h3 id="客户端优化-1">客户端优化</h3>
+<h4 id="批量get请求">批量get请求</h4>
+<p>使用批量请求，可以减少RPC的次数，显著提高吞吐量。需要注意的是，批量get请求要么成功返回所有请求数据，要么抛出异常。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Result</span><span class="o">[]</span> <span class="n">re</span><span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Get</span><span class="o">&gt;</span> <span class="n">gets</span><span class="o">);</span>
+</span></span></code></pre></div><h4 id="合理何止scan缓存大小">合理何止scan缓存大小</h4>
+<p>一次scan可能会返回大量数据，但是实际客户端发起一次scan请求，并不会将所有数据一次性加载到本地，而是分成多次RPC请求进行加载，这样设计一方面是因为大量数据请求可能会导致网络带宽严重消耗进而影响其他业务，另一方面是有可能因为数据量太大导致客户端发生OOM。所以采用先加载一部分数据到本地，然后进行遍历，每次加载一部分数据，如此往复，直至所有数据加载完成。数据加载到本地就存放在scan缓存中，默认100。</p>
+<p>增大scan的缓存，可以让客户端减少一次scan的RPC次数，从而从整体上提升数据读取的效率。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">scan</span><span class="o">.</span><span class="na">setCaching</span><span class="o">(</span><span class="kt">int</span> <span class="n">caching</span><span class="o">);</span> <span class="c1">//大scan可以设置为1000
+</span></span></span></code></pre></div><h4 id="指定请求列族或者列名">指定请求列族或者列名</h4>
+<p>HBase是列族数据库，同一列族的数据存储在一块，不同列族是分开存储的，如果一个表由多个列族，只是根据RowKey而不指定列族进行检索的话，不同列族的数据需要独立进行检索，性能必然会比指定列族的查询差的多。</p>
+<p>此外指定请求的列的话，不需要将整个列族的所有列的数据返回，这样就减少了网路IO。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">scan</span><span class="o">.</span><span class="na">addColumn</span><span class="o">();</span>
+</span></span></code></pre></div><h4 id="设置只读rowkey过滤器">设置只读Rowkey过滤器</h4>
+<p>在只需要Rowkey数据时，可以为Scan添加一个只读取Rowkey的filter（<code>FirstKeyOnlyFilter</code>或<code>KeyOnlyFilter</code>）。</p>
+<h4 id="关闭resultscanner">关闭ResultScanner</h4>
+<p>在使用<code>table.getScanner</code>之后，记得关闭，否则它会和服务器端一直保持连接，资源无法释放，从而导致服务端的某些资源不可用。</p>
+<h4 id="离线计算访问hbase建议禁用缓存">离线计算访问HBase建议禁用缓存</h4>
+<p>当离线访问HBase时，往往会对HBase表进行扫描，此时读取的数据没有必要存放在<code>BlockCache</code>中，否则会降低扫描的效率。</p>
+<p>对于频繁查询HBase的应用场景不需要禁用缓存，并且可以考虑在应用程序和HBase之间加一层缓存系统（如Redis），先查询缓存，缓存没有命中再去查询HBase。</p>
+<h3 id="读数据表设计调优">读数据表设计调优</h3>
+<h4 id="blocksize">BLOCKSIZE</h4>
+<p>配置HFile中block块的大小，不同的block大小，可以影响HBase读写数据的效率。越大的block块，配置压缩算法，压缩的效率就越好；但是由于HBase的读取数据时以block块为单位的，所以越大的block块，对于随机读的情况，性能可能会比较差，如果要提升写入的性能，一般扩大到128kb或者256kb，可以提升写数据的效率，也不会影响太大的随机读性能。</p>
+<h4 id="data_block_encoding">DATA_BLOCK_ENCODING</h4>
+<p>配置HFile中block块的编码方法。当一行数据中存在多个列时，一般可以配置为&quot;<strong>FAST_DIFF</strong>&quot;，可以有效的节省数据存储的空间，从而提升性能。</p>
+<h4 id="预分区-1">预分区</h4>
+<p>同<em>写性能优化预分区</em>部分。</p>
+<h2 id="hbase服务端优化">HBase服务端优化</h2>
+<h3 id="gc_opts">GC_OPTS</h3>
+<p>HBase是利用内存完成读写操作。提高HBase内存可以有效提高HBase性能。GC_OPTS主要需要调整HeapSize和NewSize的大小。调整HeapSize大小的时候，建议将Xms和Xmx设置成相同的值，这样可以避免JVM动态调整HeapSize大小的时候影响性能。调整NewSize大小的时候，建议把其设置为HeapSize大小的1/9。</p>
+<p>当HBase集群规模越大，Region数量越多时，可以适当调大HMaster的GC_OPTS参数</p>
+<p>RegionServer需要比HMaster更大的内存，在内存充足的情况下，HeapSize可以相对设置大一些。</p>
+<p>HMaster的HeapSize为4G的时候，HBase集群可以支持100000个Region的规模。根据经验值，单个RegionServer的HeapSize不建议超过20GB。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="err">#</span> <span class="n">HMaster</span><span class="err">、</span><span class="n">RegionServer</span> <span class="n">GC_OPTS</span><span class="err">配置如下：</span>
+</span></span><span class="line"><span class="cl"><span class="nl">HMaster:</span> <span class="o">-</span><span class="n">Xms2G</span> <span class="o">-</span><span class="n">Xmx2G</span> <span class="o">-</span><span class="n">XX</span><span class="o">:</span><span class="n">NewSize</span><span class="o">=</span><span class="mi">256</span><span class="n">M</span> <span class="o">-</span><span class="n">XX</span><span class="o">:</span><span class="n">MaxNewSize</span><span class="o">=</span><span class="mi">256</span><span class="n">M</span> 
+</span></span><span class="line"><span class="cl"><span class="nl">RegionServer:</span> <span class="o">-</span><span class="n">Xms4G</span> <span class="o">-</span><span class="n">Xmx4G</span> <span class="o">-</span><span class="n">XX</span><span class="o">:</span><span class="n">NewSize</span><span class="o">=</span><span class="mi">512</span><span class="n">M</span> <span class="o">-</span><span class="n">XX</span><span class="o">:</span><span class="n">MaxNewSize</span><span class="o">=</span><span class="mi">512</span><span class="n">M</span>
+</span></span></code></pre></div><h3 id="regionserver并发请求处理数量">RegionServer并发请求处理数量</h3>
+<p><code>hbase.regionserver.handler.count</code>表示RegionServer在同一时刻能够并发处理多少请求。如果设置过高会导致激烈的线程竞争，如果设置过小，请求将会在RegionServer长时间等待，降低处理能力。应该根据资源情况，适当增加处理线程数。</p>
+<blockquote>
+<p>建议根据CPU的使用情况，可以设置为100至300之间的值。</p>
+</blockquote>
+<h3 id="控制memstore的大小">控制MemStore的大小</h3>
+<p><code>hbase.hregion.memstore.flush.size</code>默认值128M，单位字节，一旦有MemStore超过该值将被flush，如果regionserver的jvm内存比较充足(16G以上)，可以调整为256M。在内存足够put负载大情况下可以调整增大。</p>
+<h4 id="blockcache优化">BlockCache优化</h4>
+<p>BlockCache作为读缓存，合理设置对于提高读性能非常重要。默认情况下，BlockCache和MemStore的配置各占40%，可以根据集群业务进行修正，比如读多写少业务可以将BlockCache占比调大。另外BlockCache的策略也很重要，不同策略对读性能来说影响并不大，但是对GC的影响 却很显著。</p>
+<p>HBase缓存区大小，主要影响查询性能。根据查询模式以及查询记录分布情况来决定缓存区的大小。如果采用随机查询使得缓存区的命中率较低，可以适当降低缓存大小。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">hfile</span><span class="o">.</span><span class="na">block</span><span class="o">.</span><span class="na">cache</span><span class="o">.</span><span class="na">size</span><span class="err">，默认</span><span class="mf">0.4</span><span class="err">，用来提高读性能</span>
+</span></span><span class="line"><span class="cl"><span class="n">hbase</span><span class="o">.</span><span class="na">regionserver</span><span class="o">.</span><span class="na">global</span><span class="o">.</span><span class="na">memstore</span><span class="o">.</span><span class="na">size</span><span class="err">，默认</span><span class="mf">0.4</span><span class="err">，用来提高写性能</span>
+</span></span></code></pre></div><h4 id="控制hfile个数">控制HFile个数</h4>
+<p>MemStore在flush之前，会进行StoreFile的文件数量校验（通过<code>hbase.hstore.blockingStoreFiles</code>参数配置），如果大于设定值，系统将会强制执行Compaction操作进行文件合并，在合并的过程中会阻塞MemStore的数据写入，等待其他线程将StoreFile进行合并。通常情况下发生在数据写入很快的情况下。</p>
+<p><code>hbase.hstore.compactionThreshold</code>表示启动Compaction的最低阈值，该值不能太大，否则会积累太多文件，一般建议设置为5～8左右。</p>
+<p><code>hbase.hstore.blockingStoreFiles</code>默认设置为7，可以适当调大一些。</p>
+<h3 id="split优化">Split优化</h3>
+<p><code>hbase.hregion.max.filesize</code>表示HBase中Region的文件总大小的最大值。当Region中的文件大于该参数时，将会导致Region分裂。</p>
+<ul>
+<li>如果该参数设置过小时，可能会导致Split操作频繁</li>
+<li>如果该参数设置过大时，会导致Compaction操作需要处理的文件个数增大，影响Compaction执行效率</li>
+</ul>
+<h3 id="compaction优化">Compaction优化</h3>
+<p><code>hbase.hstore.compaction.min</code>当一个Store中文件超过该值时，会进行Compaction，适当增大该值，可以减少文件被重复执行Compaction。但是如果过大，会导致Store中文件数过多而影响读取的性能。</p>
+<p><code>hbase.hstore.compaction.max</code>控制一次Compaction操作时的文件数据量的最大值。</p>
+<p><code>hbase.hstore.compaction.max.size</code>如果一个HFile文件的大小大于该值，那么在Minor Compaction操作中不会选择这个文件进行Compaction操作，除非进行Major Compaction操作。这个值可以防止较大的HFile参与Compaction操作。在禁止Major Compaction后，一个Store中可能存在几个HFile，而不会合并成为一个HFile，这样不会对数据读取造成太大的性能影响。</p>
+<blockquote>
+<p>原则是：尽量要减小Compaction的次数和Compaction的执行时间</p>
+</blockquote>
+<h3 id="总结">总结</h3>
+<p>在HBase使用过程中，要想获取好的读写性能，可以从以下几个方面进行优化：</p>
+<ol>
+<li>一个优秀的HBase表列族设计方案</li>
+<li>一个优秀的HBase RowKey设计方案</li>
+<li>读写时客户端相关配置</li>
+<li>HBase服务器优化</li>
+</ol>
+<p>参考：</p>
+<ul>
+<li><a href="https://www.open-open.com/blog/5035947670161791745.html"target="_blank" rel="external nofollow noopener noreferrer">https://www.open-open.com/blog/5035947670161791745.html</a></li>
+<li><a href="https://developer.aliyun.com/article/685914"target="_blank" rel="external nofollow noopener noreferrer">https://developer.aliyun.com/article/685914</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-03-06&#32;18:21:46>更新于 2023-03-06&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/hbase/' class="post-tag">HBase</a><a href='/tags/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/' class="post-tag">HBase性能优化</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3hbase%E7%9A%84%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BC%B8%E7%BC%A9%E6%80%A7%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/" class="post-nav-item" rel="prev" title="深入了解HBase的存储设计及伸缩性与高可用"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>深入了解HBase的存储设计及伸缩性与高可用</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
