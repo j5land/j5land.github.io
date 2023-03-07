@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Spring事务传递 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92/</link>
+    <description>Spring事务传递 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 07 Jul 2022 15:18:31 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92/" rel="self" type="application/rss+xml" /><item>
+  <title>MySQL事务与Spring事务传递机制</title>
+  <link>http://example.org/posts/mysql%E4%BA%8B%E5%8A%A1%E4%B8%8Espring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6/</link>
+  <pubDate>Thu, 07 Jul 2022 15:18:31 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/mysql%E4%BA%8B%E5%8A%A1%E4%B8%8Espring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/MySQL.png" referrerpolicy="no-referrer">
+      </div>背景 Spring是一个非常流行的Java开发框架，其中事务管理机制是其重要的特性之一。而MySQL则是常用的关系型数据库，事务管理也是其核心]]></description>
+</item>
+</channel>
+</rss>

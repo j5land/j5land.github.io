@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>MySQL事务与Spring事务传递机制 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 Spring是一个非常流行的Java开发框架，其中事务管理机制是其重要的特性之一。而MySQL则是常用的关系型数据库，事务管理也是其核心" /><meta name="keywords" content='MySQL, MySQL事务, Spring事务传递' /><meta itemprop="name" content="MySQL事务与Spring事务传递机制">
+<meta itemprop="description" content="背景 Spring是一个非常流行的Java开发框架，其中事务管理机制是其重要的特性之一。而MySQL则是常用的关系型数据库，事务管理也是其核心"><meta itemprop="datePublished" content="2022-07-07T15:18:31+08:00" />
+<meta itemprop="dateModified" content="2022-07-07T15:18:31+08:00" />
+<meta itemprop="wordCount" content="3790">
+<meta itemprop="keywords" content="MySQL,MySQL事务,Spring事务传递," /><meta property="og:title" content="MySQL事务与Spring事务传递机制" />
+<meta property="og:description" content="背景 Spring是一个非常流行的Java开发框架，其中事务管理机制是其重要的特性之一。而MySQL则是常用的关系型数据库，事务管理也是其核心" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/mysql%E4%BA%8B%E5%8A%A1%E4%B8%8Espring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-07-07T15:18:31+08:00" />
+<meta property="article:modified_time" content="2022-07-07T15:18:31+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL事务与Spring事务传递机制"/>
+<meta name="twitter:description" content="背景 Spring是一个非常流行的Java开发框架，其中事务管理机制是其重要的特性之一。而MySQL则是常用的关系型数据库，事务管理也是其核心"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/mysql%E4%BA%8B%E5%8A%A1%E4%B8%8Espring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6/" /><link rel="prev" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/" /><link rel="next" href="http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "MySQL事务与Spring事务传递机制",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/mysql%E4%BA%8B%E5%8A%A1%E4%B8%8Espring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6\/"
+    },"genre": "posts","keywords": "MySQL, MySQL事务, Spring事务传递","wordcount":  3790 ,
+    "url": "http:\/\/example.org\/posts\/mysql%E4%BA%8B%E5%8A%A1%E4%B8%8Espring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6\/","datePublished": "2022-07-07T15:18:31+08:00","dateModified": "2022-07-07T15:18:31+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>MySQL事务与Spring事务传递机制</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/mysql/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> MySQL</a></span></div>
+      <div class="post-meta-line"><span title=2022-07-07&#32;15:18:31><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-07-07">2022-07-07</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 3790 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 8 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/MySQL.png"
+    data-srcset="/posts/images/MySQL.png, /posts/images/MySQL.png 1.5x, /posts/images/MySQL.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/MySQL.png"
+    title="/posts/images/MySQL.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#一mysql事务">一、MySQL事务</a>
+      <ul>
+        <li><a href="#11-事务的属性acid">1.1 事务的属性ACID</a></li>
+        <li><a href="#12-事务的隔离级别">1.2 事务的隔离级别</a></li>
+        <li><a href="#13-锁机制">1.3 锁机制</a></li>
+        <li><a href="#14-wal原则">1.4 WAL原则</a></li>
+        <li><a href="#15-mvcc">1.5 MVCC</a></li>
+        <li><a href="#16-事务日志">1.6 事务日志</a></li>
+      </ul>
+    </li>
+    <li><a href="#二spring事务传递机制">二、Spring事务传递机制</a></li>
+    <li><a href="#三mysql事务与spring事务传递机制的联系">三、MySQL事务与Spring事务传递机制的联系</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>Spring是一个非常流行的Java开发框架，其中事务管理机制是其重要的特性之一。而MySQL则是常用的关系型数据库，事务管理也是其核心功能之一。本文将从Spring事务与MySQL事务的入手，详细讲解二者之间的关系。</p>
+<h2 id="一mysql事务">一、MySQL事务</h2>
+<p>数据库的多事务并发问题，为了解决多事务并发问题，数据库设计了<strong>事务隔离机制、锁机制、MVCC多版本并发控制隔离机制</strong>，用一整套机制来<strong>解决多事务并发问题</strong>。</p>
+<h3 id="11-事务的属性acid">1.1 事务的属性ACID</h3>
+<p>事务（Transaction）是数据库系统中一系列操作的一个逻辑单元，所有操作要么全部成功要么全部失败。</p>
+<p>事务是区分文件存储系统与Nosql数据库重要特性之一，其存在的意义是为了保证即使在并发情况下也能正确的执行crud操作。怎样才算是正确的呢？这时提出了事务需要保证的四个特性即ACID：</p>
+<ul>
+<li>原子性(Atomicity) ：事务是一个原子操作单元,其对数据的修改,要么全都执行,要么全都不执行。</li>
+<li>一致性(Consistent) ：在事务开始和完成时,数据都必须保持一致状态。这意味着所有相关的数据规则都必须应用于事务的修改,以保持数据的完整性。</li>
+<li>隔离性(Isolation) ：数据库系统提供一定的隔离机制,保证事务在不受外部并发操作影响的”独立“环境执行。这意味着事务处理过程中的中间状态对外部是不可见的，反之亦然。</li>
+<li>持久性(Durable) ：事务完成之后,它对于数据的修改是永久性的,即使出现系统故障也能够保持。</li>
+</ul>
+<h3 id="12-事务的隔离级别">1.2 事务的隔离级别</h3>
+<p>在高并发的情况下，要完全保证其ACID特性是非常困难的，除非把所有的事务串行化执行，但带来的负面的影响将是性能大打折扣。很多时候我们有些业务对事务的要求是不一样的，所以数据库中设计了四种隔离级别，供用户基于业务进行选择。</p>
+<p>MySQL的事务隔离级别包括：</p>
+<ul>
+<li>READ UNCOMMITTED（未提交读）</li>
+<li>READ COMMITTED（提交读）</li>
+<li>REPEATABLE READ（可重复读）</li>
+<li>SERIALIZABLE（可串行化）</li>
+</ul>
+<p>其中，READ COMMITTED是MySQL默认的事务隔离级别。</p>
+<p><strong>并发事务处理带来的问题</strong></p>
+<ul>
+<li>更新丢失(Lost Update)或脏写</li>
+</ul>
+<p>当两个或多个事务选择同一行，然后基于最初选定的值更新该行时，由于每个事务都不知道其他事务的存在，就会发生丢失更新问题–<strong>最后的更新覆盖了由其他事务所做的更新</strong>。</p>
+<ul>
+<li>脏读（Dirty Reads）</li>
+</ul>
+<p>一个事务正在对一条记录做修改，在这个事务完成并提交前，这条记录的数据就处于不一致的状态；这时，另一个事务也来读取同一条记录，如果不加控制，第二个事务读取了这些“脏”数据，并据此作进一步的处理，就会产生未提交的数据依赖关系。这种现象被形象的叫做“脏读”。</p>
+<p>简短总结：<strong>事务A读取到了事务B已经修改但尚未提交的数据</strong>，还在这个数据基础上做了操作。此时，如果B事务回滚，A读取的数据无效，不符合一致性要求。</p>
+<ul>
+<li>不可重读（Non-Repeatable Reads）</li>
+</ul>
+<p>一个事务在读取某些数据后的某个时间，再次读取以前读过的数据，却发现其读出的数据已经发生了改变、或某些记录已经被删除了！这种现象就叫做“不可重复读”。</p>
+<p>简短总结：<strong>事务A内部的相同查询语句在不同时刻读出的结果不一致，不符合隔离性</strong></p>
+<ul>
+<li>幻读（Phantom Reads）</li>
+</ul>
+<p>一个事务按相同的查询条件重新读取以前检索过的数据，却发现其他事务插入了满足其查询条件的新数据，这种现象就称为“幻读”。</p>
+<p>简短总结：<strong>事务A读取到了事务B提交的新增数据，不符合隔离性</strong></p>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>读未提交</td>
+<td>可能</td>
+<td>可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>读已提交</td>
+<td>X</td>
+<td>可能</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>X</td>
+<td>X</td>
+<td>可能</td>
+</tr>
+<tr>
+<td>串行化</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-锁机制">1.3 锁机制</h3>
+<p>锁是计算机协调多个进程或线程并发访问某一资源的机制。</p>
+<p>在数据库中，除了传统的计算资源（如CPU、RAM、I/O等）的争用以外，数据也是一种供需要用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。</p>
+<p><strong>锁分类</strong></p>
+<ul>
+<li>
+<p>从性能上分为乐观锁(用版本对比来实现)和悲观锁</p>
+</li>
+<li>
+<p>从对数据库操作的类型分，分为读锁和写锁(都属于悲观锁)</p>
+<ul>
+<li>
+<p>读锁（共享锁，S锁(<strong>S</strong>hared)）：针对同一份数据，多个读操作可以同时进行而不会互相影响</p>
+</li>
+<li>
+<p>写锁（排它锁，X锁(e<strong>X</strong>clusive)）：当前写操作没有完成前，它会阻断其他写锁和读锁</p>
+</li>
+</ul>
+</li>
+<li>
+<p>从对数据操作的粒度分，分为表锁和行锁</p>
+</li>
+</ul>
+<h3 id="14-wal原则">1.4 WAL原则</h3>
+<p>InnoDB的ARIES三原则Write Ahead Logging（WAL）：</p>
+<ul>
+<li>日志成功写入后事务就不会丢失，后续由checkpoint机制来保证磁盘物理文件与redo log达到一致性;</li>
+<li>利用redo log来记录变更后的数据，即redo里记录事务数据变更后的值;</li>
+<li>利用undo log来记录变更前的数据，即undo里记录事务数据变更前的值，用于回滚和其他事务多版本读。</li>
+</ul>
+<h3 id="15-mvcc">1.5 MVCC</h3>
+<p>MVCC（Multi-Version Concurrency Control）是一种并发控制技术，用于在数据库系统中处理多个并发事务。在 MySQL 中，MVCC 机制用于支持读已提交和可重复读两种隔离级别的实现。</p>
+<p>MVCC 的核心思想是：对于正在执行的事务，数据库系统为其创建一个独立的视图（快照），让事务基于该视图进行操作。这个视图包含了事务启动时数据库中所有已提交的数据版本，但不包含当前正在进行的事务的更新数据。对于正在执行的事务，只能看到早于该事务启动时的数据版本，从而实现了并发控制。</p>
+<p>在 MVCC 中，每条记录都有多个版本。对于一个新插入的记录，其版本号为 1；每次该记录被更新，其版本号都会自增。每个事务启动时，MySQL 会为该事务创建一个唯一的事务 ID（transaction ID），也称为版本号。在事务执行期间，MySQL 会在事务视图中为每条记录分配一个版本号，该版本号是其创建或更新时的版本号，以及该事务的版本号（事务 ID）的组合。因此，对于每个事务而言，它所看到的所有记录版本都是唯一的。</p>
+<h3 id="16-事务日志">1.6 事务日志</h3>
+<h4 id="重做日志redo-log">重做日志（redo log）</h4>
+<p>重做日志（redo log）是InnoDB引擎层的日志，用来记录事务操作引起数据的变化，记录的是数据页的物理修改。</p>
+<p>重做日记的作用其实很好理解，我打个比方。数据库中数据的修改就好比你写的论文，万一哪天论文丢了怎么呢？以防这种不幸的发生，我们可以在写论文的时候，每一次修改都拿个小本本记录一下，记录什么时间对某一页进行了怎么样的修改。这就是重做日志。</p>
+<p>InnoDB引擎对数据的更新，是先将更新记录写入redo log日志，然后会在系统空闲的时候或者是按照设定的更新策略再将日志中的内容更新到磁盘之中。这就是所谓的<strong>预写式技术（Write Ahead logging）</strong>。这种技术可以大大减少IO操作的频率，提升数据刷新的效率。</p>
+<h4 id="回滚日志undo-log">回滚日志（undo log）</h4>
+<p>回滚日志同样也是InnoDB引擎提供的日志，顾名思义，回滚日志的作用就是对数据进行回滚。当事务对数据库进行修改，InnoDB引擎不仅会记录redo log，还会生成对应的undo log日志；如果事务执行失败或调用了rollback，导致事务需要回滚，就可以利用undo log中的信息将数据回滚到修改之前的样子。</p>
+<p>但是undo log不redo log不一样，它属于逻辑日志。它对SQL语句执行相关的信息进行记录。当发生回滚时，InnoDB引擎会根据undo log日志中的记录做与之前相反的工作。比如对于每个数据插入操作（insert），回滚时会执行数据删除操作（delete）；对于每个数据删除操作（delete），回滚时会执行数据插入操作（insert）；对于每个数据更新操作（update），回滚时会执行一个相反的数据更新操作（update），把数据改回去。undo log由两个作用，一是提供回滚，二是实现MVCC。</p>
+<h2 id="二spring事务传递机制">二、Spring事务传递机制</h2>
+<p>Spring的事务传递机制指的是在多个事务方法嵌套调用时，事务如何传递的规则。Spring提供了以下7种事务传递机制：</p>
+<ol>
+<li>PROPAGATION_REQUIRED（默认）：如果当前存在事务，则加入该事务；如果当前不存在事务，则创建一个新的事务。</li>
+<li>PROPAGATION_SUPPORTS：如果当前存在事务，则加入该事务；如果当前不存在事务，则以非事务的方式继续运行。</li>
+<li>PROPAGATION_MANDATORY：如果当前存在事务，则加入该事务；如果当前不存在事务，则抛出异常。</li>
+<li>PROPAGATION_REQUIRES_NEW：创建一个新的事务，并在该事务内运行。如果当前存在事务，则将当前事务挂起。</li>
+<li>PROPAGATION_NOT_SUPPORTED：以非事务方式运行。如果当前存在事务，则将当前事务挂起。</li>
+<li>PROPAGATION_NEVER：以非事务方式运行。如果当前存在事务，则抛出异常。</li>
+<li>PROPAGATION_NESTED：如果当前存在事务，则在嵌套事务内运行；如果当前不存在事务，则创建一个新的事务。</li>
+</ol>
+<h2 id="三mysql事务与spring事务传递机制的联系">三、MySQL事务与Spring事务传递机制的联系</h2>
+<p>Spring事务传播机制与MySQL事务管理的关系在于，Spring提供了对事务的抽象和封装，简化了事务的管理。</p>
+<p>在使用Spring的事务管理功能时，可以通过配置 <code>propagation</code> 属性来定义事务的传播机制，从而控制事务的行为。</p>
+<p>而MySQL的事务管理则更加底层，需要开发人员手动管理事务和锁，需要考虑更多的细节和问题。</p>
+<p>不过，Spring事务管理的底层仍然是通过JDBC来实现的，因此还是需要理解MySQL事务管理的相关知识才能更好地使用Spring事务管理功能。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-07-07&#32;15:18:31>更新于 2022-07-07&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/mysql/' class="post-tag">MySQL</a><a href='/tags/mysql%E4%BA%8B%E5%8A%A1/' class="post-tag">MySQL事务</a><a href='/tags/spring%E4%BA%8B%E5%8A%A1%E4%BC%A0%E9%80%92/' class="post-tag">Spring事务传递</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E7%9A%84spring-boot-starter/" class="post-nav-item" rel="prev" title="如何写一个自己的Spring Boot Starter"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>如何写一个自己的Spring Boot Starter</a>
+      <a href="/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/" class="post-nav-item" rel="next" title="如何编写优雅的Java代码">如何编写优雅的Java代码<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
