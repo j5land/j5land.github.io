@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>jvm - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/jvm/</link>
+    <description>jvm - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 08 Mar 2022 16:42:11 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/jvm/" rel="self" type="application/rss+xml" /><item>
+  <title>十分钟带你深入了解JVM运行机制</title>
+  <link>http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3jvm%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/</link>
+  <pubDate>Tue, 08 Mar 2022 16:42:11 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3jvm%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/jvm-1.jpeg" referrerpolicy="no-referrer">
+      </div>一、JVM 什么是JVM JVM(Java Virtual Machine)其实是一套标准。通过定义虚拟机，像真实计算机一样，能够运行字节码指令。JVM的好处是可以屏蔽操作系]]></description>
+</item>
+</channel>
+</rss>
