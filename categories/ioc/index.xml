@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>IOC - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/ioc/</link>
+    <description>IOC - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 09 Jan 2022 17:22:08 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/ioc/" rel="self" type="application/rss+xml" /><item>
+  <title>十分钟带你了解Spring概念与IOC设计思想</title>
+  <link>http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3spring%E6%A6%82%E5%BF%B5%E4%B8%8Eioc%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/</link>
+  <pubDate>Sun, 09 Jan 2022 17:22:08 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3spring%E6%A6%82%E5%BF%B5%E4%B8%8Eioc%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/spring-1.png" referrerpolicy="no-referrer">
+      </div>Spring的概念 Spring的起源 要谈Spring的历史，就要先谈J2EE。J2EE应用程序的广泛实现是在1999年和2000年开始的，它]]></description>
+</item>
+</channel>
+</rss>

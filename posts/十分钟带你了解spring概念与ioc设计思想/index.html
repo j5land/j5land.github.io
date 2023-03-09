@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>十分钟带你了解Spring概念与IOC设计思想 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Spring的概念 Spring的起源 要谈Spring的历史，就要先谈J2EE。J2EE应用程序的广泛实现是在1999年和2000年开始的，它" /><meta name="keywords" content='Spring' /><meta itemprop="name" content="十分钟带你了解Spring概念与IOC设计思想">
+<meta itemprop="description" content="Spring的概念 Spring的起源 要谈Spring的历史，就要先谈J2EE。J2EE应用程序的广泛实现是在1999年和2000年开始的，它"><meta itemprop="datePublished" content="2022-01-09T17:22:08+08:00" />
+<meta itemprop="dateModified" content="2022-01-09T17:22:08+08:00" />
+<meta itemprop="wordCount" content="5518">
+<meta itemprop="keywords" content="Spring," /><meta property="og:title" content="十分钟带你了解Spring概念与IOC设计思想" />
+<meta property="og:description" content="Spring的概念 Spring的起源 要谈Spring的历史，就要先谈J2EE。J2EE应用程序的广泛实现是在1999年和2000年开始的，它" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3spring%E6%A6%82%E5%BF%B5%E4%B8%8Eioc%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-09T17:22:08+08:00" />
+<meta property="article:modified_time" content="2022-01-09T17:22:08+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="十分钟带你了解Spring概念与IOC设计思想"/>
+<meta name="twitter:description" content="Spring的概念 Spring的起源 要谈Spring的历史，就要先谈J2EE。J2EE应用程序的广泛实现是在1999年和2000年开始的，它"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3spring%E6%A6%82%E5%BF%B5%E4%B8%8Eioc%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" /><link rel="prev" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5/" /><link rel="next" href="http://example.org/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3jvm%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "十分钟带你了解Spring概念与IOC设计思想",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3spring%E6%A6%82%E5%BF%B5%E4%B8%8Eioc%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3\/"
+    },"genre": "posts","keywords": "Spring","wordcount":  5518 ,
+    "url": "http:\/\/example.org\/posts\/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3spring%E6%A6%82%E5%BF%B5%E4%B8%8Eioc%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3\/","datePublished": "2022-01-09T17:22:08+08:00","dateModified": "2022-01-09T17:22:08+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>十分钟带你了解Spring概念与IOC设计思想</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/spring/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Spring</a>&ensp;<a href="/categories/ioc/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> IOC</a></span></div>
+      <div class="post-meta-line"><span title=2022-01-09&#32;17:22:08><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-01-09">2022-01-09</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 5518 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 12 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/spring-1.png"
+    data-srcset="/posts/images/spring-1.png, /posts/images/spring-1.png 1.5x, /posts/images/spring-1.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/spring-1.png"
+    title="/posts/images/spring-1.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#spring的概念">Spring的概念</a>
+      <ul>
+        <li><a href="#spring的起源">Spring的起源</a></li>
+        <li><a href="#spring的特性">Spring的特性</a></li>
+      </ul>
+    </li>
+    <li><a href="#spring框架组成">Spring框架组成</a>
+      <ul>
+        <li><a href="#core-containerspring的核心容器">Core Container（Spring的核心容器）</a></li>
+        <li><a href="#data-accessintegration数据访问集成">Data Access/Integration（数据访问／集成）</a></li>
+        <li><a href="#web模块">Web模块</a></li>
+        <li><a href="#aopaspectsinstrumentation和messaging">AOP、Aspects、Instrumentation和Messaging</a></li>
+      </ul>
+    </li>
+    <li><a href="#spring-ioc体系结构设计">Spring IOC体系结构设计</a>
+      <ul>
+        <li><a href="#ioc容器功能规范和bean的注册">IOC容器功能规范和Bean的注册</a></li>
+        <li><a href="#beandefinition各种bean对象及其相互的关系">BeanDefinition：各种Bean对象及其相互的关系</a></li>
+        <li><a href="#applicationcontextioc接口设计和实现">ApplicationContext：IOC接口设计和实现</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="spring的概念">Spring的概念</h2>
+<h3 id="spring的起源">Spring的起源</h3>
+<p>要谈Spring的历史，就要先谈J2EE。J2EE应用程序的广泛实现是在1999年和2000年开始的，它的出现带来了诸如事务管理之类的<strong>核心中间层概念的标准化</strong>，但是在实践中并没有获得绝对的成功，因为<strong>开发效率</strong>，开发难度和实际的<strong>性能</strong>都令人失望。</p>
+<p>曾经使用过EJB开发JAVA EE应用的人，一定知道，在EJB开始的学习和应用非常的艰苦，很多东西都不能一下子就很容易的理解。EJB要严格地实现各种不同类型的接口，类似的或者重复的代码大量存在。而配置也是复杂和单调，同样使用JNDI进行对象查找的代码也是单调而枯燥。虽然有一些开发工作随着xdoclet的出现，而有所缓解，但是学习EJB的高昂代价，和极低的开发效率，极高的资源消耗，都造成了EJB的使用困难。而Spring出现的初衷就是为了解决类似的这些问题。</p>
+<p><strong>Spring的一个最大的目的就是使JAVA EE开发更加容易</strong>。同时，Spring之所以与Struts、Hibernate等单层框架不同，是因为Spring致力于提供一个以统一的、高效的方式构造整个应用，并且可以将单层框架以最佳的组合揉和在一起建立一个连贯的体系。可以说Spring是一个提供了更完善开发环境的一个框架，可以为POJO(Plain Ordinary Java Object)对象提供企业级的服务。</p>
+<h3 id="spring的特性">Spring的特性</h3>
+<p>从Spring框架的特性来看：</p>
+<ul>
+<li>
+<p>非侵入式：基于Spring开发的应用中的对象可以不依赖Spring的API；</p>
+</li>
+<li>
+<p>控制反转：IOC，指的是将对象创建权交给Spring去创建。使用Spring之前，对象的创建都是由我们自己在代码中new创建。而使用Spring之后，对象的创建都是给力Spring框架。</p>
+</li>
+<li>
+<p>依赖注入：DI，是指的是依赖的对象不需要手动调用setXX方法去设置，而是通过配置赋值。</p>
+</li>
+<li>
+<p>面向切面编程：Aspect Oriented Programming——AOP</p>
+<p>容器：Spring 是一个容器，因为它包含并且管理应用对象的生命周期</p>
+<p>组件化：Spring 实现了使用简单的组件配置组合成一个复杂的应用。在 Spring 中可以使用XML和Java注解组合这些对象。</p>
+<p>一站式：在 IOC 和 AOP 的基础上可以整合各种企业应用的开源框架和优秀的第三方类库（实际上 Spring 自身也提供了表现层的 SpringMVC 和持久层的 Spring JDBC）</p>
+</li>
+</ul>
+<p>从使用Spring 框架的<strong>好处</strong>看：</p>
+<ul>
+<li>Spring 在一个单元模式中是有组织的。即使包和类的数量非常大，你只要担心你需要的，而其它的就可以忽略了。</li>
+<li>Spring 不会让你白费力气做重复工作，它真正的利用了一些现有的技术，像 ORM 框架、日志框架、JEE、Quartz 和 JDK 计时器，其他视图技术。</li>
+<li>测试一个用 Spring 编写的应用程序很容易，因为环境相关的代码被移动到这个框架中。此外，通过使用 JavaBean-style POJOs，它在使用依赖注入注入测试数据时变得更容易。</li>
+<li>轻量级的 IOC 容器往往是轻量级的，例如，特别是当与 EJB 容器相比的时候。这有利于在内存和 CPU 资源有限的计算机上开发和部署应用程序。</li>
+</ul>
+<h2 id="spring框架组成">Spring框架组成</h2>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-1.png"
+    data-srcset="../images/spring-1.png, ../images/spring-1.png 1.5x, ../images/spring-1.png 2x"
+    data-sizes="auto"
+    alt="spring-1"
+    title="spring-1"/></p>
+<p>虽然这个图来源于Spring Framwork5.0 M4 版本，但是它依然是V4版本的图，比如Spring 5版本中的web模块已经去掉了<strong>Portlet模块</strong>，新增了<strong>WebFlux模块</strong>等。</p>
+<h3 id="core-containerspring的核心容器">Core Container（Spring的核心容器）</h3>
+<p>Spring 的核心容器是其他模块建立的基础，由 Beans 模块、Core 核心模块、Context 上下文模块和 SpEL 表达式语言模块组成，没有这些核心容器，也不可能有 AOP、Web 等上层的功能。具体介绍如下。</p>
+<ul>
+<li><strong>Beans 模块</strong>：提供了框架的基础部分，包括控制反转和依赖注入。</li>
+<li><strong>Core 核心模块</strong>：封装了 Spring 框架的底层部分，包括资源访问、类型转换及一些常用工具类。</li>
+<li><strong>Context 上下文模块</strong>：建立在 Core 和 Beans 模块的基础之上，集成 Beans 模块功能并添加资源绑定、数据验证、国际化、Java EE 支持、容器生命周期、事件传播等。ApplicationContext 接口是上下文模块的焦点。</li>
+<li><strong>SpEL 模块</strong>：提供了强大的表达式语言支持，支持访问和修改属性值，方法调用，支持访问及修改数组、容器和索引器，命名变量，支持算数和逻辑运算，支持从 Spring 容器获取 Bean，它也支持列表投影、选择和一般的列表聚合等。</li>
+</ul>
+<h3 id="data-accessintegration数据访问集成">Data Access/Integration（数据访问／集成）</h3>
+<p>数据访问／集成层包括 JDBC、ORM、OXM、JMS 和 Transactions 模块，具体介绍如下。</p>
+<ul>
+<li><strong>JDBC 模块</strong>：提供了一个 JDBC 的样例模板，使用这些模板能消除传统冗长的 JDBC 编码还有必须的事务控制，而且能享受到 Spring 管理事务的好处。</li>
+<li><strong>ORM 模块</strong>：提供与流行的“对象-关系”映射框架无缝集成的 API，包括 JPA、JDO、Hibernate 和 MyBatis 等。而且还可以使用 Spring 事务管理，无需额外控制事务。</li>
+<li><strong>OXM 模块</strong>：提供了一个支持 Object /XML 映射的抽象层实现，如 JAXB、Castor、XMLBeans、JiBX 和 XStream。将 Java 对象映射成 XML 数据，或者将XML 数据映射成 Java 对象。</li>
+<li><strong>JMS 模块</strong>：指 Java 消息服务，提供一套 “消息生产者、消息消费者”模板用于更加简单的使用 JMS，JMS 用于用于在两个应用程序之间，或分布式系统中发送消息，进行异步通信。</li>
+<li><strong>Transactions 事务模块</strong>：支持编程和声明式事务管理。</li>
+</ul>
+<h3 id="web模块">Web模块</h3>
+<p>Spring 的 Web 层包括 Web、Servlet、WebSocket 和 Webflux 组件，具体介绍如下。</p>
+<ul>
+<li><strong>Web 模块</strong>：提供了基本的 Web 开发集成特性，例如多文件上传功能、使用的 Servlet 监听器的 IOC 容器初始化以及 Web 应用上下文。</li>
+<li><strong>Servlet 模块</strong>：提供了一个 Spring MVC Web 框架实现。Spring MVC 框架提供了基于注解的请求资源注入、更简单的数据绑定、数据验证等及一套非常易用的 JSP 标签，完全无缝与 Spring 其他技术协作。</li>
+<li><strong>WebSocket 模块</strong>：提供了简单的接口，用户只要实现响应的接口就可以快速的搭建 WebSocket Server，从而实现双向通讯。</li>
+<li><strong>Webflux 模块</strong>： Spring WebFlux 是 Spring Framework 5.x中引入的新的响应式web框架。与Spring MVC不同，它不需要Servlet API，是完全异步且非阻塞的，并且通过Reactor项目实现了Reactive Streams规范。Spring WebFlux 用于创建基于事件循环执行模型的完全异步且非阻塞的应用程序。</li>
+</ul>
+<p>此外Spring4.x中还有Portlet 模块，在Spring 5.x中已经移除</p>
+<ul>
+<li><strong>Portlet 模块</strong>：提供了在 Portlet 环境中使用 MVC 实现，类似 Web-Servlet 模块的功能。</li>
+</ul>
+<h3 id="aopaspectsinstrumentation和messaging">AOP、Aspects、Instrumentation和Messaging</h3>
+<p>在 Core Container 之上是 AOP、Aspects 等模块，具体介绍如下：</p>
+<ul>
+<li><strong>AOP 模块</strong>：提供了面向切面编程实现，提供比如日志记录、权限控制、性能统计等通用功能和业务逻辑分离的技术，并且能动态的把这些功能添加到需要的代码中，这样各司其职，降低业务逻辑和通用功能的耦合。</li>
+<li><strong>Aspects 模块</strong>：提供与 AspectJ 的集成，是一个功能强大且成熟的面向切面编程（AOP）框架。</li>
+<li><strong>Instrumentation 模块</strong>：提供了类工具的支持和类加载器的实现，可以在特定的应用服务器中使用。</li>
+<li><strong>messaging 模块</strong>：Spring 4.0 以后新增了消息（Spring-messaging）模块，该模块提供了对消息传递体系结构和协议的支持。</li>
+<li><strong>jcl 模块</strong>： Spring 5.x中新增了日志框架集成的模块。</li>
+</ul>
+<h2 id="spring-ioc体系结构设计">Spring IOC体系结构设计</h2>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-2.png"
+    data-srcset="../images/spring-2.png, ../images/spring-2.png 1.5x, ../images/spring-2.png 2x"
+    data-sizes="auto"
+    alt="spring-2"
+    title="spring-2"/></p>
+<p>如果作为一个IOC容器的设计者，主体上应该包含哪几个部分：</p>
+<ul>
+<li>加载Bean的配置（比如xml），解析配置生成统一Bean容器中；</li>
+<li>根据Bean定义加载Bean的实例，并放在Bean的容器中，比如Bean的依赖注入，Bean的嵌套等</li>
+<li>除了基础Bean外，还有针对企业级的特别Bean，比如国际化Message、事件Event</li>
+<li>对容器Bean提供统一的管理和调用，比如用工厂模式管理，提供方法根据名字和类的类型从容器中获取Bean</li>
+</ul>
+<blockquote>
+<p>这种思考的过程才是建设性的，知识体系的构建才是高效的。</p>
+</blockquote>
+<h3 id="ioc容器功能规范和bean的注册">IOC容器功能规范和Bean的注册</h3>
+<blockquote>
+<p>Spring Bean的创建是典型的工厂模式，这一系列的Bean工厂，也即IOC容器为开发者管理对象间的依赖关系提供了很多便利和基础服务，在Spring中有许多的IOC容器的实现供用户选择和使用，这是IOC容器的基础；在顶层的结构设计主要围绕着BeanFactory和xxxRegistry进行：</p>
+<ul>
+<li><strong>BeanFactory： 工厂模式定义了IOC容器的基本功能规范</strong></li>
+<li><strong>BeanRegistry： 向IOC容器手工注册 BeanDefinition 对象的方法</strong></li>
+</ul>
+</blockquote>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-3.png"
+    data-srcset="../images/spring-3.png, ../images/spring-3.png 1.5x, ../images/spring-3.png 2x"
+    data-sizes="auto"
+    alt="spring-3"
+    title="spring-3"/></p>
+<h4 id="beanfactory定义了ioc-容器基本功能规范">BeanFactory定义了IOC 容器基本功能规范？</h4>
+<p><strong>BeanFactory作为最顶层的一个接口类，它定义了IOC容器的基本功能规范</strong>，BeanFactory 有三个子类：ListableBeanFactory、HierarchicalBeanFactory 和AutowireCapableBeanFactory。</p>
+<h4 id="beanfactory为何要定义这么多层次的接口定义了哪些接口">BeanFactory为何要定义这么多层次的接口？定义了哪些接口？</h4>
+<p>主要是为了<strong>区分在 Spring 内部在操作过程中对象的传递和转化过程中，对对象的数据访问所做的限制</strong>。</p>
+<ul>
+<li><strong>ListableBeanFactory</strong>：该接口定义了访问容器中 Bean 基本信息的若干方法，如查看Bean 的个数、获取某一类型 Bean 的配置名、查看容器中是否包括某一 Bean 等方法；</li>
+<li><strong>HierarchicalBeanFactory</strong>：父子级联 IoC 容器的接口，子容器可以通过接口方法访问父容器； 通过 HierarchicalBeanFactory 接口， Spring 的 IoC 容器可以建立父子层级关联的容器体系，子容器可以访问父容器中的 Bean，但父容器不能访问子容器的 Bean。Spring 使用父子容器实现了很多功能，比如在 Spring MVC 中，展现层 Bean 位于一个子容器中，而业务层和持久层的 Bean 位于父容器中。这样，展现层 Bean 就可以引用业务层和持久层的 Bean，而业务层和持久层的 Bean 则看不到展现层的 Bean。</li>
+<li><strong>ConfigurableBeanFactory</strong>：是一个重要的接口，增强了 IoC 容器的可定制性，它定义了设置类装载器、属性编辑器、容器初始化后置处理器等方法；</li>
+<li><strong>ConfigurableListableBeanFactory</strong>: ListableBeanFactory 和 ConfigurableBeanFactory的融合；</li>
+<li><strong>AutowireCapableBeanFactory</strong>：定义了将容器中的 Bean 按某种规则（如按名字匹配、按类型匹配等）进行自动装配的方法；</li>
+</ul>
+<h4 id="如何将bean注册到beanfactory中beanregistry">如何将Bean注册到BeanFactory中？BeanRegistry</h4>
+<p>Spring 配置文件中每一个<code>&lt;bean&gt;</code>节点元素在 Spring 容器里都通过一个 BeanDefinition 对象表示，它描述了 Bean 的配置信息。而 BeanDefinitionRegistry 接口提供了向容器手工注册 BeanDefinition 对象的方法。</p>
+<h3 id="beandefinition各种bean对象及其相互的关系">BeanDefinition：各种Bean对象及其相互的关系</h3>
+<blockquote>
+<p>Bean对象存在依赖嵌套等关系，所以设计者设计了BeanDefinition，它用来对Bean对象及关系定义；我们在理解时只需要抓住如下三个要点：</p>
+<ul>
+<li><strong>BeanDefinition 定义了各种Bean对象及其相互的关系</strong></li>
+<li><strong>BeanDefinitionReader 这是BeanDefinition的解析器</strong></li>
+<li><strong>BeanDefinitionHolder 这是BeanDefination的包装类，用来存储BeanDefinition，name以及aliases等。</strong></li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>BeanDefinition</strong></li>
+</ul>
+<p>SpringIOC容器管理了我们定义的各种Bean对象及其相互的关系，Bean对象在Spring实现中是以BeanDefinition来描述的，其继承体系如下</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-4.png"
+    data-srcset="../images/spring-4.png, ../images/spring-4.png 1.5x, ../images/spring-4.png 2x"
+    data-sizes="auto"
+    alt="spring-4"
+    title="spring-4"/></p>
+<ul>
+<li><strong>BeanDefinitionReader</strong></li>
+</ul>
+<p>Bean 的解析过程非常复杂，功能被分的很细，因为这里需要被扩展的地方很多，必须保证有足够的灵活性，以应对可能的变化。Bean 的解析主要就是对 Spring 配置文件的解析。这个解析过程主要通过下图中的类完成：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-5.png"
+    data-srcset="../images/spring-5.png, ../images/spring-5.png 1.5x, ../images/spring-5.png 2x"
+    data-sizes="auto"
+    alt="spring-5"
+    title="spring-5"/></p>
+<ul>
+<li><strong>BeanDefinitionHolder</strong></li>
+</ul>
+<p>BeanDefinitionHolder 这是BeanDefination的包装类，用来存储BeanDefinition，name以及aliases等</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-6.png"
+    data-srcset="../images/spring-6.png, ../images/spring-6.png 1.5x, ../images/spring-6.png 2x"
+    data-sizes="auto"
+    alt="spring-6"
+    title="spring-6"/></p>
+<h3 id="applicationcontextioc接口设计和实现">ApplicationContext：IOC接口设计和实现</h3>
+<blockquote>
+<p>IoC容器的接口类是ApplicationContext，很显然它必然继承BeanFactory对Bean规范（最基本的ioc容器的实现）进行定义。而ApplicationContext表示的是应用的上下文，除了对Bean的管理外，还至少应该包含了</p>
+<ul>
+<li><strong>访问资源</strong>： 对不同方式的Bean配置（即资源）进行加载。(实现ResourcePatternResolver接口)</li>
+<li><strong>国际化</strong>: 支持信息源，可以实现国际化。（实现MessageSource接口）</li>
+<li><strong>应用事件</strong>: 支持应用事件。(实现ApplicationEventPublisher接口)</li>
+</ul>
+</blockquote>
+<h4 id="applicationcontext接口的设计">ApplicationContext接口的设计</h4>
+<p>我们来看下ApplicationContext整体结构</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-7.png"
+    data-srcset="../images/spring-7.png, ../images/spring-7.png 1.5x, ../images/spring-7.png 2x"
+    data-sizes="auto"
+    alt="spring-7"
+    title="spring-7"/></p>
+<p><strong>HierarchicalBeanFactory 和 ListableBeanFactory</strong>： ApplicationContext 继承了 HierarchicalBeanFactory 和 ListableBeanFactory 接口，在此基础上，还通过多个其他的接口扩展了 BeanFactory 的功能：</p>
+<p><strong>ApplicationEventPublisher</strong>：让容器拥有发布应用上下文事件的功能，包括容器启动事件、关闭事件等。实现了 ApplicationListener 事件监听接口的 Bean 可以接收到容器事件 ， 并对事件进行响应处理 。 在 ApplicationContext 抽象实现类AbstractApplicationContext 中，我们可以发现存在一个 ApplicationEventMulticaster，它负责保存所有监听器，以便在容器产生上下文事件时通知这些事件监听者。</p>
+<p><strong>MessageSource</strong>：为应用提供 i18n 国际化消息访问的功能；</p>
+<p><strong>ResourcePatternResolver</strong> ： 所 有 ApplicationContext 实现类都实现了类似于PathMatchingResourcePatternResolver 的功能，可以通过带前缀的 Ant 风格的资源文件路径装载 Spring 的配置文件。</p>
+<p><strong>LifeCycle</strong>：该接口是 Spring 2.0 加入的，该接口提供了 start()和 stop()两个方法，主要用于控制异步处理过程。在具体使用时，该接口同时被 ApplicationContext 实现及具体 Bean 实现， ApplicationContext 会将 start/stop 的信息传递给容器中所有实现了该接口的 Bean，以达到管理和控制 JMX、任务调度等目的。</p>
+<h4 id="applicationcontext接口的实现">ApplicationContext接口的实现</h4>
+<p>在考虑ApplicationContext接口的实现时，关键的点在于，不同Bean的配置方式（比如xml,groovy,annotation等）有着不同的资源加载方式，这便衍生除了众多ApplicationContext的实现类。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-8.png"
+    data-srcset="../images/spring-8.png, ../images/spring-8.png 1.5x, ../images/spring-8.png 2x"
+    data-sizes="auto"
+    alt="spring-8"
+    title="spring-8"/></p>
+<p>我们把之前的设计要点和设计结构结合起来看：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/spring-9.png"
+    data-srcset="../images/spring-9.png, ../images/spring-9.png 1.5x, ../images/spring-9.png 2x"
+    data-sizes="auto"
+    alt="spring-9"
+    title="spring-9"/></p>
+<p>到此，基本可以帮助你从顶层构建对IoC容器的设计理解，而不是过早沉溺于代码的细节。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2022-01-09&#32;17:22:08>更新于 2022-01-09&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/spring/' class="post-tag">Spring</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%B9%BF%E5%91%8A%E8%AE%A1%E8%B4%B9%E7%B3%BB%E7%BB%9Fkafka-stream%E7%9A%84%E5%AE%9E%E8%B7%B5/" class="post-nav-item" rel="prev" title="广告计费系统Kafka Stream的实践"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>广告计费系统Kafka Stream的实践</a>
+      <a href="/posts/%E5%8D%81%E5%88%86%E9%92%9F%E5%B8%A6%E4%BD%A0%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3jvm%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/" class="post-nav-item" rel="next" title="十分钟带你深入了解JVM运行机制">十分钟带你深入了解JVM运行机制<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
