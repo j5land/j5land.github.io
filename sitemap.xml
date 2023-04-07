@@ -2,14 +2,18 @@
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
   ><url>
-      <loc>http://example.org/categories/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/ai/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/categories/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/chatgpt/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/posts/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/categories/%E4%BB%A3%E7%A0%81review/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/posts/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/hbase/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
       <loc>http://example.org/categories/hbase/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
       <loc>http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/posts/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/tags/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/nosql/</loc><lastmod>2023-03-01T16:00:18&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc><lastmod>2023-03-01T16:00:18&#43;08:00</lastmod></url><url>
       <loc>http://example.org/posts/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3hbase%E7%9A%84%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BC%B8%E7%BC%A9%E6%80%A7%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/</loc><lastmod>2023-03-01T16:00:18&#43;08:00</lastmod></url><url>

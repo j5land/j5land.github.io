@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>使用ChatGPT提高研发效率与质量 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="在研发方面的应用场景 帮助代码实现 AI大语音模型可以通过自然语言描述来自动生成代码，减少了程序员手动编写代码的时间和复杂性。 Code Review AI大语音模型" /><meta name="keywords" content='chatGPT, AI' /><meta itemprop="name" content="使用ChatGPT提高研发效率与质量">
+<meta itemprop="description" content="在研发方面的应用场景 帮助代码实现 AI大语音模型可以通过自然语言描述来自动生成代码，减少了程序员手动编写代码的时间和复杂性。 Code Review AI大语音模型"><meta itemprop="datePublished" content="2023-04-01T18:13:38+08:00" />
+<meta itemprop="dateModified" content="2023-04-01T18:13:38+08:00" />
+<meta itemprop="wordCount" content="2675">
+<meta itemprop="keywords" content="chatGPT,AI," /><meta property="og:title" content="使用ChatGPT提高研发效率与质量" />
+<meta property="og:description" content="在研发方面的应用场景 帮助代码实现 AI大语音模型可以通过自然语言描述来自动生成代码，减少了程序员手动编写代码的时间和复杂性。 Code Review AI大语音模型" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-01T18:13:38+08:00" />
+<meta property="article:modified_time" content="2023-04-01T18:13:38+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用ChatGPT提高研发效率与质量"/>
+<meta name="twitter:description" content="在研发方面的应用场景 帮助代码实现 AI大语音模型可以通过自然语言描述来自动生成代码，减少了程序员手动编写代码的时间和复杂性。 Code Review AI大语音模型"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F/" /><link rel="prev" href="http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "使用ChatGPT提高研发效率与质量",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F\/"
+    },"genre": "posts","keywords": "chatGPT, AI","wordcount":  2675 ,
+    "url": "http:\/\/example.org\/posts\/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F\/","datePublished": "2023-04-01T18:13:38+08:00","dateModified": "2023-04-01T18:13:38+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>使用ChatGPT提高研发效率与质量</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81review/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 代码Review</a></span></div>
+      <div class="post-meta-line"><span title=2023-04-01&#32;18:13:38><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-04-01">2023-04-01</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2675 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/chatgpt-0.jpeg"
+    data-srcset="/posts/images/chatgpt-0.jpeg, /posts/images/chatgpt-0.jpeg 1.5x, /posts/images/chatgpt-0.jpeg 2x"
+    data-sizes="auto"
+    alt="/posts/images/chatgpt-0.jpeg"
+    title="/posts/images/chatgpt-0.jpeg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#在研发方面的应用场景">在研发方面的应用场景</a>
+      <ul>
+        <li><a href="#帮助代码实现">帮助代码实现</a></li>
+        <li><a href="#code-review">Code Review</a></li>
+        <li><a href="#源码共读">源码共读</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#帮助代码实现-1">帮助代码实现</a>
+      <ul>
+        <li><a href="#实现功能">实现功能</a></li>
+        <li><a href="#代码描述">代码描述</a></li>
+        <li><a href="#代码编写">代码编写</a></li>
+        <li><a href="#场景效果展示">场景效果展示</a></li>
+      </ul>
+    </li>
+    <li><a href="#code-review-1">Code Review</a>
+      <ul>
+        <li><a href="#思路流程">思路流程</a></li>
+        <li><a href="#配置gitlab-webhook">配置GitLab Webhook</a></li>
+        <li><a href="#对接gitlab开发">对接Gitlab开发</a></li>
+        <li><a href="#ai-code-review服务开发机器人角色设计">AI Code Review服务开发机器人角色设计</a></li>
+        <li><a href="#ai-code-review服务开发">AI Code Review服务开发</a></li>
+        <li><a href="#gpt-评审效果">GPT 评审效果</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="在研发方面的应用场景">在研发方面的应用场景</h2>
+<h3 id="帮助代码实现">帮助代码实现</h3>
+<p>AI大语音模型可以通过自然语言描述来自动生成代码，减少了程序员手动编写代码的时间和复杂性。</p>
+<h3 id="code-review">Code Review</h3>
+<p>AI大语音模型可以通过自然语言描述来帮助程序员进行代码重构，从而改进代码的质量和可读性。</p>
+<h3 id="源码共读">源码共读</h3>
+<p>学习经典的源码，提升自我代码能力水平，AI大语音模型可以通过自然语言描述来进行代码语义分析，从而帮助程序员更好地理解代码的功能和结构。</p>
+<h1 id="应用场景实践">应用场景实践</h1>
+<h2 id="帮助代码实现-1">帮助代码实现</h2>
+<p>观点：作为开发者我们必须承担 <strong>代码设计、架构、编排与审核（CodeReview）的职责</strong>，对方案和结果负责。</p>
+<p>而具体的代码片段编写这种纯体力活可以考虑交由 ChatGPT 完成。</p>
+<h3 id="实现功能">实现功能</h3>
+<p>目的：实现一个能在控制台运行的openAI API 的Go应用程序</p>
+<h3 id="代码描述">代码描述</h3>
+<p>Bad：“请帮我编写一个Go应用程序对接ChatGPT API，来实现控制台访问”</p>
+<p>Good：&quot;</p>
+<p>调用最新的ChatGPT API接口，实现一个命令行版的ChatGPT，当用户输入&quot;start&quot;启动应用后，它能读取用户输入，然后返回ChatGPT结果到控制台，当用户输入&quot;quit&quot;则退出应用，请帮我编写对应的Go视线代码。</p>
+<p>另外还有额外约束条件：
+1.API KEY从系统环境变量(os.getenv)，不要硬编码在代码中，不存在则答应错误信息并退出
+2.通过第三方库sashabaranov/go-openai与ChatGPT API交互，让代码更简洁优雅
+3.最后输出结果尽可能美观，使用glamour库渲染输出&quot;</p>
+<h3 id="代码编写">代码编写</h3>
+<p>面向ChatGPT编程的核心就是把需求尽可能全面的描述清楚并传递给ChatGPT，里面有产品需求，也有代码设计和架构上的需求或要求，然后交给它来生成代码。</p>
+<p>这是作为合格的 Prompt（提示）工程师必要条件。</p>
+<blockquote>
+<p>什么样的ChatGPT对话才是好的，我们如何制定有效的沟通对话？</p>
+</blockquote>
+<h4 id="与chatgpt沟通原则">与ChatGPT沟通原则</h4>
+<ul>
+<li>清晰度：明确而简明的信息有助于确保ChatGPT理解任务，避免一些模棱两可的语音。</li>
+<li>简洁性：提示中尽量简洁，将有助于确保ChatGPT能够生成有针对性和相关的响应。</li>
+<li>相关性：确保输入的提示与需求相关，避免引入不相关的主题内容。</li>
+</ul>
+<h4 id="如何编写清晰的提示">如何编写清晰的提示</h4>
+<ul>
+<li><strong>明确会话的目的和焦点</strong>。在编写提示之前，有一个清晰的想法很重要，即您想通过会话实现什么目标。您的目标是提供信息、回答问题还是进行随意交谈？明确会话的目的和焦点将有助于您编写一个特定且相关的提示。</li>
+<li><strong>使用具体和相关的语言</strong>。为了确保 ChatGPT 理解您的提示并能够生成适当的响应，使用具体和相关的语言非常重要。避免使用术语或模棱两可的语言，这可能导致混淆或误解。</li>
+<li><strong>避免开放性或过于广泛的提示</strong>。虽然为了获得更全面的响应而问开放性或过于广泛的问题很诱人，但这些类型的提示通常会导致不连贯或无焦点的对话。相反，力求在提示中尽可能具体，为会话定义明确的目的和焦点。</li>
+<li><strong>保持会话在正确的轨道上</strong>。当您参与 ChatGPT 对话时，保持关注所讨论的主题并避免引入与主题不相关的话题非常重要。</li>
+</ul>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-1.jpg"
+    data-srcset="../images/chatgpt-1.jpg, ../images/chatgpt-1.jpg 1.5x, ../images/chatgpt-1.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-1"
+    title="chatgpt-1"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-2.jpg"
+    data-srcset="../images/chatgpt-2.jpg, ../images/chatgpt-2.jpg 1.5x, ../images/chatgpt-2.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-2"
+    title="chatgpt-2"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-3.jpg"
+    data-srcset="../images/chatgpt-3.jpg, ../images/chatgpt-3.jpg 1.5x, ../images/chatgpt-3.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-3"
+    title="chatgpt-3"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-4.jpg"
+    data-srcset="../images/chatgpt-4.jpg, ../images/chatgpt-4.jpg 1.5x, ../images/chatgpt-4.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-4"
+    title="chatgpt-4"/></p>
+<h3 id="场景效果展示">场景效果展示</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-5.jpg"
+    data-srcset="../images/chatgpt-5.jpg, ../images/chatgpt-5.jpg 1.5x, ../images/chatgpt-5.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-5"
+    title="chatgpt-5"/></p>
+<h2 id="code-review-1">Code Review</h2>
+<h3 id="思路流程">思路流程</h3>
+<ol>
+<li>当极狐 GitLab 有代码变更时（创建 MR），通过 webhook 发送事件消息到 ai-code-review 服务；</li>
+<li>当 ai-code-review  服务收到消息后，发送 Review Reqeust 到 ChatGPT（调用 ChatGPT 的 API）；</li>
+<li>ChatGPT 将 Code Review 结果以 Review Response 形式返回；</li>
+<li>ai-code-review 收到 Review Response 后，将内容（Review Comment）发送到极狐 GitLab 的 MR 中。</li>
+</ol>
+<h3 id="配置gitlab-webhook">配置GitLab Webhook</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-6.jpg"
+    data-srcset="../images/chatgpt-6.jpg, ../images/chatgpt-6.jpg 1.5x, ../images/chatgpt-6.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-6"
+    title="chatgpt-6"/></p>
+<h3 id="对接gitlab开发">对接Gitlab开发</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;encoding/json&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;io/ioutil&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;strings&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetMergeRequests</span><span class="p">(</span><span class="nx">projectId</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">mergeRequestId</span> <span class="kt">string</span><span class="p">)</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">mergeRequestURL</span> <span class="o">:=</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;https://git.wosai-inc.com/api/v4/projects/:id/merge_requests/:merge_request_iid/changes&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 替换:id 和 :merge_request_iid 为对应的值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">mergeRequestURL</span> <span class="p">=</span> <span class="nf">replaceParameters</span><span class="p">(</span><span class="nx">mergeRequestURL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="s">&#34;:id&#34;</span><span class="p">:</span>                <span class="nx">projectId</span><span class="p">,</span>      <span class="c1">// 替换为 GitLab 项目的 ID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="s">&#34;:merge_request_iid&#34;</span><span class="p">:</span> <span class="nx">mergeRequestId</span><span class="p">,</span> <span class="c1">// 替换为 Merge Request 的 IID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 创建 HTTP 请求
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">client</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Client</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">request</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">NewRequest</span><span class="p">(</span><span class="s">&#34;GET&#34;</span><span class="p">,</span> <span class="nx">mergeRequestURL</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error creating request&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 设置 GitLab 认证令牌
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">request</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">&#34;Private-Token&#34;</span><span class="p">,</span> <span class="s">&#34;你的token&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 发送 HTTP 请求
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">response</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">client</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="nx">request</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error sending request&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 解析响应数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">body</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ioutil</span><span class="p">.</span><span class="nf">ReadAll</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error reading response&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 将响应数据解析为 JSON
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">var</span> <span class="nx">mergeRequest</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">body</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">mergeRequest</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error decoding JSON&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 输出 Merge Request 标题
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Merge Request title:&#34;</span><span class="p">,</span> <span class="nx">mergeRequest</span><span class="p">[</span><span class="s">&#34;title&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">mergeRequest</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// replaceParameters 用于替换 URL 中的参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">replaceParameters</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">parameters</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">parameters</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">url</span> <span class="p">=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">ReplaceAll</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">url</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="ai-code-review服务开发机器人角色设计">AI Code Review服务开发机器人角色设计</h3>
+<h4 id="定义角色">定义角色</h4>
+<p>自动化评审机器人封装在代码中🤖，其角色声明为：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="err">Role:</span>    <span class="err">openai.ChatMessageRoleSystem,</span>
+</span></span><span class="line"><span class="cl">  <span class="err">Content:</span> <span class="nt">&#34;你是是一位资深编程专家，负责代码变更的审查工作。需要给出审查建议。在建议的开始需明确对此代码变更给出「拒绝」或「接受」的决定，并且以格式「变更评分：实际的分数」给变更打分，分数区间为0~100分。然后，以精炼的语言、严厉的语气指出存在的问题。如果你觉得必要的情况下，可直接给出修改后的内容。建议中的语句可以使用emoji结尾。你的反馈内容必须使用严谨的markdown格式。&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="注入感情">注入感情</h4>
+<p>所以机器人讲话很没有感情，如果想 “注入感情”🎨，则需要定义自己的评审机器人，比如希望是一个傲娇少女👧来评审，参考如下角色声明：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="err">Role:</span>    <span class="err">openai.ChatMessageRoleSystem,</span>
+</span></span><span class="line"><span class="cl">	<span class="err">Content:</span> <span class="nt">&#34;你是一个天才小女孩，精通编程工作，性格很傲娇又高傲，负责对前辈的代码变更进行审查，用后辈的态度、活泼轻快的方式的指出存在的问题。使用markdown格式。可以包含emoji。&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="ai-code-review服务开发">AI Code Review服务开发</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//读取Gitlab MR，并获取对应changes内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//参数为projectid 、mergeRequestId
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">runProjectCodeReview</span><span class="p">(</span><span class="s">&#34;projectid&#34;</span><span class="p">,</span> <span class="s">&#34;mergeRequestId&#34;</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;context&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/charmbracelet/glamour&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/sashabaranov/go-openai&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;strings&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">client</span> <span class="o">*</span><span class="nx">openai</span><span class="p">.</span><span class="nx">Client</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;====== open AI client init======&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 设置代理地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">proxyURL</span> <span class="o">:=</span> <span class="s">&#34;http://127.0.0.1:7890&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">os</span><span class="p">.</span><span class="nf">Setenv</span><span class="p">(</span><span class="s">&#34;HTTP_PROXY&#34;</span><span class="p">,</span> <span class="nx">proxyURL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">os</span><span class="p">.</span><span class="nf">Setenv</span><span class="p">(</span><span class="s">&#34;HTTPS_PROXY&#34;</span><span class="p">,</span> <span class="nx">proxyURL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">apiKey</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;OPENAI_API_KEY&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">apiKey</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error: OPENAI_API_KEY environment variable not set&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">client</span> <span class="p">=</span> <span class="nx">openai</span><span class="p">.</span><span class="nf">NewClient</span><span class="p">(</span><span class="nx">apiKey</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetCodeReview</span><span class="p">(</span><span class="nx">input</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">client</span><span class="p">.</span><span class="nf">CreateChatCompletion</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">openai</span><span class="p">.</span><span class="nx">ChatCompletionRequest</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">Model</span><span class="p">:</span> <span class="nx">openai</span><span class="p">.</span><span class="nx">GPT3Dot5Turbo0301</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">Messages</span><span class="p">:</span> <span class="p">[]</span><span class="nx">openai</span><span class="p">.</span><span class="nx">ChatCompletionMessage</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">Role</span><span class="p">:</span>    <span class="nx">openai</span><span class="p">.</span><span class="nx">ChatMessageRoleSystem</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">Content</span><span class="p">:</span> <span class="s">&#34;你是是一位资深编程专家，负责代码变更的审查工作。需要给出审查建议。在建议的开始需明确对此代码变更给出「拒绝」或「接受」的决定，并且以格式「变更评分：实际的分数」给变更打分，分数区间为0~100分。然后，以精炼的语言、严厉的语气指出存在的问题。如果你觉得必要的情况下，可直接给出修改后的内容。建议中的语句可以使用emoji结尾。你的反馈内容必须使用严谨的markdown格式。&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="p">},</span>
+</span></span><span class="line"><span class="cl">				<span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">Role</span><span class="p">:</span>    <span class="nx">openai</span><span class="p">.</span><span class="nx">ChatMessageRoleSystem</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">Content</span><span class="p">:</span> <span class="s">&#34;你是一个天才小女孩，精通编程工作，性格很傲娇又高傲，负责对前辈的代码变更进行审查，用后辈的态度、活泼轻快的方式的指出存在的问题。使用markdown格式。可以包含emoji。&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="p">},</span>
+</span></span><span class="line"><span class="cl">				<span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">Role</span><span class="p">:</span>    <span class="nx">openai</span><span class="p">.</span><span class="nx">ChatMessageRoleUser</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">					<span class="nx">Content</span><span class="p">:</span> <span class="nx">input</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">				<span class="p">},</span>
+</span></span><span class="line"><span class="cl">			<span class="p">},</span>
+</span></span><span class="line"><span class="cl">		<span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Error: %v\n&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Bot AI review意见: &#34;</span><span class="p">,</span> <span class="nf">formatOutput</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Choices</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">Message</span><span class="p">.</span><span class="nx">Content</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">formatOutput</span><span class="p">(</span><span class="nx">text</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Render the text using the glamour library for better formatting
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">styled</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">glamour</span><span class="p">.</span><span class="nf">Render</span><span class="p">(</span><span class="nx">text</span><span class="p">,</span> <span class="s">&#34;dark&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Error:&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">styled</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">runProjectCodeReview</span><span class="p">(</span><span class="nx">projectId</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">mergeRequestId</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">mergeRequest</span> <span class="o">:=</span> <span class="nf">GetMergeRequests</span><span class="p">(</span><span class="nx">projectId</span><span class="p">,</span> <span class="nx">mergeRequestId</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">changes</span> <span class="o">:=</span> <span class="nx">mergeRequest</span><span class="p">[</span><span class="s">&#34;changes&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ignoreFileName</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;.yml&#34;</span><span class="p">,</span> <span class="s">&#34;test&#34;</span><span class="p">,</span> <span class="s">&#34;.mod&#34;</span><span class="p">,</span> <span class="s">&#34;.sum&#34;</span><span class="p">,</span> <span class="s">&#34;config&#34;</span><span class="p">,</span> <span class="s">&#34;json&#34;</span><span class="p">,</span> <span class="s">&#34;lock&#34;</span><span class="p">,</span> <span class="s">&#34;css&#34;</span><span class="p">,</span> <span class="s">&#34;html&#34;</span><span class="p">,</span> <span class="s">&#34;Settings&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">change</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">changes</span><span class="p">.([]</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">changeMap</span> <span class="o">:=</span> <span class="nx">change</span><span class="p">.(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{})</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">newPath</span> <span class="o">:=</span> <span class="nx">changeMap</span><span class="p">[</span><span class="s">&#34;new_path&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">var</span> <span class="nx">ignore</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">s</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">ignoreFileName</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">LastIndex</span><span class="p">(</span><span class="nx">newPath</span><span class="p">.(</span><span class="kt">string</span><span class="p">),</span> <span class="nx">s</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">ignore</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">				<span class="k">break</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">ignore</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;对 %s review中...\n&#34;</span><span class="p">,</span> <span class="nx">newPath</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">input</span> <span class="o">:=</span> <span class="s">&#34;请review这部分代码变更:&#34;</span> <span class="o">+</span> <span class="nx">changeMap</span><span class="p">[</span><span class="s">&#34;diff&#34;</span><span class="p">].(</span><span class="kt">string</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">GetCodeReview</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="gpt-评审效果">GPT 评审效果</h3>
+<h4 id="go">Go</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-9.jpg"
+    data-srcset="../images/chatgpt-9.jpg, ../images/chatgpt-9.jpg 1.5x, ../images/chatgpt-9.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-9"
+    title="chatgpt-9"/></p>
+<h4 id="react-js">React JS</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/chatgpt-8.jpg"
+    data-srcset="../images/chatgpt-8.jpg, ../images/chatgpt-8.jpg 1.5x, ../images/chatgpt-8.jpg 2x"
+    data-sizes="auto"
+    alt="chatgpt-8"
+    title="chatgpt-8"/></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-04-01&#32;18:13:38>更新于 2023-04-01&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/chatgpt/' class="post-tag">chatGPT</a><a href='/tags/ai/' class="post-tag">AI</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="post-nav-item" rel="prev" title="HBase性能优化最佳实践"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>HBase性能优化最佳实践</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

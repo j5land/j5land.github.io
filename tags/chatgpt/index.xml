@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>chatGPT - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/chatgpt/</link>
+    <description>chatGPT - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 01 Apr 2023 18:13:38 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/chatgpt/" rel="self" type="application/rss+xml" /><item>
+  <title>使用ChatGPT提高研发效率与质量</title>
+  <link>http://example.org/posts/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F/</link>
+  <pubDate>Sat, 01 Apr 2023 18:13:38 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/chatgpt-0.jpeg" referrerpolicy="no-referrer">
+      </div>在研发方面的应用场景 帮助代码实现 AI大语音模型可以通过自然语言描述来自动生成代码，减少了程序员手动编写代码的时间和复杂性。 Code Review AI大语音模型]]></description>
+</item>
+</channel>
+</rss>
