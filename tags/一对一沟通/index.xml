@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>一对一沟通 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/</link>
+    <description>一对一沟通 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 19 Apr 2023 14:23:39 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/" rel="self" type="application/rss+xml" /><item>
+  <title>团队管理的一对一沟通</title>
+  <link>http://example.org/posts/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/</link>
+  <pubDate>Wed, 19 Apr 2023 14:23:39 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/1v1.jpg" referrerpolicy="no-referrer">
+      </div>背景 在软件开发领域，研发团队管理的重要性不言而喻。为了保证团队的高效运转和高质量的成果，管理者需要采取多种方法，其中1v1沟通可以说是非常关]]></description>
+</item>
+</channel>
+</rss>

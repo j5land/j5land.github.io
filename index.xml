@@ -3,9 +3,19 @@
     <title>J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/</link>
     <description>J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 01 Apr 2023 18:13:38 &#43;0800</lastBuildDate>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 19 Apr 2023 14:23:39 &#43;0800</lastBuildDate>
       <atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
+  <title>团队管理的一对一沟通</title>
+  <link>http://example.org/posts/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/</link>
+  <pubDate>Wed, 19 Apr 2023 14:23:39 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/1v1.jpg" referrerpolicy="no-referrer">
+      </div>背景 在软件开发领域，研发团队管理的重要性不言而喻。为了保证团队的高效运转和高质量的成果，管理者需要采取多种方法，其中1v1沟通可以说是非常关]]></description>
+</item>
+<item>
   <title>使用ChatGPT提高研发效率与质量</title>
   <link>http://example.org/posts/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F/</link>
   <pubDate>Sat, 01 Apr 2023 18:13:38 &#43;0800</pubDate>
@@ -657,14 +667,6 @@
   <author>j5land</author>
   <guid>http://example.org/posts/%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9Fspringboot%E8%84%9A%E6%89%8B%E6%9E%B6/</guid>
   <description><![CDATA[背景 随着公司业务迅速发展，团队人员也逐渐壮大，我们需要一种方式去规范大家的工程结构以及代码依赖pom，更需要一种模板工具可以快速搭建项目的能]]></description>
-</item>
-<item>
-  <title>如何编写优雅的Java代码</title>
-  <link>http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/</link>
-  <pubDate>Fri, 09 Sep 2022 14:14:50 &#43;0800</pubDate>
-  <author>j5land</author>
-  <guid>http://example.org/posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84java%E4%BB%A3%E7%A0%81/</guid>
-  <description><![CDATA[背景 随着软件代码日积月累，系统维护成本变得越来越高，是所有开发团队面临的问题。持续优化代码，提高代码质量是提升系统生命力有效手段之一。在编码]]></description>
 </item>
 </channel>
 </rss>

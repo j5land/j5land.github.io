@@ -2,12 +2,16 @@
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
   ><url>
+      <loc>http://example.org/categories/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/posts/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/categories/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/posts/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/%E4%B8%80%E5%AF%B9%E4%B8%80%E6%B2%9F%E9%80%9A/</loc><lastmod>2023-04-19T14:23:39&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/ai/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/categories/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/chatgpt/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/posts/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/tags/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
       <loc>http://example.org/categories/%E4%BB%A3%E7%A0%81review/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
       <loc>http://example.org/posts/%E4%BD%BF%E7%94%A8chatgpt%E6%8F%90%E9%AB%98%E7%A0%94%E5%8F%91%E6%95%88%E7%8E%87%E4%B8%8E%E8%B4%A8%E9%87%8F/</loc><lastmod>2023-04-01T18:13:38&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/hbase/</loc><lastmod>2023-03-06T18:21:46&#43;08:00</lastmod></url><url>
