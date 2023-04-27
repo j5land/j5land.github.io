@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>敏捷开发 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/</link>
+    <description>敏捷开发 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 27 Apr 2023 16:35:53 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/" rel="self" type="application/rss+xml" /><item>
+  <title>使用Scrum通过协作提高团队效率</title>
+  <link>http://example.org/posts/%E4%BD%BF%E7%94%A8scrum%E9%80%9A%E8%BF%87%E5%8D%8F%E4%BD%9C%E6%8F%90%E9%AB%98%E5%9B%A2%E9%98%9F%E6%95%88%E7%8E%87/</link>
+  <pubDate>Thu, 27 Apr 2023 16:35:53 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E4%BD%BF%E7%94%A8scrum%E9%80%9A%E8%BF%87%E5%8D%8F%E4%BD%9C%E6%8F%90%E9%AB%98%E5%9B%A2%E9%98%9F%E6%95%88%E7%8E%87/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/scrum-6.png" referrerpolicy="no-referrer">
+      </div>什么是Scrum Scrum是一种敏捷开发方法，它强调团队合作、迭代开发和快速反馈。Scrum的核心是一个开发团队，该团队通过增量式、迭代式地]]></description>
+</item>
+</channel>
+</rss>
