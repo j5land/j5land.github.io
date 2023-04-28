@@ -3,9 +3,19 @@
     <title>J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/</link>
     <description>J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 27 Apr 2023 16:35:53 &#43;0800</lastBuildDate>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 28 Apr 2023 17:35:44 &#43;0800</lastBuildDate>
       <atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
+  <title>使用Nginx代理转发openai.com请求</title>
+  <link>http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91openai.com%E8%AF%B7%E6%B1%82/</link>
+  <pubDate>Fri, 28 Apr 2023 17:35:44 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91openai.com%E8%AF%B7%E6%B1%82/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/clash-1.jpeg" referrerpolicy="no-referrer">
+      </div>背景 在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将]]></description>
+</item>
+<item>
   <title>使用Scrum通过协作提高团队效率</title>
   <link>http://example.org/posts/%E4%BD%BF%E7%94%A8scrum%E9%80%9A%E8%BF%87%E5%8D%8F%E4%BD%9C%E6%8F%90%E9%AB%98%E5%9B%A2%E9%98%9F%E6%95%88%E7%8E%87/</link>
   <pubDate>Thu, 27 Apr 2023 16:35:53 &#43;0800</pubDate>
@@ -661,14 +671,6 @@
 <li><a href="https://blog.51cto.com/liukang/2090211"target="_blank" rel="external nofollow noopener noreferrer">https://blog.51cto.com/liukang/2090211</a></li>
 <li><a href="https://projectreactor.io/docs/netty/snapshot/reference/index.html#_connection_pool_2"target="_blank" rel="external nofollow noopener noreferrer">https://projectreactor.io/docs/netty/snapshot/reference/index.html#_connection_pool_2</a></li>
 </ul>]]></description>
-</item>
-<item>
-  <title>单元测试最佳实践</title>
-  <link>http://example.org/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link>
-  <pubDate>Mon, 21 Nov 2022 14:02:25 &#43;0800</pubDate>
-  <author>j5land</author>
-  <guid>http://example.org/posts/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid>
-  <description><![CDATA[背景 在近期的代码重构的过程中，遇到各式各样的问题，比如调整代码顺序导致的bug，方法重构参数校验逻辑的移除等。 在上线前需要花大量时间进行测试]]></description>
 </item>
 </channel>
 </rss>

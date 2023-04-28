@@ -2,11 +2,16 @@
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
   ><url>
-      <loc>http://example.org/categories/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/posts/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/categories/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/clash/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/nginx/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/openai/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/posts/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/categories/%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91openai.com%E8%AF%B7%E6%B1%82/</loc><lastmod>2023-04-28T17:35:44&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/scrum/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>
-      <loc>http://example.org/tags/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>
       <loc>http://example.org/posts/%E4%BD%BF%E7%94%A8scrum%E9%80%9A%E8%BF%87%E5%8D%8F%E4%BD%9C%E6%8F%90%E9%AB%98%E5%9B%A2%E9%98%9F%E6%95%88%E7%8E%87/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>
       <loc>http://example.org/categories/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/</loc><lastmod>2023-04-27T16:35:53&#43;08:00</lastmod></url><url>

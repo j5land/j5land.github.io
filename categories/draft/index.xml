@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>draft - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/draft/</link>
+    <description>draft - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 28 Apr 2023 17:35:44 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/draft/" rel="self" type="application/rss+xml" /><item>
+  <title>使用Nginx代理转发openai.com请求</title>
+  <link>http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91openai.com%E8%AF%B7%E6%B1%82/</link>
+  <pubDate>Fri, 28 Apr 2023 17:35:44 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91openai.com%E8%AF%B7%E6%B1%82/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/clash-1.jpeg" referrerpolicy="no-referrer">
+      </div>背景 在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将]]></description>
+</item>
+</channel>
+</rss>
