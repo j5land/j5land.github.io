@@ -5,35 +5,35 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
     <meta name="robots" content="noodp" />
-    <title>使用Nginx转发api.openai.com请求 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+    <title>《异类》的读书笔记 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
 <meta name="author-link" content="">
-<meta name="description" content="背景 在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将" /><meta name="keywords" content='clash, nginx, openai' /><meta itemprop="name" content="使用Nginx转发api.openai.com请求">
-<meta itemprop="description" content="背景 在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将"><meta itemprop="datePublished" content="2023-04-28T17:35:44+08:00" />
-<meta itemprop="dateModified" content="2023-04-28T17:35:44+08:00" />
-<meta itemprop="wordCount" content="1603">
-<meta itemprop="keywords" content="clash,nginx,openai," /><meta property="og:title" content="使用Nginx转发api.openai.com请求" />
-<meta property="og:description" content="背景 在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将" />
+<meta name="description" content="概览 《异类》是由马尔科姆·格拉德威尔所著的一本非常受欢迎的书籍，它主要讲述了成功的背后其实有很多看不见的“秘密”，而这些“秘密”背后往往是勤" /><meta name="keywords" content='读书笔记, 异类' /><meta itemprop="name" content="《异类》的读书笔记">
+<meta itemprop="description" content="概览 《异类》是由马尔科姆·格拉德威尔所著的一本非常受欢迎的书籍，它主要讲述了成功的背后其实有很多看不见的“秘密”，而这些“秘密”背后往往是勤"><meta itemprop="datePublished" content="2023-05-15T17:39:25+08:00" />
+<meta itemprop="dateModified" content="2023-05-15T17:39:25+08:00" />
+<meta itemprop="wordCount" content="1301">
+<meta itemprop="keywords" content="读书笔记,异类," /><meta property="og:title" content="《异类》的读书笔记" />
+<meta property="og:description" content="概览 《异类》是由马尔科姆·格拉德威尔所著的一本非常受欢迎的书籍，它主要讲述了成功的背后其实有很多看不见的“秘密”，而这些“秘密”背后往往是勤" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E8%BD%AC%E5%8F%91api.openai.com%E8%AF%B7%E6%B1%82/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-04-28T17:35:44+08:00" />
-<meta property="article:modified_time" content="2023-04-28T17:35:44+08:00" />
+<meta property="og:url" content="http://example.org/posts/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-15T17:39:25+08:00" />
+<meta property="article:modified_time" content="2023-05-15T17:39:25+08:00" />
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="使用Nginx转发api.openai.com请求"/>
-<meta name="twitter:description" content="背景 在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将"/>
+<meta name="twitter:title" content="《异类》的读书笔记"/>
+<meta name="twitter:description" content="概览 《异类》是由马尔科姆·格拉德威尔所著的一本非常受欢迎的书籍，它主要讲述了成功的背后其实有很多看不见的“秘密”，而这些“秘密”背后往往是勤"/>
 <meta name="application-name" content="FixIt">
 <meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E8%BD%AC%E5%8F%91api.openai.com%E8%AF%B7%E6%B1%82/" /><link rel="prev" href="http://example.org/posts/%E4%BD%BF%E7%94%A8scrum%E9%80%9A%E8%BF%87%E5%8D%8F%E4%BD%9C%E6%8F%90%E9%AB%98%E5%9B%A2%E9%98%9F%E6%95%88%E7%8E%87/" /><link rel="next" href="http://example.org/posts/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" /><link rel="prev" href="http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E8%BD%AC%E5%8F%91api.openai.com%E8%AF%B7%E6%B1%82/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
   {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
-    "headline": "使用Nginx转发api.openai.com请求",
+    "headline": "《异类》的读书笔记",
     "inLanguage": "zh-CN",
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "http:\/\/example.org\/posts\/%E4%BD%BF%E7%94%A8nginx%E8%BD%AC%E5%8F%91api.openai.com%E8%AF%B7%E6%B1%82\/"
-    },"genre": "posts","keywords": "clash, nginx, openai","wordcount":  1603 ,
-    "url": "http:\/\/example.org\/posts\/%E4%BD%BF%E7%94%A8nginx%E8%BD%AC%E5%8F%91api.openai.com%E8%AF%B7%E6%B1%82\/","datePublished": "2023-04-28T17:35:44+08:00","dateModified": "2023-04-28T17:35:44+08:00","publisher": {
+      "@id": "http:\/\/example.org\/posts\/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0\/"
+    },"genre": "posts","keywords": "读书笔记, 异类","wordcount":  1301 ,
+    "url": "http:\/\/example.org\/posts\/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0\/","datePublished": "2023-05-15T17:39:25+08:00","dateModified": "2023-05-15T17:39:25+08:00","publisher": {
       "@type": "Organization",
       "name": ""},"author": {
         "@type": "Person",
@@ -160,7 +160,7 @@
 
   <article class="page single">
     <div class="header"><h1 class="single-title animate__animated animate__flipInX">
-        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>使用Nginx转发api.openai.com请求</span>
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>《异类》的读书笔记</span>
       </h1></div><div class="post-meta">
       <div class="post-meta-line"><span class="post-author"><span class="author"><img
     class="lazyload avatar"
@@ -170,115 +170,60 @@
     data-sizes="auto"
     alt="j5land"
     title="j5land"/>&nbsp;j5land</span></span>
-          <span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 代理转发</a></span></div>
-      <div class="post-meta-line"><span title=2023-04-28&#32;17:35:44><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-04-28">2023-04-28</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 1603 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 4 分钟</span>&nbsp;</div>
+          <span class="post-category">收录于 <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 读书笔记</a></span></div>
+      <div class="post-meta-line"><span title=2023-05-15&#32;17:39:25><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-05-15">2023-05-15</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 1301 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 3 分钟</span>&nbsp;</div>
     </div><div class="featured-image"><img
     class="lazyload"
     src="/svg/loading.min.svg"
-    data-src="/posts/images/clash-1.jpeg"
-    data-srcset="/posts/images/clash-1.jpeg, /posts/images/clash-1.jpeg 1.5x, /posts/images/clash-1.jpeg 2x"
+    data-src="/posts/images/outliers.jpg"
+    data-srcset="/posts/images/outliers.jpg, /posts/images/outliers.jpg 1.5x, /posts/images/outliers.jpg 2x"
     data-sizes="auto"
-    alt="/posts/images/clash-1.jpeg"
-    title="/posts/images/clash-1.jpeg"/></div><div class="details toc" id="toc-static" data-kept="false">
+    alt="/posts/images/outliers.jpg"
+    title="/posts/images/outliers.jpg"/></div><div class="details toc" id="toc-static" data-kept="false">
         <div class="details-summary toc-title">
           <span>目录</span>
           <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
         </div>
         <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#背景">背景</a></li>
-    <li><a href="#部署安装">部署安装</a>
-      <ul>
-        <li><a href="#安装clash">安装Clash</a></li>
-        <li><a href="#配置clash">配置Clash</a></li>
-        <li><a href="#安装配置nginx">安装配置nginx</a></li>
-        <li><a href="#启动clash和nginx">启动Clash和nginx</a></li>
-        <li><a href="#测试代理">测试代理</a></li>
-      </ul>
-    </li>
+    <li><a href="#概览">概览</a></li>
+    <li><a href="#一万小时定律">一万小时定律</a></li>
+    <li><a href="#环境和文化背景的重要性">环境和文化背景的重要性</a></li>
+    <li><a href="#接收失败">接收失败</a></li>
+    <li><a href="#发现自己的特点">发现自己的特点</a></li>
+    <li><a href="#积极与他人合作">积极与他人合作</a></li>
+    <li><a href="#总结">总结</a></li>
   </ul>
 </nav></div>
-      </div><div class="content" id="content"><h2 id="背景">背景</h2>
-<p>在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将介绍如何通过通过Nginx和Clash代理，构建openai.com 请求转发的过程。</p>
-<h2 id="部署安装">部署安装</h2>
-<p>在Linux系统下安装配置Clash并 http 通过nginx 访问/openai 路径时，网络通过clash代理访问，请求实际是转发至https://api.openai.com。</p>
-<h3 id="安装clash">安装Clash</h3>
-<p>首先需要在Linux系统下安装Clash，在终端中执行以下命令：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">1. 打开终端（Terminal）。
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">2. 进入你要安装Clash的目录，例如：cd /usr/local/bin。
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">3. 下载Clash的最新版本，命令：wget https://github.com/Dreamacro/clash/releases/download/v1.15.1/clash-linux-amd64-v1.15.1.gz。
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">4. 解压Clash的压缩文件，命令：gunzip clash-linux-amd64-v1.15.1.gz。
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">5. 给Clash文件添加执行权限，命令：chmod +x clash-linux-amd64-v1.15.1。
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">6. 将Clash文件移动到/usr/local/bin目录下，命令：mv clash-linux-amd64-v1.15.1 /usr/local/bin/clash。
-</span></span></code></pre></div><p>以上命令会下载Clash的安装包并解压，然后将其赋予可执行权限并启动。</p>
-<h3 id="配置clash">配置Clash</h3>
-<p>在安装完成Clash后，需要进行配置才能正常使用。Clash的配置文件位于<code>~/.config/clash/config.yaml</code>，可以使用vim等编辑器编辑该文件，添加如下配置：</p>
-<pre tabindex="0"><code>port: 7890
-socks-port: 7891
-allow-lan: true
-mode: Rule
-log-level: info
-external-controller: 0.0.0.0:9090
-</code></pre><p>以上配置中，<code>port</code>指定了Clash的http代理端口，建议设置为7890；<code>socks-port</code>指定了Clash的socks代理端口，建议设置为7891；<code>allow-lan</code>开启允许局域网访问；<code>mode</code>选择了Clash的工作模式为Rule，表示通过规则进行代理；<code>log-level</code>指定了Clash的日志级别；<code>external-controller</code>指定了Clash的控制器地址和端口。</p>
-<p>另外，需要在<code>~/.config/clash/</code>目录下创建一个名为<code>config</code>的文件，写入Clash的自定义配置，例如以下内容：</p>
-<pre tabindex="0"><code>port: 7890
-socks-port: 7891
-allow-lan: true
-mode: Rule
-log-level: info
-external-controller: 0.0.0.0:9090
-proxies:
-  - name: Proxy-A
-    type: socks5
-    server: example.com
-    port: 1080
-    cipher: chacha20-ietf
-  - name: Proxy-B
-    type: http
-    server: example.com
-    port: 8080
-    cipher: chacha20-ietf
-rules:
-  - DOMAIN,www.google.com,Proxy-A
-  - DOMAIN-SUFFIX,google.com,Proxy-A
-  - MATCH,Proxy-B
-</code></pre><p>以上配置中，<code>proxies</code>指定了Clash的代理列表，包含两个代理<code>Proxy-A</code>和<code>Proxy-B</code>；<code>rules</code>指定了代理规则，其中<code>DOMAIN</code>表示按照域名规则匹配，<code>DOMAIN-SUFFIX</code>表示按照域名后缀匹配，<code>MATCH</code>表示匹配所有流量，并由<code>Proxy-B</code>代理。</p>
-<p><strong>下载Country.mmdb放在~/.config/clash目录</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://github.com/Dreamacro/maxmind-geoip/releases/download/20230412/Country.mmdb
-</span></span></code></pre></div><h3 id="安装配置nginx">安装配置nginx</h3>
-<p>在Linux系统下安装nginx，并进行配置。可以使用apt-get等包管理器进行安装，然后在<code>/etc/nginx/</code>目录下创建一个名为<code>clash.conf</code>的文件，写入以下内容：</p>
-<pre tabindex="0"><code>server {
-    listen 8080;
-    server_name _;
-
-    location /openai {
-        proxy_pass https://api.openai.com;
-        proxy_set_header Host api.openai.com;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}
-</code></pre><p>以上配置中，指定了nginx监听8080端口，并将所有请求转发到Clash的代理端口。</p>
-<h3 id="启动clash和nginx">启动Clash和nginx</h3>
-<p>在Linux系统中，启动Clash可以通过以下命令完成：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">clash -d ~/.config/clash/
-</span></span><span class="line"><span class="cl">或
-</span></span><span class="line"><span class="cl">nohup clash -d ~/.config/clash/ &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
-</span></span></code></pre></div><p>在启动时，可以使用-d参数指定Clash的配置文件存放路径。以上命令中，Clash会在~/.config/clash/目录中搜索config.yaml文件。</p>
-<p>在修改、保存以上配置后，可以使用以下命令启动nginx：</p>
-<pre tabindex="0"><code>sudo systemctl start nginx
-</code></pre><h3 id="测试代理">测试代理</h3>
-<p>在启动Clash和nginx后，可以通过浏览器或者其它应用程序测试代理是否正常工作。在浏览器中打开<code>localhost:8080</code>，进行测试访问。如果正常工作，Clash会将请求转发到代理服务器，从而实现vpn代理转发。</p>
+      </div><div class="content" id="content"><h2 id="概览">概览</h2>
+<p>《异类》是由马尔科姆·格拉德威尔所著的一本非常受欢迎的书籍，它主要讲述了成功的背后其实有很多看不见的“秘密”，而这些“秘密”背后往往是勤奋、机遇、文化和环境等因素。本书从不同的角度探讨了成功之路，并揭示了成功的本质。</p>
+<h2 id="一万小时定律">一万小时定律</h2>
+<p>我们都可以通过努力和刻苦使自己取得更多成就，但真正让人成为异类的是对技能的重视和投入。比如，书中提到在全球最成功的法国足球俱乐部里，教练会花费大量心思去挑选年轻球员，并在接下来的几年里对他们进行悉心培养。这启示我们，无论我们选择什么领域，我们都应该高度重视自我培养，并在相关领域中投入足够的时间和努力。</p>
+<p>培养成果取决于10,000小时定律，即要通过长时间、反复、细致地练习，在一个领域内达到专家水平。</p>
+<p><strong>作为普通人，我们可以通过将每周花费一定时间投入到学习某一技能上来实现，比如烹饪、写作、编程等。</strong></p>
+<h2 id="环境和文化背景的重要性">环境和文化背景的重要性</h2>
+<p>环境和文化背景对我们的成长及习惯具有重要影响。我们需要对自己的环境和文化背景进行深入的分析，看看这些背景是否会对自己的职业规划和成长造成阻碍或帮助。</p>
+<p>还需要学会从周围的人和事物中获得灵感和帮助，以扩充自己的视野和能力。</p>
+<p>比如，我们可以积极加入和参与相关行业的社区和组织，与其他人交流和分享自己的经验和观点。同时，我们也可以通过网络和其他媒体获取更多的信息和知识，以获得更广阔的视野和思路。</p>
+<h2 id="接收失败">接收失败</h2>
+<p>我们要学会接受失败，并将其视为成功的必要组成部分。对于一项任务，我们往往需要多次失败和调整才能最终成功。我们可以尝试在日常生活中接受失败，比如在网络游戏中被击败时不气馁，而是思考如何改进自己的战术。</p>
+<p><strong>作为家长如何为孩子创造接受失败的环境</strong>
+在书中，作者讲述了一个非常有启发性的案例，这个案例涉及到如何为孩子创造接受失败的环境。</p>
+<p>故事讲述的是，一位母亲为了帮助自己的孩子克服失败时的挫折感，经常会在家里摆放一些带有挑战性的物品，比如拼图、智力游戏等。这样孩子们在家中便可以随时练习自己的思维能力，并且在失败后也不会感到太受挫。</p>
+<h2 id="发现自己的特点">发现自己的特点</h2>
+<p>独特性让我们与众不同，也能成为我们的优势。我们应该更加理解、珍视和发掘自己的特点。在生活中，我们可以更多地了解和探索自己的兴趣与优点，并将其应用于生活和工作中。</p>
+<h2 id="积极与他人合作">积极与他人合作</h2>
+<p>合作和团队合作是在许多工作和生活环境中都非常重要的。您可以主动与同事、朋友或家庭成员合作，建立良好的人际关系，并集体完成任务或实现目标。例如，您可以参加志愿活动或小组活动，这有助于增进与他人的交流，优化团队合作，同时也能让你在这个过程中获得成长和提升。</p>
+<p>团队协作和其他人的支持是重要的。我们应该学会团队协作，同时珍惜其他人的支持。我们可以在工作中积极与同事合作，互相支持和帮助，提升整个团队的绩效和士气。</p>
+<h2 id="总结">总结</h2>
+<p>成功的背后有很多看不见的“秘密”，包括重视技能投入时间、文化背景和环境对成长的影响、接受失败和发现自身特点、以及积极与他人合作的重要性。</p>
+<p>不要怀疑时间的意义，在你热爱的领域不遗余力的花时间吧，你知道社会是在前进的，你的行为和社会发展相符合的话，我相信一定也会迎来天时地利人和的一天。</p>
+<p>所谓异类，从来就不是异类，只是愿意努力的人太少，瞻前顾后犹豫不决的人太多。</p>
 </div><div class="post-footer" id="post-footer">
   <div class="post-info">
     <div class="post-info-line">
       <div class="post-info-mod">
-        <span title=2023-04-28&#32;17:35:44>更新于 2023-04-28&nbsp;</span>
+        <span title=2023-05-15&#32;17:39:25>更新于 2023-05-15&nbsp;</span>
       </div></div>
     <div class="post-info-line">
       <div class="post-info-md"></div>
@@ -289,14 +234,13 @@ rules:
   </div>
 
   <div class="post-info-more">
-    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/clash/' class="post-tag">clash</a><a href='/tags/nginx/' class="post-tag">nginx</a><a href='/tags/openai/' class="post-tag">openai</a></section>
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/' class="post-tag">读书笔记</a><a href='/tags/%E5%BC%82%E7%B1%BB/' class="post-tag">异类</a></section>
     <section>
       <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
     </section>
   </div>
 
-  <div class="post-nav"><a href="/posts/%E4%BD%BF%E7%94%A8scrum%E9%80%9A%E8%BF%87%E5%8D%8F%E4%BD%9C%E6%8F%90%E9%AB%98%E5%9B%A2%E9%98%9F%E6%95%88%E7%8E%87/" class="post-nav-item" rel="prev" title="使用Scrum通过协作提高团队效率"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>使用Scrum通过协作提高团队效率</a>
-      <a href="/posts/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="post-nav-item" rel="next" title="《异类》的读书笔记">《异类》的读书笔记<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+  <div class="post-nav"><a href="/posts/%E4%BD%BF%E7%94%A8nginx%E8%BD%AC%E5%8F%91api.openai.com%E8%AF%B7%E6%B1%82/" class="post-nav-item" rel="prev" title="使用Nginx转发api.openai.com请求"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>使用Nginx转发api.openai.com请求</a></div>
 </div>
 <div id="comments"><div id="giscus">
           <script
