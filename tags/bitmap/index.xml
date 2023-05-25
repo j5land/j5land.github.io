@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>bitmap - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/bitmap/</link>
+    <description>bitmap - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 25 May 2023 16:46:36 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/bitmap/" rel="self" type="application/rss+xml" /><item>
+  <title>轻松理解RoaringBitmap原理及应用</title>
+  <link>http://example.org/posts/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/</link>
+  <pubDate>Thu, 25 May 2023 16:46:36 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/roaring-bitmap-0.jpeg" referrerpolicy="no-referrer">
+      </div>背景历史 RoaringBitmap是Daniel Lemire1于2011年发明的一种数据结构，用于压缩大规模非负整数集合，它在存储空间和时间]]></description>
+</item>
+</channel>
+</rss>

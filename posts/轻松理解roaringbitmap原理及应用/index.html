@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>轻松理解RoaringBitmap原理及应用 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景历史 RoaringBitmap是Daniel Lemire1于2011年发明的一种数据结构，用于压缩大规模非负整数集合，它在存储空间和时间" /><meta name="keywords" content='bitmap' /><meta itemprop="name" content="轻松理解RoaringBitmap原理及应用">
+<meta itemprop="description" content="背景历史 RoaringBitmap是Daniel Lemire1于2011年发明的一种数据结构，用于压缩大规模非负整数集合，它在存储空间和时间"><meta itemprop="datePublished" content="2023-05-25T16:46:36+08:00" />
+<meta itemprop="dateModified" content="2023-05-25T16:46:36+08:00" />
+<meta itemprop="wordCount" content="2797">
+<meta itemprop="keywords" content="bitmap," /><meta property="og:title" content="轻松理解RoaringBitmap原理及应用" />
+<meta property="og:description" content="背景历史 RoaringBitmap是Daniel Lemire1于2011年发明的一种数据结构，用于压缩大规模非负整数集合，它在存储空间和时间" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-25T16:46:36+08:00" />
+<meta property="article:modified_time" content="2023-05-25T16:46:36+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="轻松理解RoaringBitmap原理及应用"/>
+<meta name="twitter:description" content="背景历史 RoaringBitmap是Daniel Lemire1于2011年发明的一种数据结构，用于压缩大规模非负整数集合，它在存储空间和时间"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/" /><link rel="prev" href="http://example.org/posts/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "轻松理解RoaringBitmap原理及应用",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8\/"
+    },"genre": "posts","keywords": "bitmap","wordcount":  2797 ,
+    "url": "http:\/\/example.org\/posts\/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8\/","datePublished": "2023-05-25T16:46:36+08:00","dateModified": "2023-05-25T16:46:36+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>轻松理解RoaringBitmap原理及应用</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/bitmap/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> bitmap</a>&ensp;<a href="/categories/roaring-bitmap/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> roaring-bitmap</a>&ensp;<a href="/categories/%E4%BA%BA%E7%BE%A4%E9%A2%84%E4%BC%B0/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 人群预估</a></span></div>
+      <div class="post-meta-line"><span title=2023-05-25&#32;16:46:36><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-05-25">2023-05-25</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2797 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/roaring-bitmap-0.jpeg"
+    data-srcset="/posts/images/roaring-bitmap-0.jpeg, /posts/images/roaring-bitmap-0.jpeg 1.5x, /posts/images/roaring-bitmap-0.jpeg 2x"
+    data-sizes="auto"
+    alt="/posts/images/roaring-bitmap-0.jpeg"
+    title="/posts/images/roaring-bitmap-0.jpeg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景历史">背景历史</a></li>
+    <li><a href="#原理与实现">原理与实现</a>
+      <ul>
+        <li><a href="#主要思想">主要思想</a></li>
+        <li><a href="#array-container">Array Container</a></li>
+        <li><a href="#bitmap-container">Bitmap Container</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用场景">使用场景</a>
+      <ul>
+        <li><a href="#什么时候使用bitmap">什么时候使用BitMap</a></li>
+        <li><a href="#什么时候使用roaringbitmap">什么时候使用RoaringBitmap</a></li>
+        <li><a href="#业务场景">业务场景</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景历史">背景历史</h2>
+<p>RoaringBitmap是Daniel Lemire<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>于2011年发明的一种数据结构，用于压缩大规模非负整数集合，它在存储空间和时间效率上都比传统的位图(Bitmap)<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>和哈希表(Hash Table)<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup>更加优越。当时，Daniel Lemire主要是为了解决大规模数据场景下整数集合存储、聚合以及查询等问题而发明了RoaringBitmap<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup>。</p>
+<p>RoaringBitmap的诞生背景在于大数据时代，数据规模日益庞大，传统的数据结构已经难以胜任大数据处理的任务。RoaringBitmap的创新之处在于：它采用了一种分层次的存储结构，将整数集合拆分为多个小块，每个小块之间存在一定的间隙，用Bitmap存储非空小块，用简洁存储方式存储空小块，这样就可以极大地压缩整数集合的存储空间，同时在进行集合运算时也能够高效地处理。</p>
+<p>RoaringBitmap的发明在当时引起了极大关注，成为当时最颇具潜力的数据结构之一。如今，RoaringBitmap已经被广泛应用于各种大数据场景中，成为处理大规模整数集合的重要工具之一。</p>
+<h2 id="原理与实现">原理与实现</h2>
+<h3 id="主要思想">主要思想</h3>
+<ol>
+<li>我们将 32-bit 的范围 ([0, n)) 划分为 2^16 个桶，每一个桶有一个 Container 来存放一个数值的低16位；</li>
+<li>在存储和查询数值的时候，我们将一个数值 k 划分为高 16 位<code>(k % 2^16)</code>和低 16 位<code>(k mod 2^16)</code>，取高 16 位找到对应的桶，然后在低 16 位存放在相应的 Container 中；</li>
+<li>容器的话， RBM 使用两种容器结构： Array Container 和 Bitmap Container。Array Container 存放稀疏的数据，Bitmap Container 存放稠密的数据。即，若一个 Container 里面的 Integer 数量小于 4096，就用 Short 类型的有序数组来存储值。若大于 4096，就用 Bitmap 来存储值。</li>
+</ol>
+<h3 id="array-container">Array Container</h3>
+<p>Array Container 是 Roaring Bitmap 初始化默认的 Container。Array Container 适合存放稀疏的数据，其内部数据结构是一个有序的 Short 数组。数组初始容量为 4，数组最大容量为 4096，所以 Array Container 是动态变化的，当容量不够时，需要扩容，并且当超过最大容量 4096 时，就会转换为 Bitmap Container。由于数组是有序的，存储和查询时都可以通过二分查找快速定位其在数组中的位置。</p>
+<blockquote>
+<p>后面会讲解为什么超过最大容量 4096 时变更 Container 类型。</p>
+</blockquote>
+<p>下面我们具体看一下数据如何被存储的，例如，0x00020032（十进制131122）放入一个 RBM 的过程如下图所示：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/roaring-bitmap-1.png"
+    data-srcset="../images/roaring-bitmap-1.png, ../images/roaring-bitmap-1.png 1.5x, ../images/roaring-bitmap-1.png 2x"
+    data-sizes="auto"
+    alt="roaring-bitmap-1"
+    title="roaring-bitmap-1"/></p>
+<p>0x00020032 的前 16 位是 0002，找到对应的桶 0x0002。在桶对应的 Container 中存储低 16 位，因为 Container 元素个数不足 4096，因此是一个 Array Container。低 16 位为 0032（十进制为50）, 在 Array Container 中二分查找找到相应的位置插入即可（如上图50的位置）。</p>
+<p>相较于原始的 Bitmap 需要占用 16K (131122/8/1024) 内存来存储这个数，而这种存储实际只占用了4B（桶中占 2 B，Container中占 2 B，不考虑数组的初始容量）。</p>
+<h3 id="bitmap-container">Bitmap Container</h3>
+<p>第二种 Container 是 Bitmap Container。它的数据结构是一个 Long 数组，数组容量恒定为 1024，和上文的 Array Container 不同，Array Container 是一个动态扩容的数组。Bitmap Container 不用像 Array Container 那样需要二分查找定位位置，而是可以直接通过下标直接寻址。</p>
+<p>由于每个 Bitmap Container 需要处理低 16 位数据，也就是需要使用 Bitmap 来存储需要 8192 B（2^16/8）, 而一个 Long 值占 8 个 B，所以数组大小为 1024。因此一个 Bitmap Container 固定占用内存 8 KB。</p>
+<p>下面我们具体看一下数据如何被存储的，例如，0xFFFF3ACB（十进制4294916811）放入一个 RBM 的过程如下图所示：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/roaring-bitmap-2.png"
+    data-srcset="../images/roaring-bitmap-2.png, ../images/roaring-bitmap-2.png 1.5x, ../images/roaring-bitmap-2.png 2x"
+    data-sizes="auto"
+    alt="roaring-bitmap-2"
+    title="roaring-bitmap-2"/></p>
+<p>0xFFFF3ACB 的前 16 位是 FFFF，找到对应的桶 0xFFFF。在桶对应的 Container 中存储低 16 位，因为 Container 中元素个数已经超过 4096，因此是一个 Bitmap Container。低 16 位为 3ACB（十进制为15051）, 因此在 Bitmap Container 中通过下标直接寻址找到相应的位置，将其置为 1 即可（如上图15051的位置）。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/roaring-bitmap-3.png"
+    data-srcset="../images/roaring-bitmap-3.png, ../images/roaring-bitmap-3.png 1.5x, ../images/roaring-bitmap-3.png 2x"
+    data-sizes="auto"
+    alt="roaring-bitmap-3"
+    title="roaring-bitmap-3"/></p>
+<p>可以看到元素个数达到 4096 之前，Array Container 占用的空间比 Bitmap Container 的少，当 Array Container 中元素到 4096 个时，正好等于 Bitmap Container 所占用的 8 KB。当元素个数超过了 4096 时，Array Container 所占用的空间还是继续线性增长，而 Bitmap Container 的内存空间并不会增长，始终还是占用 8 KB，与数据量无关。所以当 Array Container 超过最大容量 4096 会转换为 Bitmap Container。</p>
+<h2 id="使用场景">使用场景</h2>
+<h3 id="什么时候使用bitmap">什么时候使用BitMap</h3>
+<p>集合是软件中最基本的抽象概念之一。实现集合的方式有很多种，其中包括散列集、树等。在数据库和搜索引擎等应用中，集合通常是构建索引的重要组成部分。例如，我们需要维护一组满足某些属性的文档或行（通过数字标识符表示）。除了支持添加或删除元素的基本操作外，我们还需要快速计算交集、并集、差集等高级操作。</p>
+<p>当我们需要实现一组整数时，使用位图（也称为位集或位向量）是一种非常好的策略。在适当的情况下，比如在 bitset 方法适用时，它可以比其他可能的集合实现（比如哈希集）快数倍，同时需求更少的内存。</p>
+<p>然而，即使是压缩的 bitset，也并不总是适用的。例如，如果您有 1000 个看似随机的整数，那么一个简单的数组可能是最好的表现。这种情况被称为<strong>稀疏</strong>场景。</p>
+<h3 id="什么时候使用roaringbitmap">什么时候使用RoaringBitmap</h3>
+<ul>
+<li><strong>数据量</strong>，在未经压缩的 BitSet 会占用大量内存。举例来说，如果您使用 BitSet，并将位置 1,000,000 的位设置为 true，那么您的数据量刚好超过 100KB。即使您忽略内存占用问题，这种做法也是一种浪费。</li>
+<li><strong>计算量</strong>，如果您需要计算这个 BitSet 和另一个在位置 1,000,001 有一个位为真的 BitSet 之间的交集，那么需要遍历所有这些零，这种情况下会非常浪费资源。另外，稀疏场景也是不应使用压缩位图的情况之一。</li>
+</ul>
+<h3 id="业务场景">业务场景</h3>
+<h4 id="数据过滤">数据过滤</h4>
+<p>数据过滤是大多数互联网业务需求中必备的部分。RoaringBitmap 可以帮助业务系统快速地对数据进行筛选、过滤、去重等处理。例如，可以使用 RoaringBitmap 实现大数据的记录去重、广告唯一用户数计算、广告点击监控等操作，从而提高数据处理效率。</p>
+<h4 id="集合运算">集合运算</h4>
+<p>RoaringBitmap 提供了常见的集合操作方法，例如取交集、并集、补集等操作，因此在集合运算中也有着广泛的应用。在互联网业务中，常常需要对用户进行分类、分段、分组等操作，这些操作都可用 RoaringBitmap 进行高效的实现。</p>
+<h4 id="日志分析">日志分析</h4>
+<p>在大型互联网公司的各种业务系统中，需要对访问日志进行分析和统计。RoaringBitmap 提供了高效的位操作，对于大规模的日志数据的处理可以大大提高性能和效率。例如，在分析用户访问日志中，RoaringBitmap 可以快速实现 IP 地址归属地、请求量统计、访问终端类型检测等操作。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Daniel Lemire是一位加拿大计算机科学家，他是蒙特利尔大学计算机科学系的教授。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>它基于位运算和位装置的原理，可以用于优化和压缩数据，减少内存使用，加速计算速度，提高算法效率等方面。是一种数据结构，用于对大量数据的存在状态进行显式处理。&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>核心思想是使用哈希函数将键转换为数组索引。这个过程是很快的，并且可以让我们快速地找到存储在哈希表中的值。&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p>官方文档：https://roaringbitmap.org/&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-05-25&#32;16:46:36>更新于 2023-05-25&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/bitmap/' class="post-tag">bitmap</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="post-nav-item" rel="prev" title="《异类》的读书笔记"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>《异类》的读书笔记</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

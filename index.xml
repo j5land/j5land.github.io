@@ -3,9 +3,19 @@
     <title>J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/</link>
     <description>J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 15 May 2023 17:39:25 &#43;0800</lastBuildDate>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 25 May 2023 16:46:36 &#43;0800</lastBuildDate>
       <atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
+  <title>轻松理解RoaringBitmap原理及应用</title>
+  <link>http://example.org/posts/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/</link>
+  <pubDate>Thu, 25 May 2023 16:46:36 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E8%BD%BB%E6%9D%BE%E7%90%86%E8%A7%A3roaringbitmap%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/roaring-bitmap-0.jpeg" referrerpolicy="no-referrer">
+      </div>背景历史 RoaringBitmap是Daniel Lemire1于2011年发明的一种数据结构，用于压缩大规模非负整数集合，它在存储空间和时间]]></description>
+</item>
+<item>
   <title>《异类》的读书笔记</title>
   <link>http://example.org/posts/%E5%BC%82%E7%B1%BB%E7%9A%84%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
   <pubDate>Mon, 15 May 2023 17:39:25 &#43;0800</pubDate>
@@ -94,16 +104,6 @@
   <description><![CDATA[<div class="featured-image">
         <img src="/posts/images/%e5%b9%bf%e5%91%8a%e6%b5%81%e7%a8%8b%e5%9b%be.jpg" referrerpolicy="no-referrer">
       </div>广告业务 广告、游戏、电商，是互联网企业最主要的盈利业务模式。广告占市场收入份额很大，业务重要性不言而喻。 我们大致从技术角度来看广告业务，广告]]></description>
-</item>
-<item>
-  <title>Lucene查询原理及解析</title>
-  <link>http://example.org/posts/lucene%E6%9F%A5%E8%AF%A2%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E6%9E%90/</link>
-  <pubDate>Fri, 20 Jan 2023 14:20:05 &#43;0800</pubDate>
-  <author>j5land</author>
-  <guid>http://example.org/posts/lucene%E6%9F%A5%E8%AF%A2%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E6%9E%90/</guid>
-  <description><![CDATA[<div class="featured-image">
-        <img src="/posts/images/Lucene.jpeg" referrerpolicy="no-referrer">
-      </div>前言 Lucene 是一个基于Java的全文信息检索工具包，目前主流的搜索系统Elasticsearch和solr都是基于Lucene的索引和搜索能力进行]]></description>
 </item>
 </channel>
 </rss>
