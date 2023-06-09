@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>数据仓库通用开发规范 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、数据模型架构原则 数仓分层原则12 可靠的数仓体系往往需要清晰的数据分层结构，既要保证数据层的稳定又要屏蔽对下游的影响。 分层是解决当前业务快" /><meta name="keywords" content='数据仓库' /><meta itemprop="name" content="数据仓库通用开发规范">
+<meta itemprop="description" content="一、数据模型架构原则 数仓分层原则12 可靠的数仓体系往往需要清晰的数据分层结构，既要保证数据层的稳定又要屏蔽对下游的影响。 分层是解决当前业务快"><meta itemprop="datePublished" content="2023-06-09T17:28:45+08:00" />
+<meta itemprop="dateModified" content="2023-06-09T17:28:45+08:00" />
+<meta itemprop="wordCount" content="3371">
+<meta itemprop="keywords" content="数据仓库," /><meta property="og:title" content="数据仓库通用开发规范" />
+<meta property="og:description" content="一、数据模型架构原则 数仓分层原则12 可靠的数仓体系往往需要清晰的数据分层结构，既要保证数据层的稳定又要屏蔽对下游的影响。 分层是解决当前业务快" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-09T17:28:45+08:00" />
+<meta property="article:modified_time" content="2023-06-09T17:28:45+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="数据仓库通用开发规范"/>
+<meta name="twitter:description" content="一、数据模型架构原则 数仓分层原则12 可靠的数仓体系往往需要清晰的数据分层结构，既要保证数据层的稳定又要屏蔽对下游的影响。 分层是解决当前业务快"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" /><link rel="prev" href="http://example.org/posts/%E9%80%9A%E8%BF%87roaringbitmap%E5%AE%9E%E7%8E%B0%E4%BA%BA%E7%BE%A4%E9%A2%84%E4%BC%B0%E5%8A%9F%E8%83%BD/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "数据仓库通用开发规范",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83\/"
+    },"genre": "posts","keywords": "数据仓库","wordcount":  3371 ,
+    "url": "http:\/\/example.org\/posts\/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83\/","datePublished": "2023-06-09T17:28:45+08:00","dateModified": "2023-06-09T17:28:45+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png"
+    data-srcset="/assets/avatar.png, /assets/avatar.png 1.5x, /assets/avatar.png 2x"
+    data-sizes="auto"
+    alt="/assets/avatar.png"
+    title="/assets/avatar.png"/><span class="header-title-text">这里是 J5land 的博客</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>数据仓库通用开发规范</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E6%95%B0%E4%BB%93%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 数仓开发规范</a></span></div>
+      <div class="post-meta-line"><span title=2023-06-09&#32;17:28:45><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-06-09">2023-06-09</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 3371 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 7 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/data-warehouse-dev-spec-0.jpeg"
+    data-srcset="/posts/images/data-warehouse-dev-spec-0.jpeg, /posts/images/data-warehouse-dev-spec-0.jpeg 1.5x, /posts/images/data-warehouse-dev-spec-0.jpeg 2x"
+    data-sizes="auto"
+    alt="/posts/images/data-warehouse-dev-spec-0.jpeg"
+    title="/posts/images/data-warehouse-dev-spec-0.jpeg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一数据模型架构原则">一、数据模型架构原则</a>
+      <ul>
+        <li><a href="#数仓分层原则12">数仓分层原则</a></li>
+      </ul>
+    </li>
+    <li><a href="#二数仓开发规范">二、数仓开发规范</a>
+      <ul>
+        <li><a href="#层次调用规范">层次调用规范</a></li>
+        <li><a href="#数据表处理规范">数据表处理规范</a></li>
+        <li><a href="#表的生命周期管理3">表的生命周期管理</a></li>
+      </ul>
+    </li>
+    <li><a href="#三数仓命名规范">三、数仓命名规范</a>
+      <ul>
+        <li><a href="#通用命名规范">通用命名规范</a></li>
+        <li><a href="#表命名规范">表命名规范</a></li>
+      </ul>
+    </li>
+    <li><a href="#引用">引用</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="一数据模型架构原则">一、数据模型架构原则</h2>
+<h3 id="数仓分层原则12">数仓分层原则<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup><sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup></h3>
+<p>可靠的数仓体系往往需要清晰的数据分层结构，既要保证数据层的稳定又要屏蔽对下游的影响。</p>
+<p>分层是解决当前业务快速的数据支撑目的，为未来抽象出共性的框架并能够赋能给其他业务线，同时为业务发展提供稳定、准确的数据支撑，也急速数据驱动和赋能。</p>
+<p>数仓分层要结合公司业务进行，并且需要清晰明确各层职责，一般采用如下分层结构：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/data-warehouse-dev-spec-1.jpg"
+    data-srcset="../images/data-warehouse-dev-spec-1.jpg, ../images/data-warehouse-dev-spec-1.jpg 1.5x, ../images/data-warehouse-dev-spec-1.jpg 2x"
+    data-sizes="auto"
+    alt="data-warehouse-dev-spec-1"
+    title="data-warehouse-dev-spec-1"/></p>
+<p>下面详细描述下每层建设规范：</p>
+<h4 id="1数据源层odsoperational-data-store">1.数据源层：ODS（Operational Data Store）</h4>
+<p>ODS 层，是最接近数据源中数据的一层，为了考虑后续可能需要追溯数据问题，因此对于这一层就建议不做过多的数据清洗工作，原封不动地接入原始数据即可，至于数据的去噪、去重、异常值处理等过程可以放在后面的 DWD 层来做。</p>
+<h4 id="2数据仓库层dwdata-warehouse">2.数据仓库层：DW（Data Warehouse）</h4>
+<p>数据仓库层是我们在做数据仓库时要核心设计的一层，在这里从 ODS 层中获得的数据按照主题建立各种数据模型。DW 层又细分为：</p>
+<ul>
+<li>DWD（Data Warehouse Detail）层</li>
+</ul>
+<p>数据明细层，将数据进行清理、整合规范化，会将脏数据、状态不一致、命名不规范都会处理掉，来提供一定的数据质量保证。另外，也会做一部分数据聚合提高数据的可用性。</p>
+<ul>
+<li>DWM（Data WareHouse Middle）层</li>
+</ul>
+<p>数据做轻度的聚合操作，生成一系列的中间表，提升公共指标的复用性，减少重复加工。由于宽和窄的界限不易界定，也可以去掉 DWM 这一层，只留 DWS 层，将所有的数据再放在 DWS 亦可。</p>
+<ul>
+<li>DWS（Data WareHouse Servce） 层</li>
+</ul>
+<p>DWS层为公共汇总层，会进行轻度汇总，粒度比明细数据稍粗，基于 DWD 层上的基础数据，整合汇总成分析某一个主题域的服务数据，一般是宽表。DWS 层应覆盖 80% 的应用场景。又称数据集市或业务宽表。</p>
+<h4 id="3数据应用层appapplication">3.数据应用层：APP（Application）</h4>
+<p>数据应用层，主要提供给业务产品或数据分析使用的数据，一般会提供存放到ES、Redis、PostreSQL、MySQL等系统使用</p>
+<h2 id="二数仓开发规范">二、数仓开发规范</h2>
+<h3 id="层次调用规范">层次调用规范</h3>
+<p>稳定业务按照标准数据流向进行数仓开发：ODS -&gt; DWD -&gt; DWS -&gt; APP。</p>
+<p>非稳定或探索类需求，可以按照一下两个数据流进行开发：</p>
+<ul>
+<li>ODS -&gt; DWD -&gt; APP</li>
+<li>ODS -&gt; DWD -&gt; DWM -&gt; APP</li>
+</ul>
+<p>模型分层引用原则：</p>
+<ul>
+<li>DWM、DWS和APP 禁止使用ODS的表，ODS表只能被DWD引用</li>
+<li>不能出现反向依赖，例如DWM依赖DWS的表。</li>
+</ul>
+<h3 id="数据表处理规范">数据表处理规范</h3>
+<ol>
+<li>
+<h4 id="增量表">增量表</h4>
+</li>
+</ol>
+<p>新增数据，增量数据是上次导出之后的新数据。</p>
+<ul>
+<li>记录每次增加的量，而不是总量</li>
+<li>增量表，只报变化量，无变化不用报</li>
+<li>每天一个分区</li>
+</ul>
+<ol start="2">
+<li>
+<h4 id="全量表">全量表</h4>
+</li>
+</ol>
+<p>每天的所有的最新状态的数据。</p>
+<ul>
+<li>全量表，有无变化，都要报</li>
+<li>每次上报的数据都是所有的数据（变化的 + 没有变化的）</li>
+<li>只有一个分区</li>
+</ul>
+<ol start="3">
+<li>
+<h4 id="快照表">快照表</h4>
+</li>
+</ol>
+<p>按日分区，记录截止数据日期的全量数据。</p>
+<ul>
+<li>快照表，有无变化，都要报</li>
+<li>每次上报的数据都是所有的数据（变化的 + 没有变化的）</li>
+<li>一天一个分区</li>
+</ul>
+<ol start="4">
+<li>
+<h4 id="拉链表">拉链表</h4>
+</li>
+</ol>
+<p>记录截止数据日期的全量数据</p>
+<ul>
+<li>记录一个事物从开始，一直到当前状态的所有变化的信息；</li>
+<li>拉链表每次上报的都是历史记录的最终状态，是记录在当前时刻的历史总 量；</li>
+<li>当前记录存的是当前时间之前的所有历史记录的最后变化量（总量）；</li>
+<li>只有一个分区</li>
+</ul>
+<h3 id="表的生命周期管理3">表的生命周期管理<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></h3>
+<p>这部分主要是要通过对对表类型的划分与历史数据的等级划分生成相应的生命周期管理矩阵。</p>
+<h4 id="表类型划分">表类型划分</h4>
+<ol>
+<li>事件型流水表（增量表）：事件型流水表（增量表）指数据无重复或者无主键数据，如日志。</li>
+<li>事件型镜像表（增量表）：事件型镜像表（增量表）指业务过程性数据，有主键，但是对于同样主键的属性会发生缓慢变化，如交易、订单状态与时间会根据业务发生变更。</li>
+<li>维度表：主要用于描述数据的属性，包括维度与维度属性数据，如用户表、商品表，例如日期、时间、产品、地区、客户、部门等</li>
+<li>Merge 全量表：Merge 全量表包括业务过程性数据或者维表数据。由于数据本身有新增的或者发生状态变更，对于同样主键的数据可能会保留多份，因此可以对这些数据根据主键进行 Merge 操作，主键对应的属性只会保留最新状态，历史状态保留在前一天分区 中。</li>
+<li>ETL 临时表：ETL 临时表是指 ETL 处理过程中产生的临时表数据，一般不建议保留，最多7天。</li>
+<li>普通全量表：很多小业务数据或者产品数据，一般是直接全量拉取，对存储压力也不是很大，而且表保留很长时间，可以根据历史数据等级确定保留策略。</li>
+</ol>
+<h4 id="历史数据等级划分"><strong>历史数据等级划分</strong></h4>
+<p>主要将历史数据划分P0、Pl、P2、P3 四个等级，其具体定义如下：</p>
+<ul>
+<li><strong>P0</strong> ：非常重要的主题域数据和非常重要的应用数据，具有不可恢复性，如交易、日志、KPI 数据。</li>
+<li><strong>Pl</strong> ：重要的业务数据和重要的应用数据，具有不可恢复性，如重要的业务产品数据。</li>
+<li><strong>P2</strong> ：重要的业务数据和重要的应用数据，具有可恢复性，如交易线 ETL 产生的中间过程数据。</li>
+<li><strong>P3</strong> ：不重要的业务数据和不重要的应用数据，具有可恢复性。</li>
+<li><strong>P4</strong> ： 业务方有特殊存储周期要求的数据</li>
+<li><strong>P5</strong> ：日内同步表（小时任务），并存在对应每日同步表</li>
+<li><strong>P6</strong> ：用来过渡兼容的表</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数据分层</th>
+<th style="text-align:center">表类型</th>
+<th style="text-align:center">P0</th>
+<th style="text-align:center">P1</th>
+<th style="text-align:center">P2</th>
+<th style="text-align:center">P3</th>
+<th>P4</th>
+<th>P5</th>
+<th>P6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ODS层数据</td>
+<td style="text-align:center">事件型流水表（增量表）</td>
+<td style="text-align:center">永久保存</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">2年</td>
+<td style="text-align:center">180天</td>
+<td>-</td>
+<td>7天</td>
+<td>30天</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">事件型镜像表（增量表）</td>
+<td style="text-align:center">永久保存</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">2年</td>
+<td style="text-align:center">180天</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">维表（全量表）</td>
+<td style="text-align:center">33天+极限存储（或永久保存方式代替）</td>
+<td style="text-align:center">33天+极限存储（或永久保存方式代替）</td>
+<td style="text-align:center">33天+极限存储（或永久保存方式代替）</td>
+<td style="text-align:center">33天+极限存储（或3年代替）</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>DWD层/DWB</td>
+<td style="text-align:center">事件型流水表（增量表）</td>
+<td style="text-align:center">永久保存</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">2年</td>
+<td style="text-align:center">180天</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">事件型镜像表（增量表）</td>
+<td style="text-align:center">永久保存</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">2年</td>
+<td style="text-align:center">180天</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">维表（全量表）</td>
+<td style="text-align:center">33天+极限存储（注：因为目前阿里极限存储功能尚未上线，故采用永久保存方式代替）</td>
+<td style="text-align:center">33天+极限存储（注：因为目前阿里极限存储功能尚未上线，故采用永久保存方式代替）</td>
+<td style="text-align:center">33天+极限存储（注：因为目前阿里极限存储功能尚未上线，故采用永久保存方式代替）</td>
+<td style="text-align:center">33天+极限存储（注：因为目前阿里极限存储功能尚未上线，故采用3年代替）</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">普通全量表</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">365天</td>
+<td style="text-align:center">365天</td>
+<td style="text-align:center">180天</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>DWS层</td>
+<td style="text-align:center">各粒度数据</td>
+<td style="text-align:center">永久保存</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">3年</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">临时存储</td>
+<td style="text-align:center">ETL临时表</td>
+<td style="text-align:center">7天</td>
+<td style="text-align:center">3天</td>
+<td style="text-align:center">3天</td>
+<td>3天-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>APP层</td>
+<td style="text-align:center">运营报表</td>
+<td style="text-align:center">永久保留</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">对外数据</td>
+<td style="text-align:center">7年</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td></td>
+<td style="text-align:center">内部产品</td>
+<td style="text-align:center">3年</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="三数仓命名规范">三、数仓命名规范</h2>
+<h3 id="通用命名规范">通用命名规范</h3>
+<p><strong>1. 数仓层次:</strong></p>
+<ul>
+<li>ODS层：ods</li>
+<li>DWD层：dwd</li>
+<li>DWM层：dwm</li>
+<li>DWS层：dws</li>
+<li>维度表：dim</li>
+</ul>
+<p><strong>2. 周期/数据范围：</strong></p>
+<ul>
+<li>日快照：d</li>
+<li>增量：i</li>
+<li>全量：f</li>
+<li>周：w</li>
+<li>拉链表：l</li>
+<li>非分区全量表：a</li>
+</ul>
+<h3 id="表命名规范">表命名规范</h3>
+<h4 id="1常规表">1）常规表</h4>
+<p>常规表是我们需要固化的表，是正式使用的表，是目前一段时间内需要去维护去 完善的表。</p>
+<p><strong><code>规范：分层前缀[dwd|dws|ads]_业务域_主题域_XXX_更新周期|数据范围</code></strong></p>
+<p>业务域、主题域我们都可以用词根的方式枚举清楚不断完善。</p>
+<p>更新周期主要的是时间粒度、日、月、年、周等。</p>
+<h4 id="2-中间表">2) 中间表</h4>
+<p>中间表一般出现在 Job 中，是 Job 中临时存储的中间数据的表，中间表的作 用域只限于当前 Job 执行过程中，Job 一旦执行完成，该中间表的使命就完 成了，是可以删除的（按照自己公司的场景自由选择，以前公司会保留几天 的中间表数据，用来排查问题）。</p>
+<p><strong><code>规范：mid_table_name_[0~9|dim]</code></strong></p>
+<p>table_name 是我们任务中目标表的名字，通常来说一个任务只有一个目标表。这里加上表名，是为了防止自由发挥的时候表名冲突，而末尾大家可以选择自由发挥，起一些有意义的名字，或者简单粗暴，使用数字代替，各有优劣吧，谨慎选择。</p>
+<p>通常会遇到需要补全维度的表，这里使用 dim 结尾。</p>
+<p>如果要保留历史的中间表，可以加上日期或者时间戳。</p>
+<h4 id="3-临时表">3) 临时表</h4>
+<p>临时表是临时测试的表，是临时使用一次的表，就是暂时保存下数据看看，后续一般不再使用的表，是可以随时删除的表。</p>
+<p><strong><code>规范：tmp_xxx</code></strong></p>
+<p>只要加上 tmp 开头即可，其他名字随意，注意 tmp 开头的表不要用来实际使用，只是测试验证而已。</p>
+<h4 id="4-维度表">4) 维度表</h4>
+<p>维度表是基于底层数据，抽象出来的描述类的表。维度表可以自动从底层表抽象出来，也可以手工来维护。</p>
+<p><strong><code>规范：dim_xxx</code></strong></p>
+<p>维度表，统一以 dim 开头，后面加上，对该指标的描述。</p>
+<h4 id="5-手工表">5) 手工表</h4>
+<p>手工表是手工维护的表，手工初始化一次之后，一般不会自动改变，后面变更，也是手工来维护。</p>
+<p>一般来说，手工的数据粒度是偏细的，所以暂时统一放在 dwd 层，后面如果有目标值或者其他类型手工数据，再根据实际情况分层。</p>
+<p><strong><code>规范：dwd_业务域_manual_xxx</code></strong></p>
+<p>手工表，增加特殊的主题域，manual，表示手工维护表。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/data-warehouse-dev-spec-2.png"
+    data-srcset="../images/data-warehouse-dev-spec-2.png, ../images/data-warehouse-dev-spec-2.png 1.5x, ../images/data-warehouse-dev-spec-2.png 2x"
+    data-sizes="auto"
+    alt="data-warehouse-dev-spec-2"
+    title="data-warehouse-dev-spec-2"/></p>
+<h2 id="引用">引用</h2>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>ODPS数据表命名规范 <a href="https://juejin.cn/post/6975814437311610888"target="_blank" rel="external nofollow noopener noreferrer">https://juejin.cn/post/6975814437311610888</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>数仓分层架构&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>生命周期及存储成本管理&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-06-09&#32;17:28:45>更新于 2023-06-09&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/' class="post-tag">数据仓库</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E9%80%9A%E8%BF%87roaringbitmap%E5%AE%9E%E7%8E%B0%E4%BA%BA%E7%BE%A4%E9%A2%84%E4%BC%B0%E5%8A%9F%E8%83%BD/" class="post-nav-item" rel="prev" title="通过RoaringBitmap实现人群预估功能"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>通过RoaringBitmap实现人群预估功能</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

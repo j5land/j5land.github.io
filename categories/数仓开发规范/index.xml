@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>数仓开发规范 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/%E6%95%B0%E4%BB%93%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</link>
+    <description>数仓开发规范 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 09 Jun 2023 17:28:45 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/%E6%95%B0%E4%BB%93%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" rel="self" type="application/rss+xml" /><item>
+  <title>数据仓库通用开发规范</title>
+  <link>http://example.org/posts/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</link>
+  <pubDate>Fri, 09 Jun 2023 17:28:45 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/data-warehouse-dev-spec-0.jpeg" referrerpolicy="no-referrer">
+      </div>一、数据模型架构原则 数仓分层原则12 可靠的数仓体系往往需要清晰的数据分层结构，既要保证数据层的稳定又要屏蔽对下游的影响。 分层是解决当前业务快]]></description>
+</item>
+</channel>
+</rss>
