@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>TDD - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/tdd/</link>
+    <description>TDD - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 12 Jul 2023 16:30:51 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/tdd/" rel="self" type="application/rss+xml" /><item>
+  <title>测试驱动开发模式的领悟</title>
+  <link>http://example.org/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/</link>
+  <pubDate>Wed, 12 Jul 2023 16:30:51 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/tdd-0.jpeg" referrerpolicy="no-referrer">
+      </div>一、概述 什么是TDD TDD颠覆了传统的开发和测试。TDD不是先写业务代码，而是先写测试代码，写业务代码来反向满足测试代码的校验。TDD规定你]]></description>
+</item>
+</channel>
+</rss>

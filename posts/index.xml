@@ -3,7 +3,17 @@
     <title>所有文章 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/posts/</link>
     <description>所有文章 | J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 09 Jun 2023 17:28:45 &#43;0800</lastBuildDate><atom:link href="http://example.org/posts/" rel="self" type="application/rss+xml" /><item>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 12 Jul 2023 16:30:51 &#43;0800</lastBuildDate><atom:link href="http://example.org/posts/" rel="self" type="application/rss+xml" /><item>
+  <title>测试驱动开发模式的领悟</title>
+  <link>http://example.org/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/</link>
+  <pubDate>Wed, 12 Jul 2023 16:30:51 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/tdd-0.jpeg" referrerpolicy="no-referrer">
+      </div>一、概述 什么是TDD TDD颠覆了传统的开发和测试。TDD不是先写业务代码，而是先写测试代码，写业务代码来反向满足测试代码的校验。TDD规定你]]></description>
+</item>
+<item>
   <title>数据仓库通用开发规范</title>
   <link>http://example.org/posts/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</link>
   <pubDate>Fri, 09 Jun 2023 17:28:45 &#43;0800</pubDate>
@@ -92,16 +102,6 @@
   <description><![CDATA[<div class="featured-image">
         <img src="/posts/images/hbase-1.png" referrerpolicy="no-referrer">
       </div>HBase写入优化 客户端优化 批量写 采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成]]></description>
-</item>
-<item>
-  <title>深入了解HBase的存储设计及伸缩性与高可用</title>
-  <link>http://example.org/posts/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3hbase%E7%9A%84%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BC%B8%E7%BC%A9%E6%80%A7%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/</link>
-  <pubDate>Wed, 01 Mar 2023 16:00:18 &#43;0800</pubDate>
-  <author>j5land</author>
-  <guid>http://example.org/posts/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3hbase%E7%9A%84%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1%E5%8F%8A%E4%BC%B8%E7%BC%A9%E6%80%A7%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8/</guid>
-  <description><![CDATA[<div class="featured-image">
-        <img src="/posts/images/hbase2-1.png" referrerpolicy="no-referrer">
-      </div>主要内容 HBase存储设计 HBase读写流程 HBase Campaction（伸缩性） HBase高可用（灾备） HBase存储设计 底层存储 HBase的底]]></description>
 </item>
 </channel>
 </rss>
