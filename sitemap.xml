@@ -101,6 +101,10 @@
       <loc>http://example.org/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/</loc><lastmod>2021-08-23T23:55:03&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92/</loc><lastmod>2021-08-23T23:55:03&#43;08:00</lastmod></url><url>
       <loc>http://example.org/categories/%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF/</loc><lastmod>2021-08-23T23:55:03&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/tags/git/</loc><lastmod>2021-05-20T11:19:59&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/categories/git%E8%A7%84%E8%8C%83/</loc><lastmod>2021-05-20T11:19:59&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/categories/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/</loc><lastmod>2021-05-20T11:19:59&#43;08:00</lastmod></url><url>
+      <loc>http://example.org/posts/%E4%BC%98%E9%9B%85%E7%9A%84%E6%8F%90%E4%BA%A4%E4%BD%A0%E7%9A%84git-commit-message/</loc><lastmod>2021-05-20T11:19:59&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/docker/</loc><lastmod>2021-03-23T18:24:56&#43;08:00</lastmod></url><url>
       <loc>http://example.org/posts/docker%E8%B5%B7%E6%BA%90%E4%B8%8E%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/</loc><lastmod>2021-03-23T18:24:56&#43;08:00</lastmod></url><url>
       <loc>http://example.org/tags/%E5%AE%B9%E5%99%A8/</loc><lastmod>2021-03-23T18:24:56&#43;08:00</lastmod></url><url>

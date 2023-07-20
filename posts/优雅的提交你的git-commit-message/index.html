@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>优雅的提交你的Git Commit Message - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 Git 每次提交代码，都要写 Commit message（提交说明），否则就不允许提交。 git commit -m &#34;hello world&#34; 上面代码的-m参数，就是用来指定 commit mesage 的。 如果一行不够，可" /><meta name="keywords" content='Git' /><meta itemprop="name" content="优雅的提交你的Git Commit Message">
+<meta itemprop="description" content="背景 Git 每次提交代码，都要写 Commit message（提交说明），否则就不允许提交。 git commit -m &#34;hello world&#34; 上面代码的-m参数，就是用来指定 commit mesage 的。 如果一行不够，可"><meta itemprop="datePublished" content="2021-05-20T11:19:59+08:00" />
+<meta itemprop="dateModified" content="2021-05-20T11:19:59+08:00" />
+<meta itemprop="wordCount" content="2178">
+<meta itemprop="keywords" content="Git," /><meta property="og:title" content="优雅的提交你的Git Commit Message" />
+<meta property="og:description" content="背景 Git 每次提交代码，都要写 Commit message（提交说明），否则就不允许提交。 git commit -m &#34;hello world&#34; 上面代码的-m参数，就是用来指定 commit mesage 的。 如果一行不够，可" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E4%BC%98%E9%9B%85%E7%9A%84%E6%8F%90%E4%BA%A4%E4%BD%A0%E7%9A%84git-commit-message/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-20T11:19:59+08:00" />
+<meta property="article:modified_time" content="2021-05-20T11:19:59+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="优雅的提交你的Git Commit Message"/>
+<meta name="twitter:description" content="背景 Git 每次提交代码，都要写 Commit message（提交说明），否则就不允许提交。 git commit -m &#34;hello world&#34; 上面代码的-m参数，就是用来指定 commit mesage 的。 如果一行不够，可"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E4%BC%98%E9%9B%85%E7%9A%84%E6%8F%90%E4%BA%A4%E4%BD%A0%E7%9A%84git-commit-message/" /><link rel="prev" href="http://example.org/posts/docker%E8%B5%B7%E6%BA%90%E4%B8%8E%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/" /><link rel="next" href="http://example.org/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "优雅的提交你的Git Commit Message",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E4%BC%98%E9%9B%85%E7%9A%84%E6%8F%90%E4%BA%A4%E4%BD%A0%E7%9A%84git-commit-message\/"
+    },"genre": "posts","keywords": "Git","wordcount":  2178 ,
+    "url": "http:\/\/example.org\/posts\/%E4%BC%98%E9%9B%85%E7%9A%84%E6%8F%90%E4%BA%A4%E4%BD%A0%E7%9A%84git-commit-message\/","datePublished": "2021-05-20T11:19:59+08:00","dateModified": "2021-05-20T11:19:59+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>优雅的提交你的Git Commit Message</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 代码规范</a>&ensp;<a href="/categories/git%E8%A7%84%E8%8C%83/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Git规范</a></span></div>
+      <div class="post-meta-line"><span title=2021-05-20&#32;11:19:59><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-05-20">2021-05-20</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2178 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a>
+      <ul>
+        <li><a href="#commit-message的重要性">Commit message的重要性</a></li>
+        <li><a href="#commit-规范的意义">Commit 规范的意义</a></li>
+      </ul>
+    </li>
+    <li><a href="#commit-message-的格式">Commit message 的格式</a>
+      <ul>
+        <li><a href="#feat新功能">feat(新功能)</a></li>
+        <li><a href="#fix修复bug">fix(修复bug)</a></li>
+        <li><a href="#refactory重构">refactory(重构)</a></li>
+      </ul>
+    </li>
+    <li><a href="#commit-message-的实践">Commit message 的实践</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>Git 每次提交代码，都要写 Commit message（提交说明），否则就不允许提交。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git commit -m <span class="s2">&#34;hello world&#34;</span>
+</span></span></code></pre></div><p>上面代码的<code>-m</code>参数，就是用来指定 commit mesage 的。</p>
+<p>如果一行不够，可以只执行<code>git commit</code>，就会跳出文本编辑器，让你写多行。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git commit
+</span></span></code></pre></div><p>基本上，你写什么都行，但是，一般来说，commit message 应该清晰明了，说明本次提交的目的。</p>
+<h3 id="commit-message的重要性">Commit message的重要性</h3>
+<p>合理的Commit消息对项目维护至关重要。通过 Commit 历史可以清晰地看到整个项目的变迁和进展情况。</p>
+<p>常见的Commit消息方式如下:</p>
+<ol>
+<li><strong>提交类型:feat/fix/docs/style/refactor/test等</strong></li>
+</ol>
+<ul>
+<li>主要type
+<ul>
+<li><strong>feat</strong>: 增加新功能</li>
+<li><strong>fix</strong>: 修复bug</li>
+</ul>
+</li>
+<li>特殊type
+<ul>
+<li><strong>docs</strong>: 只改动了文档相关的内容</li>
+<li>style:  不影响代码含义的改动，例如去掉空格、改变缩进、增删分号</li>
+<li>build:  构造工具的或者外部依赖的改动，例如webpack，npm</li>
+<li><strong>refactor</strong>: 代码重构时使用</li>
+<li>revert:  执行git revert打印的message</li>
+</ul>
+</li>
+<li>暂不使用type
+<ul>
+<li><strong>test</strong>: 添加测试或者修改现有测试</li>
+<li>perf: 提高性能的改动</li>
+<li>ci:  与CI（持续集成服务）有关的改动</li>
+<li>chore:  不修改src或者test的其余修改，例如构建过程或辅助工具的变动</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li><strong>修改范围:模块或功能名称</strong></li>
+<li><strong>主题:简短描述,不超过50个字符</strong></li>
+<li><strong>内容:更详细的描述,可以分多行</strong></li>
+</ol>
+<h3 id="commit-规范的意义">Commit 规范的意义</h3>
+<p>使用统一的Commit规范可以使项目历史更清晰可读,也便于使用Git工具进行分析统计。常用的规范有:</p>
+<ul>
+<li>Angular Convention</li>
+<li>Conventional Commits</li>
+</ul>
+<p>采用机器可读的规范化Commit信息,也可自动生成Change log。</p>
+<p>总之,高质量的Commit信息是项目管理的重要一环。</p>
+<h2 id="commit-message-的格式">Commit message 的格式</h2>
+<p>本文格式主要介绍<a href="https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#heading=h.greljkmo14y0"target="_blank" rel="external nofollow noopener noreferrer">Angular 规范</a>，Angular的Commit规范主要定义了Commit信息的格式和各部分含义,主要目的是通过规范的Commit信息,使得代码Review和Release log生成变得更加清晰易读。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">type</span><span class="p">&gt;</span>(<span class="p">&lt;</span><span class="nt">scope</span><span class="p">&gt;</span>): <span class="p">&lt;</span><span class="nt">subject</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">BLANK</span> <span class="na">LINE</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">BLANK</span> <span class="na">LINE</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">footer</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p>其中:</p>
+<ul>
+<li>type: commit的类型,包括feat(新功能)、fix(修复bug)、docs(文档)、style(格式)、refactor(重构)、test(测试)等</li>
+<li>scope: commit影响的范围,比如模块名、功能名等</li>
+<li>subject: commit的简短描述,不超过50个字符</li>
+<li>body: commit详细描述,可以分为多行</li>
+<li>footer: 一些备注,比如BREAKING CHANGE、modified、closed等</li>
+</ul>
+<p>针对你提供的日志,我们来举几个例子:</p>
+<h3 id="feat新功能">feat(新功能)</h3>
+<pre tabindex="0"><code>feat(encoder): 支持自定义日志格式
+
+在logback.xml中添加了一个新的PatternLayoutEncoder，以允许自定义日志格式配置。这可以用于灵活地定义日志输出格式。
+
+BREAKING_CHANGE：默认情况下，现在使用PatternLayoutEncoder而不是先前的LogstashEncoder。
+</code></pre><h3 id="fix修复bug">fix(修复bug)</h3>
+<pre tabindex="0"><code>fix(file-appender): 修复空指针异常
+
+修复使用FileAppender记录空内容日志事件时发生NullPointerException的问题。在Appender中添加适当的空值检查。
+
+已修复#10。
+</code></pre><h3 id="refactory重构">refactory(重构)</h3>
+<pre tabindex="0"><code>refactor(module): 提取公共类到logging-common
+
+将SharedConfiguration、ConfigurationLoader和其他常用帮助类移动到一个单独的“logging-common”模块中。这将减少重复。
+
+修改了AppConfiguration和LogbackHelper以依赖于logging-common。
+</code></pre><p>可以看出采用了统一的格式,并且从类型、范围及描述内容上都很清晰的表达了这次Commit的目的。</p>
+<p>这种规范的 Commit 信息非常适合用于日志分析和 Release Notes 的生成。我觉得如果引入 Angular Commit 规范,可以大大提高你们项目的 Commit 信息质量。</p>
+<h2 id="commit-message-的实践">Commit message 的实践</h2>
+<p>在一个大功能的开发过程中，代码提交的粒度和提交信息如何合理进行是非常重要的。建议如下:</p>
+<ol>
+<li><strong>频繁小步提交,而不是开发完再提交</strong>。大功能开发还是要按照一定逻辑拆分成多个小步骤,每个小步骤完成后就提交一次代码,而不是全部开发完再提交。这样可以让主分支代码频繁更新,方便跟踪进展和回滚。</li>
+<li><strong>每次提交的粒度要有合理大小</strong>。每次提交的代码变更量不宜太大或太小。如果变更量太大,从提交信息难以把握代码变化。太小则提交次数过多,增加维护成本。每次提交可围绕一个较小的逻辑实现,保证尽量独立稳定。</li>
+<li><strong>提交信息要清晰准确描述代码变更</strong>。按照Angular Convention格式,提交信息要概述此次提交的类型(feat、fix等)、范围和具体变更,另外补充详细描述和注释,方便review。</li>
+<li>示例提交信息:</li>
+</ol>
+<pre tabindex="0"><code>feat(payment): 添加 PayPal 支付网关
+
+1.实现用于支付的 PayPal API
+2.调用为 PayPal 生成随机数并捕获订单
+3.添加 PayPalConfiguration 类
+
+在结账流程中添加 PayPal 支付支持。此提交为用户添加了一个新的付款选项。
+相关 Jira 票号：PAY-7。
+</code></pre><pre tabindex="0"><code>refactor(checkout): 优化结账服务逻辑
+
+1.将与购物车相关的方法移动到 CartService 中
+2.通过分离服务并将流程拆分为单独步骤来优化结账流程
+3.为了更好的清晰度重新命名和重构方法
+此提交通过将与购物车有关的逻辑提取到单独的服务类中来改进结账代码。
+
+无 API 更改。改进了维护性。
+</code></pre><pre tabindex="0"><code>fix(payment): 修复信用卡支付中的空指针异常
+
+1.在访问信用卡对象之前添加空值检查
+2.在开始支付时处理空卡情况
+3.修复 CreditCardPaymentService 中出现的空指针异常，该异常在有效负载中缺少信用卡对象时发生。
+
+请参见错误报告 PAY-113。
+</code></pre><p>可以看出每次提交仅包含相关且能独立工作的代码变更，且提交信息清晰描述了变更，便于跟踪和理解。</p>
+<p>综上，对大功能采取先拆分后频繁小提交，并明确描述每次变更。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2021-05-20&#32;11:19:59>更新于 2021-05-20&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/git/' class="post-tag">Git</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/docker%E8%B5%B7%E6%BA%90%E4%B8%8E%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/" class="post-nav-item" rel="prev" title="Docker起源与容器技术原理"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Docker起源与容器技术原理</a>
+      <a href="/posts/kubernetes%E7%9A%84%E6%9E%B6%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" class="post-nav-item" rel="next" title="Kubernetes的架构与核心概念">Kubernetes的架构与核心概念<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
