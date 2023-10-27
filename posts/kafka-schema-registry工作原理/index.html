@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Kafka Schema Registry工作原理 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Schema Registry简介 Schema Registry的由来和解决的问题 Confluent 公司为了能让 Kafka 支持 Avro 序列化，创建了 Kafka Schema Registry 项目，项目地址为 https://github.com/confluentinc/schema-registry 。对于存储大量数据的 kafka" /><meta name="keywords" content='kafka-schema-registry, kafka' /><meta itemprop="name" content="Kafka Schema Registry工作原理">
+<meta itemprop="description" content="Schema Registry简介 Schema Registry的由来和解决的问题 Confluent 公司为了能让 Kafka 支持 Avro 序列化，创建了 Kafka Schema Registry 项目，项目地址为 https://github.com/confluentinc/schema-registry 。对于存储大量数据的 kafka"><meta itemprop="datePublished" content="2023-10-27T15:28:00+08:00" />
+<meta itemprop="dateModified" content="2023-10-27T15:28:00+08:00" />
+<meta itemprop="wordCount" content="2317">
+<meta itemprop="keywords" content="kafka-schema-registry,kafka," /><meta property="og:title" content="Kafka Schema Registry工作原理" />
+<meta property="og:description" content="Schema Registry简介 Schema Registry的由来和解决的问题 Confluent 公司为了能让 Kafka 支持 Avro 序列化，创建了 Kafka Schema Registry 项目，项目地址为 https://github.com/confluentinc/schema-registry 。对于存储大量数据的 kafka" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-27T15:28:00+08:00" />
+<meta property="article:modified_time" content="2023-10-27T15:28:00+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kafka Schema Registry工作原理"/>
+<meta name="twitter:description" content="Schema Registry简介 Schema Registry的由来和解决的问题 Confluent 公司为了能让 Kafka 支持 Avro 序列化，创建了 Kafka Schema Registry 项目，项目地址为 https://github.com/confluentinc/schema-registry 。对于存储大量数据的 kafka"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" /><link rel="prev" href="http://example.org/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Kafka Schema Registry工作原理",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86\/"
+    },"genre": "posts","keywords": "kafka-schema-registry, kafka","wordcount":  2317 ,
+    "url": "http:\/\/example.org\/posts\/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86\/","datePublished": "2023-10-27T15:28:00+08:00","dateModified": "2023-10-27T15:28:00+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>Kafka Schema Registry工作原理</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/kafka/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> kafka</a></span></div>
+      <div class="post-meta-line"><span title=2023-10-27&#32;15:28:00><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-10-27">2023-10-27</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2317 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/kafka-schema-registry.jpg"
+    data-srcset="/posts/images/kafka-schema-registry.jpg, /posts/images/kafka-schema-registry.jpg 1.5x, /posts/images/kafka-schema-registry.jpg 2x"
+    data-sizes="auto"
+    alt="/posts/images/kafka-schema-registry.jpg"
+    title="/posts/images/kafka-schema-registry.jpg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#schema-registry简介">Schema Registry简介</a>
+      <ul>
+        <li><a href="#schema-registry的由来和解决的问题">Schema Registry的由来和解决的问题</a></li>
+        <li><a href="#schema-registry在kafka生态中的作用">Schema Registry在Kafka生态中的作用</a></li>
+        <li><a href="#schema-registry的工作原理简介">Schema Registry的工作原理简介</a></li>
+      </ul>
+    </li>
+    <li><a href="#schema-registry实战应用">Schema Registry实战应用</a>
+      <ul>
+        <li><a href="#producer集成">Producer集成</a></li>
+        <li><a href="#kafka-registry-原理">Kafka Registry 原理</a></li>
+        <li><a href="#consumer集成">Consumer集成</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="schema-registry简介">Schema Registry简介</h2>
+<h3 id="schema-registry的由来和解决的问题">Schema Registry的由来和解决的问题</h3>
+<p>Confluent 公司为了能让 Kafka 支持 Avro 序列化，创建了 Kafka Schema Registry 项目，项目地址为 <a href="https://github.com/confluentinc/schema-registry"target="_blank" rel="external nofollow noopener noreferrer">https://github.com/confluentinc/schema-registry</a> 。对于存储大量数据的 kafka 来说，使用 Avro 序列化，可以减少数据的存储空间提高了存储量，减少了序列化时间提高了性能。 Kafka 有多个topic，里面存储了不同种类的数据，每种数据都对应着一个 Avro schema 来描述这种格式。Registry 服务支持方便的管理这些 topic 的schema，它还对外提供了多个 restful 接口，用于存储和查找。</p>
+<h3 id="schema-registry在kafka生态中的作用">Schema Registry在Kafka生态中的作用</h3>
+<ol>
+<li><strong>Schema存储与版本管理</strong>。Schema Registry为每个Topic的Key和Value提供了架构信息的版本化仓库, Producer和Consumer可以存取不同版本的Schema。</li>
+<li><strong>数据格式验证</strong>。在消息进入Kafka之前,Schema Registry会验证消息结构是否符合预定义的Schema。这保证了数据质量。</li>
+<li><strong>客户端Schema信息共享</strong>。Producer和Consumer可以通过Schema Registry获取对应Topic的Schema定义,实现schema信息的共享和重用。</li>
+<li><strong>支持schema的兼容性演变</strong>。Schema Registry支持schema的兼容性规则设置,允许schema演变而不破坏客户端,比如新增字段。</li>
+<li><strong>统一的数据序列化和反序列化</strong>。结合Avro等,Schema Registry提供了从byte到语义消息的转换能力。</li>
+<li><strong>运行时数据解析</strong>。Consumer可以利用Schema Registry在运行时解析序列化数据,而不需要了解所有的应用级schema信息。</li>
+<li><strong>Schema操作审计</strong>。Schema Registry提供了所有schema操作的审计日志,用于 governance、compliance等目的。</li>
+<li><strong>增强对多语言支持</strong>。Schema Registry使用标准webhookcallback及Schema定义,支持各种语言的Client。</li>
+</ol>
+<h3 id="schema-registry的工作原理简介">Schema Registry的工作原理简介</h3>
+<p>Schema Registry 是Avro Schemas 的一个分布式存储层，它具有以下特点：</p>
+<ul>
+<li>为每个注册的schema 提供一个全局唯一ID，分配的ID 保证单调递增，但不一定是连续的。</li>
+<li>kafka 为Schema Registry 的状态和它包含的schema 提供一个持久的后端</li>
+<li>Schema Registry 是一个分布式的单主架构，由kafka 或者zookeeper 协调主节点的选举。</li>
+<li>生产者在发送含schema 的消息时，会先判断schema 的消息是否在本地内存中，如果不在本地内存中，说明schema 尚未注册到Schema Registry，则需要进行注册，否则，无需注册</li>
+<li>消费者在反序列化消息时，会先判断schema 是否在本地内存中，如果不在本地内存中，则需要从Schema Registry 中获取schema，否则，无需获取。</li>
+</ul>
+<h2 id="schema-registry实战应用">Schema Registry实战应用</h2>
+<h3 id="producer集成">Producer集成</h3>
+<ol>
+<li>Producer在发送消息前,会先向Schema Registry校验消息格式</li>
+<li>通过Schema Registry获取消息对应的最新Schema ID</li>
+<li>Producer将Schema ID包含在消息中,并序列化消息</li>
+<li>如果Schema发生变更,Producer可以获取新的Schema</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SchemaProducer</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">kafkaHost</span> <span class="o">=</span> <span class="s">&#34;xxx.xxx.xxx.xxx:9092&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">topic</span> <span class="o">=</span> <span class="s">&#34;schema-tutorial&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">schameFilename</span> <span class="o">=</span> <span class="s">&#34;user.json&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">registryHost</span> <span class="o">=</span> <span class="s">&#34;http://xxx.xxx.xxx.xxx:8081&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">Properties</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Properties</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">ProducerConfig</span><span class="o">.</span><span class="na">BOOTSTRAP_SERVERS_CONFIG</span><span class="o">,</span> <span class="n">kafkaHost</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">ProducerConfig</span><span class="o">.</span><span class="na">KEY_SERIALIZER_CLASS_CONFIG</span><span class="o">,</span> <span class="n">StringSerializer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 指定Value的序列化类，KafkaAvroSerializer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">ProducerConfig</span><span class="o">.</span><span class="na">VALUE_SERIALIZER_CLASS_CONFIG</span><span class="o">,</span> <span class="n">KafkaAvroSerializer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 指定 registry 服务的地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">// 如果 Schema Registry 启动了高可用，那么这儿的配置值可以是多个服务地址，以逗号隔开
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;schema.registry.url&#34;</span><span class="o">,</span> <span class="n">registryHost</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">KafkaProducer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">GenericRecord</span><span class="o">&gt;</span> <span class="n">producer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KafkaProducer</span><span class="o">&lt;&gt;(</span><span class="n">props</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="s">&#34;Alyssa key&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Schema</span> <span class="n">schema</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Schema</span><span class="o">.</span><span class="na">Parser</span><span class="o">().</span><span class="na">parse</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">schameFilename</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">GenericRecord</span> <span class="n">avroRecord</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GenericData</span><span class="o">.</span><span class="na">Record</span><span class="o">(</span><span class="n">schema</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">avroRecord</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">,</span> <span class="s">&#34;Alyssa&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">avroRecord</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;favorite_number&#34;</span><span class="o">,</span> <span class="mi">256</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 发送消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">ProducerRecord</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">GenericRecord</span><span class="o">&gt;</span> <span class="n">record</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProducerRecord</span><span class="o">&lt;&gt;(</span><span class="n">topic</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">avroRecord</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">producer</span><span class="o">.</span><span class="na">send</span><span class="o">(</span><span class="n">record</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">producer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">producer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h3 id="kafka-registry-原理">Kafka Registry 原理</h3>
+<p>我们知道 Kafka 的消息由 Key 和 Value 组成，这两部分的值可以有不同的数据格式。而这些数据格式都会保存在 Registry 服务端，客户端需要指定数据格式的名称（在 Registry 中叫做 subject），才能获取到。如果我们要获取当前消息 Key 这部分的数据格式，它对于的 subject 名称为 -key，如果要获取 Value 这部分的数据格式，它对应的 subject 名称为 -value（topic 为该消息所在的 topic 名称）。</p>
+<p>KafkaProducer 在第一次序列化的时候，会自动向 Registry 服务端注册。服务端保存数据格式后，会返回一个 id 号。KafkaProducer发送消息的时候，需要附带这个 id 号。这样 KafkaConsumer 在读取消息的时候，通过这个 id 号，就可以从 Registry 服务端 获取。</p>
+<p>Registry 客户端负责向服务端发送 http 请求，然后会将结果缓存起来，以提高性能。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CachedSchemaRegistryClient</span> <span class="kd">implements</span> <span class="n">SchemaRegistryClient</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Key 为数据格式的名称， 里面的 Value 为 Map类型，它对于的 Key 为数据格式，Value 为对应的 id 号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Schema</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;&gt;</span> <span class="n">schemaCache</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Key 为数据格式的名称，里面的 Value 为 Map类型，它对于的 Key 为 id 号，Value 为对应的数据格式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// 这个集合比较特殊，当 Key 为 null 时，表示 id 到 数据格式的缓存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Schema</span><span class="o">&gt;&gt;</span> <span class="n">idCache</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">int</span> <span class="nf">register</span><span class="o">(</span><span class="n">String</span> <span class="n">subject</span><span class="o">,</span> <span class="n">Schema</span> <span class="n">schema</span><span class="o">,</span> <span class="kt">int</span> <span class="n">version</span><span class="o">,</span> <span class="kt">int</span> <span class="n">id</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">RestClientException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 从schemaCache查找缓存，如果不存在则初始化空的哈希表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Schema</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">schemaIdMap</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="n">schemaCache</span><span class="o">.</span><span class="na">computeIfAbsent</span><span class="o">(</span><span class="n">subject</span><span class="o">,</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取对应的 id 号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">final</span> <span class="n">Integer</span> <span class="n">cachedId</span> <span class="o">=</span> <span class="n">schemaIdMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">schema</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">cachedId</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 检查 id 号是否有冲突
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">id</span> <span class="o">!=</span> <span class="n">cachedId</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">&#34;Schema already registered with id &#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">+</span> <span class="n">cachedId</span> <span class="o">+</span> <span class="s">&#34; instead of input id &#34;</span> <span class="o">+</span> <span class="n">id</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 返回缓存的 id 号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">return</span> <span class="n">cachedId</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">schemaIdMap</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="n">identityMapCapacity</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="s">&#34;Too many schema objects created for &#34;</span> <span class="o">+</span> <span class="n">subject</span> <span class="o">+</span> <span class="s">&#34;!&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">      
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果缓存没有，则向服务端发送 http 请求 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">final</span> <span class="kt">int</span> <span class="n">retrievedId</span> <span class="o">=</span> <span class="n">id</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">?</span> <span class="n">registerAndGetId</span><span class="o">(</span><span class="n">subject</span><span class="o">,</span> <span class="n">schema</span><span class="o">,</span> <span class="n">version</span><span class="o">,</span> <span class="n">id</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">:</span> <span class="n">registerAndGetId</span><span class="o">(</span><span class="n">subject</span><span class="o">,</span> <span class="n">schema</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 缓存结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">schemaIdMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">schema</span><span class="o">,</span> <span class="n">retrievedId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">idCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">).</span><span class="na">put</span><span class="o">(</span><span class="n">retrievedId</span><span class="o">,</span> <span class="n">schema</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">retrievedId</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>    
+</span></span></code></pre></div><h3 id="consumer集成">Consumer集成</h3>
+<h4 id="spring-boot集成案例">Spring Boot集成案例</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KafkaConsumerConfig</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">SchemaRegistryClient</span> <span class="nf">schemaRegistryClient</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">CachedSchemaRegistryClient</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">      <span class="s">&#34;http://localhost:8081&#34;</span><span class="o">,</span> <span class="mi">100</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">ConsumerFactory</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="nf">consumerFactory</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">JsonDeserializer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">deserializer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonDeserializer</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">deserializer</span><span class="o">.</span><span class="na">setRemoveTypeHeaders</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">deserializer</span><span class="o">.</span><span class="na">setSchemaRegistryClient</span><span class="o">(</span><span class="n">schemaRegistryClient</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">DefaultKafkaConsumerFactory</span><span class="o">&lt;&gt;(</span>
+</span></span><span class="line"><span class="cl">      <span class="n">consumerConfigs</span><span class="o">(),</span> 
+</span></span><span class="line"><span class="cl">      <span class="k">new</span> <span class="n">StringDeserializer</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">      <span class="n">deserializer</span>
+</span></span><span class="line"><span class="cl">    <span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">ConcurrentKafkaListenerContainerFactory</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="nf">kafkaListenerContainerFactory</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ConcurrentKafkaListenerContainerFactory</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">factory</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">      <span class="k">new</span> <span class="n">ConcurrentKafkaListenerContainerFactory</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">factory</span><span class="o">.</span><span class="na">setConsumerFactory</span><span class="o">(</span><span class="n">consumerFactory</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">factory</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="nf">kafkaConsumer</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">KafkaConsumer</span><span class="o">&lt;&gt;(</span><span class="n">consumerConfigs</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@Component</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KafkaConsumer</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nd">@KafkaListener</span><span class="o">(</span><span class="n">topics</span> <span class="o">=</span> <span class="s">&#34;test&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">listen</span><span class="o">(</span><span class="n">ConsumerRecord</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">record</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 获取反序列化的消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">String</span> <span class="n">message</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="na">value</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h4 id="与avro结合使用">与Avro结合使用</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// SchemaRegistry配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">SchemaRegistryClient</span> <span class="nf">schemaRegistryClient</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="k">new</span> <span class="n">CachedSchemaRegistryClient</span><span class="o">(</span><span class="s">&#34;http://localhost:8081&#34;</span><span class="o">);</span> 
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Avro反序列化器 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">AvroDeserializer</span> <span class="nf">avroDeserializer</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">AvroDeserializer</span> <span class="n">deserializer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AvroDeserializer</span><span class="o">(</span><span class="n">schemaRegistryClient</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">deserializer</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ConsumerFactory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">ConsumerFactory</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">User</span><span class="o">&gt;</span> <span class="nf">consumerFactory</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="k">new</span> <span class="n">DefaultKafkaConsumerFactory</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">consumerConfigs</span><span class="o">(),</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">StringDeserializer</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">avroDeserializer</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">  <span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Listener容器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">ConcurrentKafkaListenerContainerFactory</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">User</span><span class="o">&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="nf">kafkaListenerContainerFactory</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="n">ConcurrentKafkaListenerContainerFactory</span> <span class="n">factory</span> <span class="o">=</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="n">ConcurrentKafkaListenerContainerFactory</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="n">factory</span><span class="o">.</span><span class="na">setConsumerFactory</span><span class="o">(</span><span class="n">consumerFactory</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">factory</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Listener方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@KafkaListener</span><span class="o">(</span><span class="n">topics</span> <span class="o">=</span> <span class="s">&#34;test&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">listen</span><span class="o">(</span><span class="n">ConsumerRecord</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">User</span><span class="o">&gt;</span> <span class="n">record</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="na">value</span><span class="o">();</span> <span class="c1">// 直接获取反序列化的对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-10-27&#32;15:28:00>更新于 2023-10-27&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/kafka-schema-registry/' class="post-tag">kafka-schema-registry</a><a href='/tags/kafka/' class="post-tag">kafka</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/" class="post-nav-item" rel="prev" title="测试驱动开发模式的领悟"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>测试驱动开发模式的领悟</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

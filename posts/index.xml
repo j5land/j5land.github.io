@@ -3,7 +3,17 @@
     <title>所有文章 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/posts/</link>
     <description>所有文章 | J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 12 Jul 2023 16:30:51 &#43;0800</lastBuildDate><atom:link href="http://example.org/posts/" rel="self" type="application/rss+xml" /><item>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 27 Oct 2023 15:28:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/posts/" rel="self" type="application/rss+xml" /><item>
+  <title>Kafka Schema Registry工作原理</title>
+  <link>http://example.org/posts/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</link>
+  <pubDate>Fri, 27 Oct 2023 15:28:00 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/kafka-schema-registry.jpg" referrerpolicy="no-referrer">
+      </div>Schema Registry简介 Schema Registry的由来和解决的问题 Confluent 公司为了能让 Kafka 支持 Avro 序列化，创建了 Kafka Schema Registry 项目，项目地址为 https://github.com/confluentinc/schema-registry 。对于存储大量数据的 kafka]]></description>
+</item>
+<item>
   <title>测试驱动开发模式的领悟</title>
   <link>http://example.org/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/</link>
   <pubDate>Wed, 12 Jul 2023 16:30:51 &#43;0800</pubDate>
@@ -92,16 +102,6 @@
   <description><![CDATA[<div class="featured-image">
         <img src="/posts/images/chatgpt-0.jpeg" referrerpolicy="no-referrer">
       </div>在研发方面的应用场景 帮助代码实现 AI大语音模型可以通过自然语言描述来自动生成代码，减少了程序员手动编写代码的时间和复杂性。 Code Review AI大语音模型]]></description>
-</item>
-<item>
-  <title>HBase性能优化最佳实践</title>
-  <link>http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link>
-  <pubDate>Mon, 06 Mar 2023 18:21:46 &#43;0800</pubDate>
-  <author>j5land</author>
-  <guid>http://example.org/posts/hbase%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid>
-  <description><![CDATA[<div class="featured-image">
-        <img src="/posts/images/hbase-1.png" referrerpolicy="no-referrer">
-      </div>HBase写入优化 客户端优化 批量写 采用批量写，可以减少客户端到RegionServer之间的RPC的次数，提高写入性能。批量写请求要么全部成]]></description>
 </item>
 </channel>
 </rss>
