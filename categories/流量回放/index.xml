@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>流量回放 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE/</link>
+    <description>流量回放 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 29 Nov 2023 10:24:12 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE/" rel="self" type="application/rss+xml" /><item>
+  <title>广告请求流量回复Diff对比技术方案</title>
+  <link>http://example.org/posts/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/</link>
+  <pubDate>Wed, 29 Nov 2023 10:24:12 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/ad-flow-diff-test.jpg" referrerpolicy="no-referrer">
+      </div>一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线]]></description>
+</item>
+</channel>
+</rss>

@@ -3,15 +3,13 @@
     <title>draft - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/tags/draft/</link>
     <description>draft - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 28 Apr 2023 17:35:44 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/draft/" rel="self" type="application/rss+xml" /><item>
-  <title>使用Nginx代理转发openai.com请求</title>
-  <link>http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91openai.com%E8%AF%B7%E6%B1%82/</link>
-  <pubDate>Fri, 28 Apr 2023 17:35:44 &#43;0800</pubDate>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 30 Jan 2024 10:24:12 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/draft/" rel="self" type="application/rss+xml" /><item>
+  <title>广告请求流量回复Diff对比技术方案</title>
+  <link>http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AF%B7%E6%B1%82%E6%B5%81%E9%87%8F%E5%9B%9E%E5%A4%8Ddiff%E5%AF%B9%E6%AF%94%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/</link>
+  <pubDate>Tue, 30 Jan 2024 10:24:12 &#43;0800</pubDate>
   <author>j5land</author>
-  <guid>http://example.org/posts/%E4%BD%BF%E7%94%A8nginx%E4%BB%A3%E7%90%86%E8%BD%AC%E5%8F%91openai.com%E8%AF%B7%E6%B1%82/</guid>
-  <description><![CDATA[<div class="featured-image">
-        <img src="/posts/images/clash-1.jpeg" referrerpolicy="no-referrer">
-      </div>背景 在中国大陆，由于网络限制的原因，访问一些国外网站需要使用梯子。但是如果想要构建自己的应用或网站，则需要搭建一个代理转发域名。在本文中，将]]></description>
+  <guid>http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AF%B7%E6%B1%82%E6%B5%81%E9%87%8F%E5%9B%9E%E5%A4%8Ddiff%E5%AF%B9%E6%AF%94%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/</guid>
+  <description><![CDATA[一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线]]></description>
 </item>
 </channel>
 </rss>

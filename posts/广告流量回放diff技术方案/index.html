@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>广告请求流量回复Diff对比技术方案 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线" /><meta name="keywords" content='Diff测试, 流量回放' /><meta itemprop="name" content="广告请求流量回复Diff对比技术方案">
+<meta itemprop="description" content="一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线"><meta itemprop="datePublished" content="2023-11-29T10:24:12+08:00" />
+<meta itemprop="dateModified" content="2023-11-29T10:24:12+08:00" />
+<meta itemprop="wordCount" content="2066">
+<meta itemprop="keywords" content="Diff测试,流量回放," /><meta property="og:title" content="广告请求流量回复Diff对比技术方案" />
+<meta property="og:description" content="一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-29T10:24:12+08:00" />
+<meta property="article:modified_time" content="2023-11-29T10:24:12+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="广告请求流量回复Diff对比技术方案"/>
+<meta name="twitter:description" content="一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/" /><link rel="prev" href="http://example.org/posts/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "广告请求流量回复Diff对比技术方案",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88\/"
+    },"genre": "posts","keywords": "Diff测试, 流量回放","wordcount":  2066 ,
+    "url": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88\/","datePublished": "2023-11-29T10:24:12+08:00","dateModified": "2023-11-29T10:24:12+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>广告请求流量回复Diff对比技术方案</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 流量回放</a></span></div>
+      <div class="post-meta-line"><span title=2023-11-29&#32;10:24:12><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-11-29">2023-11-29</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2066 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/ad-flow-diff-test.jpg"
+    data-srcset="/posts/images/ad-flow-diff-test.jpg, /posts/images/ad-flow-diff-test.jpg 1.5x, /posts/images/ad-flow-diff-test.jpg 2x"
+    data-sizes="auto"
+    alt="/posts/images/ad-flow-diff-test.jpg"
+    title="/posts/images/ad-flow-diff-test.jpg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一需求背景">一、需求背景</a>
+      <ul>
+        <li><a href="#11-背景概述">1.1 背景概述</a></li>
+        <li><a href="#12-业务需求">1.2 业务需求</a></li>
+      </ul>
+    </li>
+    <li><a href="#二术语与约定">二、术语与约定</a>
+      <ul>
+        <li><a href="#21-名词解释">2.1 名词解释</a></li>
+        <li><a href="#22-基本约定">2.2 基本约定</a></li>
+      </ul>
+    </li>
+    <li><a href="#三整体架构">三、整体架构</a></li>
+    <li><a href="#四详细设计">四、详细设计</a>
+      <ul>
+        <li><a href="#41-总体回放流程">4.1 总体回放流程</a></li>
+        <li><a href="#42-关键场景处理">4.2 关键场景处理</a></li>
+      </ul>
+    </li>
+    <li><a href="#五常用工具对比">五、常用工具对比</a>
+      <ul>
+        <li><a href="#1基于应用进程">1、基于应用进程</a></li>
+        <li><a href="#2基于中间件">2、基于中间件</a></li>
+        <li><a href="#3基于网络协议栈">3、基于网络协议栈</a></li>
+        <li><a href="#4收钱吧自研日志回访工具">4.收钱吧自研日志回访工具</a></li>
+      </ul>
+    </li>
+    <li><a href="#六常见问题">六、常见问题</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="一需求背景">一、需求背景</h2>
+<h3 id="11-背景概述">1.1 背景概述</h3>
+<p>我们重构了广告引擎，采用新的竞价排名机制。</p>
+<p>为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线上版本进行比较。</p>
+<h3 id="12-业务需求">1.2 业务需求</h3>
+<p>验证新旧广告引擎指定日期流量投放效果的数据表现差异。</p>
+<h2 id="二术语与约定">二、术语与约定</h2>
+<h3 id="21-名词解释">2.1 名词解释</h3>
+<ol>
+<li>广告引擎：负责广告排序和展示的系统；</li>
+<li>日志记录：记录广告引擎上游RPC请求日志（其中日志信息已包含标签、设备等信息）；</li>
+<li>回放工具：可以解析日志并重现流量到指定系统的测试工具；</li>
+<li>数据仿真：</li>
+<li>同步线上广告引擎所需数据表建立新库；</li>
+<li>不建立新库，使用原有测试环境库，同步campaign与slice；</li>
+<li>环境隔离：将测试环境与流量环境进行隔离；（计费服务、事件KafkaTopic隔离）</li>
+<li>模拟策略配置：分层策略模拟配置；</li>
+</ol>
+<h3 id="22-基本约定">2.2 基本约定</h3>
+<ul>
+<li>使用SLS日志服务记录日志；</li>
+<li>使用Kafka作为日志传输和回放的中间件；</li>
+<li>通过回复工具进行1.0配速接口请求流量回放</li>
+<li>通过回放结果数据对比广告数据表现，最终得到 -DIFF方式比较测试结果；</li>
+</ul>
+<h2 id="三整体架构">三、整体架构</h2>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20231129103324841.png"
+    data-srcset="../images/image-20231129103324841.png, ../images/image-20231129103324841.png 1.5x, ../images/image-20231129103324841.png 2x"
+    data-sizes="auto"
+    alt="image-20231129103324841"
+    title="image-20231129103324841"/></p>
+<h2 id="四详细设计">四、详细设计</h2>
+<h3 id="41-总体回放流程">4.1 总体回放流程</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20231129100514042.png"
+    data-srcset="../images/image-20231129100514042.png, ../images/image-20231129100514042.png 1.5x, ../images/image-20231129100514042.png 2x"
+    data-sizes="auto"
+    alt="image-20231129100514042"
+    title="image-20231129100514042"/></p>
+<h3 id="42-关键场景处理">4.2 关键场景处理</h3>
+<p>1.<strong>记录日志</strong>：记录广告引擎前置RPC请求日志，打印至SLS；</p>
+<p>2.数据清洗：<strong>根据广告事件与日志关联，得到对应是否触发曝光与点击</strong>；</p>
+<p>3.回放工具：</p>
+<p>​	2.1 解析和回放日志:回放工具从SLS拉取日志；</p>
+<p>​	2.2 保存真实流量日志发到Kafka，记录对应的分区；</p>
+<p>​    2.3 待回放环境准备好后可以进行流量回复，会加快可增加倍速；</p>
+<p>​	2.4 特殊逻辑处理，回访时，根据SLS日志：需要触发曝光和点击行为；</p>
+<p>3.<strong>回放环境准备</strong>：</p>
+<p>​	3.1 广告引擎依赖库表以及创建独立环境，并同步生产的数据；</p>
+<p>​	3.2 广告计费服务创建独立环境与库表，并创建单独KafkaTopic;</p>
+<p>4.<strong>广告数据报表</strong>：</p>
+<p>比较测试:获取原有广告引擎和新引擎的测试数据,采用DIFF方式比较检验效果。</p>
+<h2 id="五常用工具对比">五、常用工具对比</h2>
+<p>目前开源的流量回放工具比较多，如何选择适合自己业务的工具呢？</p>
+<p>根据录制方式的不同，将流量回放工具大致分为以下三类：即基于应用进程录制、基于中间件录制和基于网络协议栈的录制，并单独介绍各工具的特点及适用范围
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/704b57b9-2e6b-48ae-a678-5157ca5e9a58.png"
+    data-srcset="../images/704b57b9-2e6b-48ae-a678-5157ca5e9a58.png, ../images/704b57b9-2e6b-48ae-a678-5157ca5e9a58.png 1.5x, ../images/704b57b9-2e6b-48ae-a678-5157ca5e9a58.png 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<h3 id="1基于应用进程">1、基于应用进程</h3>
+<p>①.Sharingan</p>
+<p>介绍：Sharingan 是一个基于 golang 的流量录制回放工具，可以录制线上真实请求流量进行回放测试</p>
+<p>原理：修改 golang 源码，在 Socket Connect、Accept、Send、Receive、Close 等阶段加钩子拦截并镜像流量</p>
+<p>优点：
+• 功能齐全,支持流量筛选/比例控制
+• 支持 http、mysql、redis、thrift 等协议
+• 流量回放自带 diff/mock 功能</p>
+<p>不足：
+• 需要根据 golang 定制版重新编译程序
+• 只适合 go 语言开发的应用</p>
+<h3 id="2基于中间件">2、基于中间件</h3>
+<p>①.ngx_http_mirror_module</p>
+<p>介绍： nginx 1.13.4 及后续版本内置 ngx_http_mirror_module 模块，提供流量镜像 (复制) 的功能</p>
+<p>原理：在 nginx 内部接收到流量时，复制相同的流量至 mirror 环境</p>
+<p>优点：
+• 支持流量放大，配置简单，可转发至多份镜像
+• 无需录制流量，实时转发
+• 源站请求，直接原路返回； mirror 请求的返回不作处理</p>
+<p>不足：
+•流量较大时严重影响线上 Nginx 性能
+•只支持 HTTP 协议</p>
+<p>②.JVM-SANDBOX-Repeater
+介绍：JVM-SANDBOX-Repeater 是 JVM-Sandbox 生态体系下的重要模块，它具备了 JVM-Sandbox 的所有特点，插件式设计便于快速适配各种中间件，封装请求录制/回放基础协议，也提供了通用可扩展的各种丰富 API</p>
+<p>原理：基于 JVM 的非侵入式运行期 AOP 解决方案</p>
+<p>优点：
+• 流量回放只是基本功能，可以扩展到沙箱的其他能力
+• 通用的录制/回放能力，多协议的支持
+• 可追踪内部调用链，方便 debug</p>
+<p>不足：
+• 只适用于 JAVA 类应用
+• 有一定上手难度，熟悉 JAVA/JVM
+• 对于线上 JVM 仍然会有性能影响</p>
+<h3 id="3基于网络协议栈">3、基于网络协议栈</h3>
+<p>①.Goreplay</p>
+<p>介绍：GoReplay 是一个用 golang 编写的开源工具，用于捕获实时 HTTP 流量并将其回放到测试环境中</p>
+<p>原理：利用 gopacket 库，基于 libpacp 抓包，并利用 go 的协程特性，实现回放速率的控制</p>
+<p>优点：
+• 安装部署简单，对业务应用无侵入，只占用机器带宽
+• 支持过滤和修改流量，可实时转发流量
+• 支持回放速率控制，可用于性能测试</p>
+<p>不足：
+• 目前只支持 HTTP1.1 及以下协议
+• 无法解析二进制的数据交互协议，如 Protobuf</p>
+<p>②.TcpCopy</p>
+<p>介绍：TCPCopy 是一个开源的流量回放工具，支持多种类型流量的实时及离线回放</p>
+<p>原理：复制在线的 TCP 类型的请求数据包，修改 TCP/IP 头部信息，发送给测试服务器，达到欺骗测试服务器的 TCP 程序的目的</p>
+<p>优点：
+• 业务无侵入，因为 intercept 的存在，实时导流对线上影响较小
+• 基本 tcp 协议栈的协议都可以支持，几乎是目前支持协议最多的流量回放工具
+• 基于 ip 层发送，流量更加真实
+• 支持分布式架构，可以当作压测工具使用</p>
+<p>不足：
+• 部署难度大，需要同时部署 tcpcopy 和 intercept，参数较复杂
+• 录制和回放都是基于底层数据包，难以进行流量的筛选和定制</p>
+<h3 id="4收钱吧自研日志回访工具">4.收钱吧自研日志回访工具</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/20181114163842.png"
+    data-srcset="../images/20181114163842.png, ../images/20181114163842.png 1.5x, ../images/20181114163842.png 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<h2 id="六常见问题">六、常见问题</h2>
+<p>Q：回放流量的结果能代表真实情况吗?</p>
+<p>A：通过记录实际生产流量，保证场景覆盖面，可以基本代表真实情况。</p>
+<p>Q：如何保证测试环境数据和线上的一致性？</p>
+<p>A：同步线上数据到测试数据库</p>
+<p>Q：接口有外部依赖，无法保证外部接口/服务返回的一致性？</p>
+<p>A：需要调用外部接口/服务时，采用 mock 的方法等外部依赖进行隔离</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-11-29&#32;10:24:12>更新于 2023-11-29&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/diff%E6%B5%8B%E8%AF%95/' class="post-tag">Diff测试</a><a href='/tags/%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE/' class="post-tag">流量回放</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" class="post-nav-item" rel="prev" title="Kafka Schema Registry工作原理"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Kafka Schema Registry工作原理</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2024</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
