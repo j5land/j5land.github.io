@@ -3,13 +3,13 @@
     <title>draft - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/tags/draft/</link>
     <description>draft - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 30 Jan 2024 10:24:12 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/draft/" rel="self" type="application/rss+xml" /><item>
-  <title>广告请求流量回复Diff对比技术方案</title>
-  <link>http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AF%B7%E6%B1%82%E6%B5%81%E9%87%8F%E5%9B%9E%E5%A4%8Ddiff%E5%AF%B9%E6%AF%94%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/</link>
-  <pubDate>Tue, 30 Jan 2024 10:24:12 &#43;0800</pubDate>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 30 Jan 2024 13:39:18 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/draft/" rel="self" type="application/rss+xml" /><item>
+  <title>一文读懂JWT工作机制</title>
+  <link>http://example.org/posts/%E4%B8%80%E6%96%87%E8%AF%BB%E6%87%82jwt%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/</link>
+  <pubDate>Tue, 30 Jan 2024 13:39:18 &#43;0800</pubDate>
   <author>j5land</author>
-  <guid>http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%AF%B7%E6%B1%82%E6%B5%81%E9%87%8F%E5%9B%9E%E5%A4%8Ddiff%E5%AF%B9%E6%AF%94%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/</guid>
-  <description><![CDATA[一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线]]></description>
+  <guid>http://example.org/posts/%E4%B8%80%E6%96%87%E8%AF%BB%E6%87%82jwt%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/</guid>
+  <description><![CDATA[前言 之前开发互联网应用的时候一直使用 token 作为鉴权的手段，之前使用的时候仅仅当做类似 session 的存在，完全没有发挥 jwt-token 的价值。当遇到签发、授权、鉴权等流程]]></description>
 </item>
 </channel>
 </rss>

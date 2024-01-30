@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>一文读懂JWT工作机制 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="前言 之前开发互联网应用的时候一直使用 token 作为鉴权的手段，之前使用的时候仅仅当做类似 session 的存在，完全没有发挥 jwt-token 的价值。当遇到签发、授权、鉴权等流程" /><meta name="keywords" content='jwt, token, 用户认证' /><meta itemprop="name" content="一文读懂JWT工作机制">
+<meta itemprop="description" content="前言 之前开发互联网应用的时候一直使用 token 作为鉴权的手段，之前使用的时候仅仅当做类似 session 的存在，完全没有发挥 jwt-token 的价值。当遇到签发、授权、鉴权等流程"><meta itemprop="datePublished" content="2023-12-10T13:39:18+08:00" />
+<meta itemprop="dateModified" content="2023-12-10T13:39:18+08:00" />
+<meta itemprop="wordCount" content="4569">
+<meta itemprop="keywords" content="jwt,token,用户认证," /><meta property="og:title" content="一文读懂JWT工作机制" />
+<meta property="og:description" content="前言 之前开发互联网应用的时候一直使用 token 作为鉴权的手段，之前使用的时候仅仅当做类似 session 的存在，完全没有发挥 jwt-token 的价值。当遇到签发、授权、鉴权等流程" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E4%B8%80%E6%96%87%E8%AF%BB%E6%87%82jwt%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-10T13:39:18+08:00" />
+<meta property="article:modified_time" content="2023-12-10T13:39:18+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="一文读懂JWT工作机制"/>
+<meta name="twitter:description" content="前言 之前开发互联网应用的时候一直使用 token 作为鉴权的手段，之前使用的时候仅仅当做类似 session 的存在，完全没有发挥 jwt-token 的价值。当遇到签发、授权、鉴权等流程"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E4%B8%80%E6%96%87%E8%AF%BB%E6%87%82jwt%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/" /><link rel="prev" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "一文读懂JWT工作机制",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E4%B8%80%E6%96%87%E8%AF%BB%E6%87%82jwt%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6\/"
+    },"genre": "posts","keywords": "jwt, token, 用户认证","wordcount":  4569 ,
+    "url": "http:\/\/example.org\/posts\/%E4%B8%80%E6%96%87%E8%AF%BB%E6%87%82jwt%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6\/","datePublished": "2023-12-10T13:39:18+08:00","dateModified": "2023-12-10T13:39:18+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>一文读懂JWT工作机制</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/jwt/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> jwt</a></span></div>
+      <div class="post-meta-line"><span title=2023-12-10&#32;13:39:18><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-12-10">2023-12-10</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 4569 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 10 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/1625216099694.png"
+    data-srcset="/posts/images/1625216099694.png, /posts/images/1625216099694.png 1.5x, /posts/images/1625216099694.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/1625216099694.png"
+    title="/posts/images/1625216099694.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#jwt">JWT</a>
+      <ul>
+        <li><a href="#jwt-是什么">JWT 是什么</a></li>
+        <li><a href="#哈希算法">哈希算法</a></li>
+        <li><a href="#非对称加密">非对称加密</a></li>
+      </ul>
+    </li>
+    <li><a href="#jose-规范"><strong>JOSE 规范</strong></a>
+      <ul>
+        <li><a href="#jwa-和-jws-以及-jwk"><strong>JWA 和 JWS 以及 JWK</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#另一种-jwt-的实现jwe"><strong>另一种 JWT 的实现：JWE</strong></a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="前言">前言</h2>
+<p>之前开发互联网应用的时候一直使用 token 作为鉴权的手段，之前使用的时候仅仅当做类似 session 的存在，完全没有发挥 jwt-token 的价值。当遇到签发、授权、鉴权等流程不在同一主体时，就遇到了很多问题。查问题的时候又遇到一大堆名词，比如：JWT、JWE、JWA、JWS、JWK、JWKS，听起来就头皮发麻。为了完全理解它们，做一个整理。</p>
+<p>这几个缩写对应的<a href="https://redthunder.blog/2017/06/08/jwts-jwks-kids-x5ts-oh-my/"target="_blank" rel="external nofollow noopener noreferrer">英文全称</a>是：</p>
+<ul>
+<li><code>JWT</code>: JSON Web Token，令牌。</li>
+<li><code>JWE</code>: JSON Web Encryption，加密。</li>
+<li><code>JWA</code>: JSON Web Algorithm，算法。</li>
+<li><code>JWS</code>: JSON Web Signature，签名。</li>
+<li><code>JWK</code>: JSON Web Key，密钥。</li>
+<li><code>JWKS</code>: JSON Web Key Set，多个密钥的集合。</li>
+</ul>
+<h2 id="jwt">JWT</h2>
+<h3 id="jwt-是什么">JWT 是什么</h3>
+<p>先来看下 JWT，它其实是由两个点“.”分隔成三段的一串字符串:</p>
+<pre tabindex="0"><code># 头部说明.数据体.签名
+header.payload.signature
+</code></pre><p>这个字符串其实就是把数据用 base64 编码了一下，没有经过加密，任何人通过解码就能看到原始数据。</p>
+<p>比如下面是一个真实的 JWT：</p>
+<pre tabindex="0"><code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1Zjg5MGI4NTVjMGI3MDc1IiwicGljdHVyZSI6Imh0dHBzOi8vc3h5OTEuY29tL2F2YXRhci5wbmciLCJ1c2VybmFtZSI6IiIsImlkIjoiNWY4OTBiODU1MDM4YzBiNzA3NSIsImVtYWlsIjoic3h5OTFAbWUuY29tIiwic2lkIjoiNmUzYzIzZmJmNWQ1MDEzMmZlNTUiLCJhdWQiOiI1ZTQzYWIxNDFlODZhZGFmY2IiLCJleHAiOjE2MjUyMTc5MjAsImlhdCI6MTYyNTIxNDMyMCwiaXNzIjoiaHR0cHM6Ly91c2VyLnN4eTkxLmNvbS9vYXV0aC9vaWRjIn0.yDuGkG4JYTaDH15EHX7fB03BXMaSKbv1UUZlrxBMHAs
+</code></pre><p>用 <a href="https://base64.guru/standards/base64url/decode"target="_blank" rel="external nofollow noopener noreferrer">base64urlDecode</a> 把第一个点前面的字符串解码，就可以可以知道 header 的内容：</p>
+<pre tabindex="0"><code>header = &#39;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9&#39;;
+print(base64urlDecode(header)) 
+// 输出
+{&#34;alg&#34;:&#34;HS256&#34;,&#34;typ&#34;:&#34;JWT&#34;}
+</code></pre><p>同理，把第二段<a href="https://base64.guru/standards/base64url/decode"target="_blank" rel="external nofollow noopener noreferrer">解码</a>后就得到数据</p>
+<pre tabindex="0"><code>payload = &#39;eyJzdWIiOiI1Zjg5MGI4NTVjMGI3MDc1IiwicGljdHVyZSI6Imh0dHBzOi8vc3h5OTEuY29tL2F2YXRhci5wbmciLCJ1c2VybmFtZSI6IiIsImlkIjoiNWY4OTBiODU1MDM4YzBiNzA3NSIsImVtYWlsIjoic3h5OTFAbWUuY29tIiwic2lkIjoiNmUzYzIzZmJmNWQ1MDEzMmZlNTUiLCJhdWQiOiI1ZTQzYWIxNDFlODZhZGFmY2IiLCJleHAiOjE2MjUyMTc5MjAsImlhdCI6MTYyNTIxNDMyMCwiaXNzIjoiaHR0cHM6Ly91c2VyLnN4eTkxLmNvbS9vYXV0aC9vaWRjIn0&#39;;
+print(base64urlDecode(payload)) 
+// 输出
+{&#34;sub&#34;:&#34;5f890b855c0b7075&#34;,&#34;picture&#34;:&#34;https://sxy91.com/avatar.png&#34;,&#34;username&#34;:&#34;&#34;,&#34;id&#34;:&#34;5f890b855038c0b7075&#34;,&#34;email&#34;:&#34;sxy91@me.com&#34;,&#34;sid&#34;:&#34;6e3c23fbf5d50132fe55&#34;,&#34;aud&#34;:&#34;5e43ab141e86adafcb&#34;,&#34;exp&#34;:1625217920,&#34;iat&#34;:1625214320,&#34;iss&#34;:&#34;https://user.sxy91.com/oauth/oidc&#34;}
+</code></pre><p>第三段可以理解成随机字符串，客户端拿到也没什么用。</p>
+<p>因此想要伪造这样格式的 JWT 也很简单：</p>
+<pre tabindex="0"><code>data = base64urlEncode( header ) + &#34;.&#34; + base64urlEncode( payload );
+signature = &#34;xxxx&#34;; // 任意字符串
+token = data + &#34;.&#34; + signature
+</code></pre><p>上面的过程仅仅为了说明 JWT 的生成过程和解析过程，更简单的方式是到<a href="https://jwt.io/"target="_blank" rel="external nofollow noopener noreferrer">jwt.io</a>这个网站，它提供在线编辑或查看 JWT 格式的 token 。</p>
+<p>所以 JWT 的作用是：</p>
+<ol>
+<li>更方便的传输和转换数据结构 JSON 格式经过 base64Url 编码。</li>
+<li>数据是没加密的，没有经过隐藏或者混淆数据。</li>
+<li>使用 JWT 是为了保证发送的数据是由可信的来源创建的。</li>
+</ol>
+<p>那么服务器如何判断这个 JWT 是自己合法发出的呢，关键点就在 signature ，只要保证别人无法知道 signature 怎么生成的就可以了。</p>
+<p>最笨的办法是生成一个随机的字符串作为 signature 存在服务器端，然后发给客户端，以后收到 JWT 时取出 signature 与自己存储的做比对，一样就证明是正确的、合法的。</p>
+<p>这样的问题是每个用户都需要存储一份数据，非常浪费资源。有没有一种方式不需要保存 signature 就能验证 JWT 是正确的呢？</p>
+<p>简单的思路就是根据 header 和 payload 生成一个 signature，生成的规则只有服务器知道，这样就不用存储 signature，每次服务端收到客户端的 JWT 只需要重新生成一次 signature 与收到进行对比就知道是否合法。</p>
+<p>比如可以设定这样的规则</p>
+<pre tabindex="0"><code>data = base64urlEncode( header ) + &#34;.&#34; + base64urlEncode( payload );
+
+规则一：signature = data 的后32个字符。
+规则二：signature = data 的第1，3，5，7...位字符串。
+规则三：signature = data 的第1，3，5，7...位字符串。
+规则四：signature = data 的第1，3，4，7，11，18...位字符串。
+</code></pre><p>因为别人不知道我服务器用的是哪种规则，所以也就无法伪造了。</p>
+<p>上面的规则看似别人不知道，其实想“猜”出来很简单，稍微聪明一点的人使用统计学和密码学相关知识，估计一周不到就能比较出来。</p>
+<p>那有没有一种规则实现简单且理论上无法“猜”出来呢，这就需要用到哈希算法和非对称加密算法。</p>
+<h3 id="哈希算法">哈希算法</h3>
+<p>哈希算法，又称散列算法，它是一个单向函数，可以把任意长度的输入数据转化为固定长度的输出，此输出一般又称为摘要或者散列值，相当于人的指纹信息： <code>摘要=Hash(x)</code></p>
+<p>这个算法有如下几个特点：</p>
+<ol>
+<li>无论输入多长，输出总是一定的。</li>
+<li>输出无规律，输入改变一丁点就会导致输出完全不同，因此无法统计和猜测。</li>
+<li>通过输入可以很容易地计算输出，但是，反过来，通过输出无法反推输入。相当于警察抓到一个人就很容易得到他的指纹，但仅仅采集到一个指纹信息，却很难知道这个指纹是谁的，长相如何等。</li>
+</ol>
+<p>例如，对<code>洋葱</code>和<code>哈希算法</code>这两个词进行某种哈希运算，得到的结果长度是一样的：</p>
+<pre tabindex="0"><code>Hash(&#34;洋葱&#34;)    = 74c9227d95c45856683c457bbcd04d90
+Hash(&#34;哈希算法&#34;) = 16600f689cdf9ad8305749bd64d3ca32
+Hash(&#34;哈希算术&#34;) = ef1f60e4a59184a4f5bb9977a2245218
+Hash(&#34;哈希算力&#34;) = a47bc40c3586cc0fbf275d2f83c17708
+Hash(&#34;哈希算了&#34;) = d67394d8dcda13ca451ae72e90ed2de2
+</code></pre><p>能实现这种特性的算法有很多，常见的有：MD5、SHA、Hmac等。</p>
+<p>哈希算法的这种特性就可以用来验证某个文件是否被篡改。早期很多提供软件的公司，除了提供软件的下载地址，同时也会提供文件的摘要。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/1626175452029.png"
+    data-srcset="../images/1626175452029.png, ../images/1626175452029.png 1.5x, ../images/1626175452029.png 2x"
+    data-sizes="auto"
+    alt="enter description here"
+    title="enter description here"/></p>
+<p>比如你网速比较慢，不想去官网下载 MySQL，然后找同事通过 U 盘拷贝了一个 MySQL 的软件安装包，你想看一下这个软件是否安全，可以直接在<a href="https://support.apple.com/zh-cn/guide/terminal/apd5265185d-f365-44cb-8b09-71a064a42125/mac"target="_blank" rel="external nofollow noopener noreferrer">终端</a>执行命令<code>md5 文件名</code>获取这个安装包的 md5 值，然后和官网进行比对，如果一样就证明没修改过，不一眼就证明肯定不是官方发布的安装包。</p>
+<p>回到 JWT ，使用哈希算法就可以保证数据的一致性，只要 header 和 payload 没有被改变，那么其生成的摘要也不会变。</p>
+<pre tabindex="0"><code>token = header.payload.signature
+摘要 = Hash(header+&#34;.&#34;+payload); 
+</code></pre><p>到这里，如果用摘要作为 signature 那么似乎也没什么用，因为谁都能使用哈希算法轻易的生成这个摘要，伪造JWT比之前定义的规则还简单。</p>
+<p>那能否加点干扰数据呢，比如:</p>
+<pre tabindex="0"><code>token = header.payload.signature
+摘要 = Hash(header+&#34;.&#34;+payload); 
+signature = Hash(摘要+&#34;这是我的密码，只有我知道&#34;)
+</code></pre><p>这样也能保证别人无法伪造 signature ，这么做就需要密码设置的足够复杂，然而大多数人不会设置复杂的密码，即使看起来复杂的密码，对机器来说其实很简单。</p>
+<p>完全使用 Hash 做 signature 也会遇到哈希碰撞的问题。60 位</p>
+<p>那能不能由机器生成一个足够安全的密码，然后加密后作为 signature 呢？</p>
+<h3 id="非对称加密">非对称加密</h3>
+<p>JWT 由 JWK 经过一系列计算得来。</p>
+<p>JWT其 header、payload 其实都是 json 数据，header 描述了 signature 使用了哪种算法，方便验证的时候选择响应的算法。</p>
+<p>既然谁都可以方便的造出一个格式相符的 token ，那么服务器怎么验证这个 token 确实是服务器发出去的呢？，答案就是 signature 。</p>
+<p>用 token 中第二个“.”前面的数据和服务器签发时的密码做一次哈西运算，如果结果与第三段的 signature 就证明是自己签发的。</p>
+<pre tabindex="0"><code>Hash(header+&#34;.&#34;+payload,secret) =? signature
+</code></pre><p>这样的算法有什么用呢？把之前的 token 简化一下。</p>
+<pre tabindex="0"><code>signature = Hash(data, secret);
+token = data+&#34;.&#34;+signature
+</code></pre><p>服务器把数据和一个别人不知道的东西（密钥）进行一次哈希运算，得到一个独一无二的指纹（signature）。然后服务器把数据+指纹（token）发给前端。之后服务器收到 token（数据+指纹），只需要取出数据，通过计算密钥+数据的指纹与收到的指纹进行对比，就知道是否是自己发出的token，如果是就是合法的。也就做到了验证和防篡改。</p>
+<p>这样的哈希算法有很多，有可能不同的 signature 使用的算法不同。那么验证的时候怎么知道要用哪个算法呢？</p>
+<p>这就需要用到 JWK，其实就是用来存储密钥和哈希算法所需的各种参数。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;kid&#34;</span><span class="p">:</span><span class="s2">&#34;YoxRVsbyYE5zKzxAaiayKY9rVLl13xNbHIM_cDI18S4&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;kty&#34;</span><span class="p">:</span><span class="s2">&#34;RSA&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;alg&#34;</span><span class="p">:</span><span class="s2">&#34;RS256&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;use&#34;</span><span class="p">:</span><span class="s2">&#34;sig&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;e&#34;</span><span class="p">:</span><span class="s2">&#34;AQAB&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;n&#34;</span><span class="p">:</span><span class="s2">&#34;vL6fnf1S36B4xI3tIkD5_W3HoZJgEIzAYSsTLGIn&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>密钥 ID (kid）: 密钥类型 (kty）：算法系列，RSA\EC\oct\OKP 算法 (alg）：具体的算法， 使用使用 (use）：enc、sig</p>
+<p>RSA 指数 (e） RSA 模量 (n）</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/1625283745171.png"
+    data-srcset="../images/1625283745171.png, ../images/1625283745171.png 1.5x, ../images/1625283745171.png 2x"
+    data-sizes="auto"
+    alt="enter description here"
+    title="enter description here"/></p>
+<p>JWK 可以表示密钥，即可以表示公钥或私钥，也可同时表示公钥和私钥。提到公钥或私钥就不得不说非对称加密，这是一种特殊的算法。fx(私钥,message)=n, fy(公钥,n)=message要理解 JWT 就避不开哈希算法和非对称加密。</p>
+<h2 id="jose-规范"><strong>JOSE 规范</strong></h2>
+<p><strong>什么是 JOSE，它和 JWT 之间又有什么关系呢？</strong></p>
+<p>JOSE 全称 JSON Object Signing and Encryption ( <strong>RFC 7165[1]</strong> <strong>, RFC 7520[2]</strong> )，它定义了一系列的标准，<strong>用来规范网络传输过程中使用 JSON 的方式</strong>，上面说的 JWT 其实也是 JOSE 体系之一。</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/80463320-584a-44ab-9975-894840cd159b.png"
+    data-srcset="../images/80463320-584a-44ab-9975-894840cd159b.png, ../images/80463320-584a-44ab-9975-894840cd159b.png 1.5x, ../images/80463320-584a-44ab-9975-894840cd159b.png 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<p>其中 JWT 又可分为 JWS 和 JWE 这两种不同的实现，<strong>我们大部分日常所使用的，所说的 JWT 其实应该属于 JWS</strong> 。</p>
+<h3 id="jwa-和-jws-以及-jwk"><strong>JWA 和 JWS 以及 JWK</strong></h3>
+<p>JWA 的全称是 JSON Web Algorithms ( <strong>RFC 7518[3]</strong> ) ，字如其名， <strong>JOSE 体系中涉及到的所有算法就是它来定义的</strong>，比如通用算法有 Base64-URL 和 SHA，签名算法有 HMAC，RSA 和 Elliptic Curve（EC 椭圆曲线）。</p>
+<p>我不会深入到算法原理，只是想让你知道 JWA 是做什么的。上述 JWT 例子中的第一部分 Header 有个 alg 属性，其值是 HS256，也就是 HMAC+SHA256 算法。</p>
+<p>JWS 的全称是 JSON Web Signature ( <strong>RFC 7515[4]</strong> ) ，它的核心就是<strong>签名</strong>，保证数据未被篡改，而检查签名的过程就叫做<strong>验证</strong>。更通俗的理解，就是对应前面提到的 JWT 的第三部分 Signature，所以我才会说我们日常所使用的 JWT 都是 JWS。</p>
+<p>通常在客户端-服务端模式中，JWS 使用 JWA 提供的 HS256 算法加上一个密钥即可，这种方式严格依赖密钥，但在分布式场景，可能多个服务都需要验证 JWT，若要在每个服务里面都保存密钥，那么安全性将会大打折扣，要知道，密钥一旦泄露，任何人都可以随意伪造 JWT。</p>
+<p>解决办法就是使用非对称加密算法 RSA，RSA 有两把钥匙，一把公钥，一把私钥，可以使用私钥签发（签名分发）JWT ，使用公钥验证 JWT，公钥是所有人都可以获取到的。这样一来，就只有认证服务保存着私钥，进行签发，其他服务只能验证。</p>
+<h2 id="另一种-jwt-的实现jwe"><strong>另一种 JWT 的实现：JWE</strong></h2>
+<p>经过 Signature 签名后的 JWT 就是指的 JWS，而 JWS 仅仅是对前两部分签名，保证无法篡改，但是其 Payload（载荷）信息是暴露的（只是作了 base64UrlEncode 处理）。因此，使用 JWS 方式的 Payload 是不适合传递敏感数据的，JWT 的另一种实现 JWE 就是来解决这个问题的。</p>
+<p>JWE 全称是 JSON Web Encryption ( <strong>RFC 7516[5]</strong> ) ，JWS 的 Payload 是 Base64Url 的明文，而 <strong>JWE 的数据则是经过加密的，它可以使 JWT 更加安全。</strong></p>
+<p>JWE 提供了两种方案：共享密钥方案和公钥/私钥方案。</p>
+<p>共享密钥方案的工作原理是让各方都知道一个密钥，大家都可以签名验证，这和 JWS 是一致的。</p>
+<p>而公钥/私钥方案的工作方式就不同了，在 JWS 中私钥对令牌进行<strong>签名</strong>，持有公钥的各方只能<strong>验证</strong>这些令牌；但在 JWE 中，持有私钥的一方是唯一可以<strong>解密</strong>令牌的一方，公钥持有者可以引入或交换新数据然后重新<strong>加密</strong>，因此，当使用公钥/私钥方案时，JWS 和 JWE 是互补的。</p>
+<p>生产者对数据进行签名或加密，消费者可以对其进行验证或解密。对于 JWS，私钥对 JWT 进行签名，公钥用于验证，也就是生产者持有私钥，消费者持有公钥，数据流动只能从私钥持有者到公钥持有者。</p>
+<p>相比之下，对于 JWE，公钥是用于加密数据，而私钥用来解密，在这种情况下，数据流动只能从公钥持有者到私钥持有者。如下图所示（来源 <strong>JWT Handbook[6]</strong> ）：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/5d40f4d1-9584-4399-8be4-59194d4bd9b8.png"
+    data-srcset="../images/5d40f4d1-9584-4399-8be4-59194d4bd9b8.png, ../images/5d40f4d1-9584-4399-8be4-59194d4bd9b8.png 1.5x, ../images/5d40f4d1-9584-4399-8be4-59194d4bd9b8.png 2x"
+    data-sizes="auto"
+    alt="img"
+    title="img"/></p>
+<p>相比于 JWS 的三个部分，JWE 有<strong>五个部分组成</strong>（四个小数点隔开）。一个 JWE 示例如下：</p>
+<pre tabindex="0"><code class="language-markup" data-lang="markup">eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.
+UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_
+i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKxYxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8Otv
+zlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTPcFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.
+AxY8DCtDaGlsbGljb3RoZQ.
+KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.
+9hH0vgRfYgPnAHOd8stkvw
+</code></pre><ul>
+<li>Protected Header (受保护的头部) ：类似于 JWS 的 Header ，标识加密算法和类型。</li>
+<li>Encrypted Key (加密密钥) ：用于加密密文和其他加密数据的密钥。</li>
+<li>Initialization Vector (初始化向量) ：一些加密算法需要额外的（通常是随机的）数据。</li>
+<li>Encrypted Data (Ciphertext) (加密的数据) ：被加密的数据。</li>
+<li>Authentication Tag (认证标签) ：算法产生的附加数据，可用于验证密文内容不被篡改。</li>
+</ul>
+<p>这五个部分的生成，也就是 JWE 的加密过程可以分为 7 个步骤：</p>
+<ul>
+<li>根据 Header alg 的声明，生成一定大小的随机数</li>
+<li>根据密钥管理方式确定 Content Encryption Key (CEK)</li>
+<li>根据密钥管理方式确定 JWE Encrypted Key</li>
+<li>计算所选算法所需大小的 Initialization Vector (IV)。如果不需要，可以跳过</li>
+<li>如果 Header 声明了 zip ，则压缩明文</li>
+<li>使用 CEK、IV 和 Additional Authenticated Data (AAD，额外认证数据) ，通过 Header enc 声明的算法来加密内容，结果为 Ciphertext 和 Authentication Tag</li>
+<li>最后按照以下算法构造出 Token：</li>
+</ul>
+<pre tabindex="0"><code class="language-markup" data-lang="markup">base64(header) + &#39;.&#39; +
+base64(encryptedKey) + &#39;.&#39; + // Steps 2 and 3
+base64(initializationVector) + &#39;.&#39; + // Step 4
+base64(ciphertext) + &#39;.&#39; + // Step 6
+base64(authenticationTag) // Step 6
+</code></pre><p>JWE 相比 JWS <strong>更加安全可靠，但是不够轻量，有点复杂</strong>。</p>
+<h2 id="总结">总结</h2>
+<ol>
+<li>JWT是一种用于认证和安全传输信息的开放标准。它由三部分组成:头部(Header)、负载(Payload)和签名(Signature)。</li>
+<li>头部通常指定了签名所用的算法,如HMAC SHA256或RSA，负载包含了实际传输的数据。既可以只包含用户名等非敏感信息,也可以包含加密后的敏感信息。</li>
+<li>对称式算法如HMAC需要预先双方共享密钥。非对称式算法如RSA可以使用私钥签名、公钥验证,更适合分布式场景。</li>
+<li>JWT标准包括JWS(签名)、JWE(加密)、JWK(密钥)等规范。JWE通过加密负载数据实现更高安全性。</li>
+<li>JWT作为无状态的认证方式,可避免服务端保存会话信息,常用于分布式微服务系统的认证和授权。</li>
+</ol>
+<p>参考资料：</p>
+<p>[1] <a href="https://www.rfc-editor.org/rfc/rfc7165.html"target="_blank" rel="external nofollow noopener noreferrer">RFC 7165</a></p>
+<p>[2] <a href="https://www.rfc-editor.org/rfc/rfc7520.html"target="_blank" rel="external nofollow noopener noreferrer">RFC 7520</a></p>
+<p>[3] <a href="https://www.rfc-editor.org/rfc/rfc7518.html"target="_blank" rel="external nofollow noopener noreferrer">RFC 7518</a></p>
+<p>[4] <a href="https://www.rfc-editor.org/rfc/rfc7515.html"target="_blank" rel="external nofollow noopener noreferrer">RFC 7515</a></p>
+<p>[5] <a href="https://www.rfc-editor.org/rfc/rfc7516.html"target="_blank" rel="external nofollow noopener noreferrer">RFC 7516</a></p>
+<p><a href="https://mkjwk.org/"target="_blank" rel="external nofollow noopener noreferrer">mkjwk.org生成JWK</a></p>
+<p><a href="https://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html"target="_blank" rel="external nofollow noopener noreferrer">RSA算法原理一</a></p>
+<p><a href="https://www.ruanyifeng.com/blog/2013/07/rsa_algorithm_part_two.html"target="_blank" rel="external nofollow noopener noreferrer">RSA算法原理二</a></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2023-12-10&#32;13:39:18>更新于 2023-12-10&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/jwt/' class="post-tag">jwt</a><a href='/tags/token/' class="post-tag">token</a><a href='/tags/%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81/' class="post-tag">用户认证</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/" class="post-nav-item" rel="prev" title="广告请求流量回复Diff对比技术方案"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>广告请求流量回复Diff对比技术方案</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2024</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
