@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>并发编程 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+    <description>并发编程 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" rel="self" type="application/rss+xml" /><item>
+  <title>CompletableFuture设计思想与使用姿势</title>
+  <link>http://example.org/posts/completablefuture%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3%E4%B8%8E%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/</link>
+  <pubDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/completablefuture%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3%E4%B8%8E%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/CompletableFuture-01.png" referrerpolicy="no-referrer">
+      </div>什么是 CompletableFuture 在Java中CompletableFuture常用于异步编程，异步通常意味着非阻塞，可以使我们的任务可以单独运行在与主线程分离的其他]]></description>
+</item>
+</channel>
+</rss>

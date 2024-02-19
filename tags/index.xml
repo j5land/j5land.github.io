@@ -3,7 +3,31 @@
     <title>Tags - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/tags/</link>
     <description>Tags - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 10 Dec 2023 13:39:18 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/" rel="self" type="application/rss+xml" /><item>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/" rel="self" type="application/rss+xml" /><item>
+  <title>Java</title>
+  <link>http://example.org/tags/java/</link>
+  <pubDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/tags/java/</guid>
+  <description><![CDATA[]]></description>
+</item>
+<item>
+  <title>并发编程</title>
+  <link>http://example.org/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+  <pubDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+  <description><![CDATA[]]></description>
+</item>
+<item>
+  <title>异步编程</title>
+  <link>http://example.org/tags/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/</link>
+  <pubDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/tags/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/</guid>
+  <description><![CDATA[]]></description>
+</item>
+<item>
   <title>jwt</title>
   <link>http://example.org/tags/jwt/</link>
   <pubDate>Sun, 10 Dec 2023 13:39:18 &#43;0800</pubDate>
@@ -57,30 +81,6 @@
   <pubDate>Fri, 27 Oct 2023 15:28:00 &#43;0800</pubDate>
   <author>作者</author>
   <guid>http://example.org/tags/kafka-schema-registry/</guid>
-  <description><![CDATA[]]></description>
-</item>
-<item>
-  <title>TDD</title>
-  <link>http://example.org/tags/tdd/</link>
-  <pubDate>Wed, 12 Jul 2023 16:30:51 &#43;0800</pubDate>
-  <author>作者</author>
-  <guid>http://example.org/tags/tdd/</guid>
-  <description><![CDATA[]]></description>
-</item>
-<item>
-  <title>数据仓库</title>
-  <link>http://example.org/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/</link>
-  <pubDate>Fri, 09 Jun 2023 17:28:45 &#43;0800</pubDate>
-  <author>作者</author>
-  <guid>http://example.org/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/</guid>
-  <description><![CDATA[]]></description>
-</item>
-<item>
-  <title>bitmap</title>
-  <link>http://example.org/tags/bitmap/</link>
-  <pubDate>Mon, 05 Jun 2023 14:09:39 &#43;0800</pubDate>
-  <author>作者</author>
-  <guid>http://example.org/tags/bitmap/</guid>
   <description><![CDATA[]]></description>
 </item>
 </channel>

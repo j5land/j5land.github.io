@@ -3,7 +3,23 @@
     <title>Categories - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/categories/</link>
     <description>Categories - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 10 Dec 2023 13:39:18 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
+  <title>Java</title>
+  <link>http://example.org/categories/java/</link>
+  <pubDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/categories/java/</guid>
+  <description><![CDATA[]]></description>
+</item>
+<item>
+  <title>并发编程</title>
+  <link>http://example.org/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+  <pubDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+  <description><![CDATA[]]></description>
+</item>
+<item>
   <title>jwt</title>
   <link>http://example.org/categories/jwt/</link>
   <pubDate>Sun, 10 Dec 2023 13:39:18 &#43;0800</pubDate>
@@ -65,22 +81,6 @@
   <pubDate>Mon, 05 Jun 2023 14:09:39 &#43;0800</pubDate>
   <author>作者</author>
   <guid>http://example.org/categories/roaring-bitmap/</guid>
-  <description><![CDATA[]]></description>
-</item>
-<item>
-  <title>人群预估</title>
-  <link>http://example.org/categories/%E4%BA%BA%E7%BE%A4%E9%A2%84%E4%BC%B0/</link>
-  <pubDate>Mon, 05 Jun 2023 14:09:39 &#43;0800</pubDate>
-  <author>作者</author>
-  <guid>http://example.org/categories/%E4%BA%BA%E7%BE%A4%E9%A2%84%E4%BC%B0/</guid>
-  <description><![CDATA[]]></description>
-</item>
-<item>
-  <title>读书笔记</title>
-  <link>http://example.org/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
-  <pubDate>Mon, 15 May 2023 17:39:25 &#43;0800</pubDate>
-  <author>作者</author>
-  <guid>http://example.org/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</guid>
   <description><![CDATA[]]></description>
 </item>
 </channel>
