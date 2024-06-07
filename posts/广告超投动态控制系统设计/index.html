@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>广告超投动态控制系统设计 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 在广告系统中，高并发环境下的广告投放管理是一个复杂而关键的问题。广告主通常会设定特定的预算，用于控制其广告的投放量和投放时长。在高并发环" /><meta name="keywords" content='广告系统设计' /><meta itemprop="name" content="广告超投动态控制系统设计">
+<meta itemprop="description" content="背景 在广告系统中，高并发环境下的广告投放管理是一个复杂而关键的问题。广告主通常会设定特定的预算，用于控制其广告的投放量和投放时长。在高并发环"><meta itemprop="datePublished" content="2024-05-07T16:40:43+08:00" />
+<meta itemprop="dateModified" content="2024-05-07T16:40:43+08:00" />
+<meta itemprop="wordCount" content="2140">
+<meta itemprop="keywords" content="广告系统设计," /><meta property="og:title" content="广告超投动态控制系统设计" />
+<meta property="og:description" content="背景 在广告系统中，高并发环境下的广告投放管理是一个复杂而关键的问题。广告主通常会设定特定的预算，用于控制其广告的投放量和投放时长。在高并发环" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E5%8A%A8%E6%80%81%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-05-07T16:40:43+08:00" />
+<meta property="article:modified_time" content="2024-05-07T16:40:43+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="广告超投动态控制系统设计"/>
+<meta name="twitter:description" content="背景 在广告系统中，高并发环境下的广告投放管理是一个复杂而关键的问题。广告主通常会设定特定的预算，用于控制其广告的投放量和投放时长。在高并发环"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E5%8A%A8%E6%80%81%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" /><link rel="prev" href="http://example.org/posts/completablefuture%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3%E4%B8%8E%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "广告超投动态控制系统设计",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E5%8A%A8%E6%80%81%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1\/"
+    },"genre": "posts","keywords": "广告系统设计","wordcount":  2140 ,
+    "url": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E5%8A%A8%E6%80%81%E6%8E%A7%E5%88%B6%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1\/","datePublished": "2024-05-07T16:40:43+08:00","dateModified": "2024-05-07T16:40:43+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>广告超投动态控制系统设计</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 架构设计</a>&ensp;<a href="/categories/%E5%B9%BF%E5%91%8A%E7%AE%97%E6%B3%95/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 广告算法</a></span></div>
+      <div class="post-meta-line"><span title=2024-05-07&#32;16:40:43><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-05-07">2024-05-07</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2140 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/image-20240531181124760.png"
+    data-srcset="/posts/images/image-20240531181124760.png, /posts/images/image-20240531181124760.png 1.5x, /posts/images/image-20240531181124760.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/image-20240531181124760.png"
+    title="/posts/images/image-20240531181124760.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#超投控制算法目前">超投控制算法（目前）</a>
+      <ul>
+        <li><a href="#降速触发机制">降速触发机制</a></li>
+        <li><a href="#降速检查机制">降速检查机制</a></li>
+        <li><a href="#降速算法">降速算法</a></li>
+        <li><a href="#目前弊端">目前弊端</a></li>
+      </ul>
+    </li>
+    <li><a href="#超投动态控制算法">超投动态控制算法</a>
+      <ul>
+        <li><a href="#秒级广告消耗速度">秒级广告消耗速度</a></li>
+        <li><a href="#剩余投放时间">剩余投放时间</a></li>
+        <li><a href="#超投控制模块设计">超投控制模块设计</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>在广告系统中，高并发环境下的广告投放管理是一个复杂而关键的问题。广告主通常会设定特定的预算，用于控制其广告的投放量和投放时长。在高并发环境下，如果系统无法在广告主的预算耗尽时及时停止广告投放，便会导致“超投”现象。即使广告主的预算已经用完，系统仍然继续为其投放广告，这样就可能会对广告平台的收入造成损失。</p>
+<h2 id="超投控制算法目前">超投控制算法（目前）</h2>
+<h3 id="降速触发机制">降速触发机制</h3>
+<p>以下条件达成其一，触发降速检查机制（优先判定今日预算）：</p>
+<ul>
+<li>今日预算设置了，今日费用消耗达到今日预算的90%</li>
+<li>今日预算没设置，总预算设置了，总费用消耗达到总预算的90%</li>
+</ul>
+<h3 id="降速检查机制">降速检查机制</h3>
+<p>查询当前广告分钟级消耗，即查询广告当前时间的上一分钟的费用消耗。</p>
+<p>计算剩余投放时间 = 广告剩余费用 / 广告当前时间消耗</p>
+<p>若是消耗费用达到上述触发机制条件，并判断剩余投放时间是否小于30分钟，当 广告剩余投放时间 &lt;= 30分钟时，通过广告剩余投放时间占比变化调整广告命中概率，从而达到降速的目的。</p>
+<h3 id="降速算法">降速算法</h3>
+<p>降速系数 = (剩余分钟数+3)/33，也可称之为Miss概率，保留下限约0.1，防止未真正投放达到预算却迟迟没有量。</p>
+<p>由于当前的广告命中概率，通过权重 1 ～ 10000来设置，并且 命中概率 =[10000-某条广告权重]/sum[(10000-ad1)+(10000-ad2)+(10000-ad3)+(10000-ad..)]。</p>
+<p>结合降速系数（Miss概率），假如 A、B、C三条广告，有不同的权重，随机选中了A，但是由于A触发了降速，因此需要再次根据Miss概率随机一次，如果是Miss的话，从B和C中再随机选中，依次类推。</p>
+<p>让 <em>t</em> 表示预估剩余分钟数，降速系数（也称为Miss概率）可以定义为函数 <em>D</em>(<em>t</em>)。函数的形式如下：</p>
+<ol>
+<li>当 <em>t</em>  &gt; 30 分钟时，降速系数 <em>D</em>(<em>t</em>)=1。</li>
+<li>当 <em>t</em> ≤ 30 分钟时，降速系数 <em>D</em>(<em>t</em>)= (<em>t</em>+3) / 33，但要保留一个下限约为 0.1。</li>
+</ol>
+<p>可以将降速系数定义为以下分段函数：
+$$
+D(t) =
+\begin{cases}
+1 &amp; \text{如果 } t &gt; 30 \
+\max\left(0.1, \frac{t + 3}{33}\right) &amp; \text{如果 } t \leq 30
+\end{cases}
+$$
+这里使用了 max 函数来确保当 <em>t</em> ≤30  分钟时，降速系数不会低于0.1。</p>
+<p>其中，<em>t</em> 是预估剩余分钟数， (<em>t</em>+3) / 33 是在 <em>t</em> ≤ 30  时的降速系数计算方式，并且确保其不会低于0.1。</p>
+<p>当t &lt;= 30时，函数曲线：
+$$
+D(t)=\frac{t+3}{33}
+$$
+<img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20240531181124760.png"
+    data-srcset="../images/image-20240531181124760.png, ../images/image-20240531181124760.png 1.5x, ../images/image-20240531181124760.png 2x"
+    data-sizes="auto"
+    alt="image-20240531181124760"
+    title="image-20240531181124760"/></p>
+<h3 id="目前弊端">目前弊端</h3>
+<h4 id="延迟反应">延迟反应</h4>
+<p>降速触发机制基于费用消耗达到预算的90%时才启动</p>
+<p>这意味着在达到90%之前，广告投放速度是全速的。如果广告的消耗速度非常快，在高峰期可能会在短时间内从90%消耗到100%甚至超过预算，导致短时间内出现超投现象。</p>
+<h4 id="降速系数下限">降速系数下限</h4>
+<p>设定降速系数下限为0.1，虽然防止了广告完全停止投放的情况，但在预算即将耗尽的情况下，仍然会有一定量的广告投放。</p>
+<p>这种情况在预算非常紧张时，可能会导致轻微的超投。</p>
+<h4 id="基于分钟级消耗">基于分钟级消耗</h4>
+<p>当前算法仅查询广告的分钟级消耗来判断剩余时间，但实际消耗速度可能会在分钟内波动</p>
+<p>在秒级消耗较高的情况下，单分钟消耗数据可能不足以精确反映实际情况，可能导致降速反应不及时或不准确。</p>
+<h2 id="超投动态控制算法">超投动态控制算法</h2>
+<p>总体思路：</p>
+<ol>
+<li>获取目前广告当前时段的投放速度，使用秒级消耗计算，为保证数据相对准确使用最近10秒加权平均数计算；</li>
+<li>获得所属目标广告的剩余投放时间，即 广告预算余额 / 广告当前消耗速度，剩余投放时间秒；</li>
+<li>根据广告投放速度限制系数函数，根据广告剩余投放时间，来计算广告投放速度限制系数；</li>
+<li>计算当前时间段的投放速度限制系数，通过广告限制系数，从而来调节广告速度；（其限制系数其值在0~1之间）</li>
+</ol>
+<h3 id="秒级广告消耗速度">秒级广告消耗速度</h3>
+<h4 id="当前广告的投放速度">当前广告的投放速度</h4>
+<p>目前广告当前时段的投放消耗速度：</p>
+<p>使用秒级消耗来计算，时间范围使用最近10秒滑动窗口的加权平均来计算，可以更平滑和稳定地估计当前的广告投放速度。</p>
+<p><strong>步骤</strong>：</p>
+<ul>
+<li>维护一个包含最近10秒广告消耗数据的滑动窗口。</li>
+<li>对这些数据应用加权平均计算，其中较新的数据权重更大，反映出最新的消耗趋势。</li>
+</ul>
+<h4 id="广告秒级消耗公式最近10秒加权平均">广告秒级消耗公式（最近10秒加权平均）</h4>
+<p>$$
+\bar{C} = \sum_{i=1}^{10} w_i&rsquo; \cdot c_i
+$$</p>
+<h4 id="权重公式">权重公式</h4>
+<p>使用指数衰减系数 α 来计算权重：
+$$
+w_i = (1 - \alpha)^{10 - i}
+$$</p>
+<h4 id="标准化权重">标准化权重</h4>
+<p>权重标准化，使其和为1：
+$$
+w_i&rsquo; = \frac{w_i}{\sum_{i=1}^{10} w_i}
+$$</p>
+<h4 id="计算案例">计算案例</h4>
+<p>假设最近10秒的广告消耗数据分别为 c1，c2，&hellip;，c10 对应的权重为 w1，w2，&hellip;，w10。</p>
+<p>最近10秒的广告消耗数据为：
+$$
+c_1 = 0, \quad c_2 = 0, \quad c_3 = 0, \quad c_4 = 0, \quad c_5 = 0, \quad c_6 = 17, \quad c_7 = 18, \quad c_8 = 19, \quad c_9 = 16, \quad c_{10} = 20
+$$
+指数衰减系数： a  = 0.1</p>
+<p>初始权重：
+$$
+w_1 = 0.9^9 \approx 0.38742,
+w_2 = 0.9^8 \approx 0.43047,
+w_3 = 0.9^7 \approx 0.4783,
+w_4 = 0.9^6 \approx 0.53144,<br>
+w_5 = 0.9^5 \approx 0.59049,
+w_6 = 0.9^4 \approx 0.6561,
+w_7 = 0.9^3 \approx 0.729,
+w_8 = 0.9^2 \approx 0.81,
+w_9 = 0.9^1 \approx 0.9,
+w_{10} = 0.9^0 = 1
+$$
+标准化权重：
+$$
+w_i&rsquo; = \frac{w_i}{6.51322}
+$$</p>
+<p>$$
+w_1&rsquo; \approx \frac{0.38742}{6.51322} \approx 0.0595 ,
+w_2&rsquo; \approx \frac{0.43047}{6.51322} \approx 0.0661 ,
+w_3&rsquo; \approx \frac{0.4783}{6.51322} \approx 0.0734 ,
+w_4&rsquo; \approx \frac{0.53144}{6.51322} \approx 0.0816 ,
+w_5&rsquo; \approx \frac{0.59049}{6.51322} \approx 0.0906 ,
+w_6&rsquo; \approx \frac{0.6561}{6.51322} \approx 0.1007 ,
+w_7&rsquo; \approx \frac{0.729}{6.51322} \approx 0.1119 ,
+w_8&rsquo; \approx \frac{0.81}{6.51322} \approx 0.1244 ,
+w_9&rsquo; \approx \frac{0.9}{6.51322} \approx 0.1382 ,
+w_{10}&rsquo; \approx \frac{1}{6.51322} \approx 0.1535
+$$
+计算加权平均广告消耗：
+$$
+\bar{C} \approx 0.0595 \cdot 0 + 0.0661 \cdot 0 + 0.0734 \cdot 0 + 0.0816 \cdot 0 + 0.0906 \cdot 0 + 0.1007 \cdot 17 + 0.1119 \cdot 18 + 0.1244 \cdot 19 + 0.1382 \cdot 16 + 0.1535 \cdot 20
+$$</p>
+<p>$$
+\bar{C} \approx 11.3709
+$$</p>
+<p>得到最近10秒的加权平均广告消耗大约为：11.37</p>
+<h3 id="剩余投放时间">剩余投放时间</h3>
+<p>根据当前投放速度获得所属目标广告的剩余投放时间，即 t = 广告预算余额 / 广告投放速度， 单位为秒；</p>
+<h4 id="当前投放速度限制系数">当前投放速度限制系数</h4>
+<p>计算当前时间段的投放速度限制系数，获取当前限制系数公式：</p>
+<p>D(t)标识下一时段对所述广告的投放速度限制系数，其值在0~1之间，t表示所述广告的剩余投放时间。
+$$
+D(t)=\frac{1-e^{-0.0083t}}{1+16e^{-0.0083t}}
+$$</p>
+<h4 id="函数曲线">函数曲线</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20240606160620281.png"
+    data-srcset="../images/image-20240606160620281.png, ../images/image-20240606160620281.png 1.5x, ../images/image-20240606160620281.png 2x"
+    data-sizes="auto"
+    alt="image-20240606160620281"
+    title="image-20240606160620281"/></p>
+<h4 id="调节广告命中率">调节广告命中率</h4>
+<p>通过该广告速度限制系数调节广告命中率</p>
+<h3 id="超投控制模块设计">超投控制模块设计</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97%E8%AE%BE%E8%AE%A1.jpg"
+    data-srcset="../images/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97%E8%AE%BE%E8%AE%A1.jpg, ../images/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97%E8%AE%BE%E8%AE%A1.jpg 1.5x, ../images/%E5%B9%BF%E5%91%8A%E8%B6%85%E6%8A%95%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9D%97%E8%AE%BE%E8%AE%A1.jpg 2x"
+    data-sizes="auto"
+    alt="广告超投控制模块设计"
+    title="广告超投控制模块设计"/></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2024-05-07&#32;16:40:43>更新于 2024-05-07&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E5%B9%BF%E5%91%8A%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/' class="post-tag">广告系统设计</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/completablefuture%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3%E4%B8%8E%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/" class="post-nav-item" rel="prev" title="CompletableFuture设计思想与使用姿势"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>CompletableFuture设计思想与使用姿势</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2024</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

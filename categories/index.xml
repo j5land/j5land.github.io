@@ -3,7 +3,23 @@
     <title>Categories - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/categories/</link>
     <description>Categories - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 07 May 2024 16:40:43 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/" rel="self" type="application/rss+xml" /><item>
+  <title>广告算法</title>
+  <link>http://example.org/categories/%E5%B9%BF%E5%91%8A%E7%AE%97%E6%B3%95/</link>
+  <pubDate>Tue, 07 May 2024 16:40:43 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/categories/%E5%B9%BF%E5%91%8A%E7%AE%97%E6%B3%95/</guid>
+  <description><![CDATA[]]></description>
+</item>
+<item>
+  <title>架构设计</title>
+  <link>http://example.org/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</link>
+  <pubDate>Tue, 07 May 2024 16:40:43 &#43;0800</pubDate>
+  <author>作者</author>
+  <guid>http://example.org/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</guid>
+  <description><![CDATA[]]></description>
+</item>
+<item>
   <title>Java</title>
   <link>http://example.org/categories/java/</link>
   <pubDate>Wed, 10 Jan 2024 15:07:11 &#43;0800</pubDate>
@@ -65,22 +81,6 @@
   <pubDate>Fri, 09 Jun 2023 17:28:45 &#43;0800</pubDate>
   <author>作者</author>
   <guid>http://example.org/categories/%E6%95%B0%E4%BB%93%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</guid>
-  <description><![CDATA[]]></description>
-</item>
-<item>
-  <title>bitmap</title>
-  <link>http://example.org/categories/bitmap/</link>
-  <pubDate>Mon, 05 Jun 2023 14:09:39 &#43;0800</pubDate>
-  <author>作者</author>
-  <guid>http://example.org/categories/bitmap/</guid>
-  <description><![CDATA[]]></description>
-</item>
-<item>
-  <title>roaring-bitmap</title>
-  <link>http://example.org/categories/roaring-bitmap/</link>
-  <pubDate>Mon, 05 Jun 2023 14:09:39 &#43;0800</pubDate>
-  <author>作者</author>
-  <guid>http://example.org/categories/roaring-bitmap/</guid>
   <description><![CDATA[]]></description>
 </item>
 </channel>
