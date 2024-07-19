@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>技术文档 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/</link>
+    <description>技术文档 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 19 Jun 2024 17:10:11 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/" rel="self" type="application/rss+xml" /><item>
+  <title>技术文档标准之实时更新与准确</title>
+  <link>http://example.org/posts/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E6%A0%87%E5%87%86%E4%B9%8B%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%87%86%E7%A1%AE/</link>
+  <pubDate>Wed, 19 Jun 2024 17:10:11 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E6%A0%87%E5%87%86%E4%B9%8B%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%87%86%E7%A1%AE/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/tech-docment-1" referrerpolicy="no-referrer">
+      </div>背景 在软件产品研发过程中，技术文档尤其重要（包括系统架构文档、技术方案文档），技术文档的管理和维护是一项至关重要的任务。(目前挺缺乏) 合理规]]></description>
+</item>
+</channel>
+</rss>
