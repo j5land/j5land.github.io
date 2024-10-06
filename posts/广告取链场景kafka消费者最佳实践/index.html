@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>广告取链场景Kafka消费者最佳实践 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="广告取链场景-Kafka消费者最佳实践 1. 背景 我们正在开发一个广告取链服务，其中包含一个消息生产者控量服务。这个服务需要监控Kafka消息的堆" /><meta name="keywords" content='kafka, 消费者, 代码分析' /><meta itemprop="name" content="广告取链场景Kafka消费者最佳实践">
+<meta itemprop="description" content="广告取链场景-Kafka消费者最佳实践 1. 背景 我们正在开发一个广告取链服务，其中包含一个消息生产者控量服务。这个服务需要监控Kafka消息的堆"><meta itemprop="datePublished" content="2024-08-06T10:57:37+08:00" />
+<meta itemprop="dateModified" content="2024-08-06T10:57:37+08:00" />
+<meta itemprop="wordCount" content="2836">
+<meta itemprop="keywords" content="kafka,消费者,代码分析," /><meta property="og:title" content="广告取链场景Kafka消费者最佳实践" />
+<meta property="og:description" content="广告取链场景-Kafka消费者最佳实践 1. 背景 我们正在开发一个广告取链服务，其中包含一个消息生产者控量服务。这个服务需要监控Kafka消息的堆" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-08-06T10:57:37+08:00" />
+<meta property="article:modified_time" content="2024-08-06T10:57:37+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="广告取链场景Kafka消费者最佳实践"/>
+<meta name="twitter:description" content="广告取链场景-Kafka消费者最佳实践 1. 背景 我们正在开发一个广告取链服务，其中包含一个消息生产者控量服务。这个服务需要监控Kafka消息的堆"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><link rel="prev" href="http://example.org/posts/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E6%A0%87%E5%87%86%E4%B9%8B%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%87%86%E7%A1%AE/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "广告取链场景Kafka消费者最佳实践",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5\/"
+    },"genre": "posts","keywords": "kafka, 消费者, 代码分析","wordcount":  2836 ,
+    "url": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5\/","datePublished": "2024-08-06T10:57:37+08:00","dateModified": "2024-08-06T10:57:37+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>广告取链场景Kafka消费者最佳实践</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/kafka/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> kafka</a>&ensp;<a href="/categories/%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 最佳实践</a></span></div>
+      <div class="post-meta-line"><span title=2024-08-06&#32;10:57:37><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-06">2024-08-06</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2836 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/image-20240929095616258.png"
+    data-srcset="/posts/images/image-20240929095616258.png, /posts/images/image-20240929095616258.png 1.5x, /posts/images/image-20240929095616258.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/image-20240929095616258.png"
+    title="/posts/images/image-20240929095616258.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-背景">1. 背景</a></li>
+    <li><a href="#2-问题描述">2. 问题描述</a>
+      <ul>
+        <li><a href="#21-初始代码实现">2.1 初始代码实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-优化过程">3. 优化过程</a>
+      <ul>
+        <li><a href="#31-第一版优化">3.1 第一版优化</a></li>
+        <li><a href="#32-第二版优化">3.2 第二版优化</a></li>
+        <li><a href="#33-第三版优化最终版">3.3 第三版优化（最终版）</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-原理分析">4. 原理分析</a>
+      <ul>
+        <li><a href="#41-kafkaconsumer线程安全性">4.1 KafkaConsumer线程安全性</a></li>
+        <li><a href="#42-consumer-group和offset管理">4.2 Consumer Group和Offset管理</a></li>
+        <li><a href="#43-kafka再均衡机制">4.3 Kafka再均衡机制</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-结论">5. 结论</a></li>
+    <li><a href="#6-最终方案">6. 最终方案</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="广告取链场景-kafka消费者最佳实践">广告取链场景-Kafka消费者最佳实践</h1>
+<h2 id="1-背景">1. 背景</h2>
+<p>我们正在开发一个广告取链服务，其中包含一个消息生产者控量服务。这个服务需要监控Kafka消息的堆积量，当堆积量达到一定水平（目前配置为10万条消息）时，服务会停止生产新的消息。为了实现这个功能，我们需要一个可靠的方法来获取Kafka topic的未消费消息数量。</p>
+<h2 id="2-问题描述">2. 问题描述</h2>
+<p>初始实现中，我们遇到了两个主要问题：</p>
+<ol>
+<li>并发访问异常：使用同一个KafkaConsumer实例进行消费和查询操作，导致&quot;java.util.ConcurrentModificationException: KafkaConsumer is not safe for multi-threaded access&quot;错误。</li>
+<li>查询范围不精确：仅通过consumer group ID查询，可能会包含其他topic的堆积量，导致结果不准确。</li>
+</ol>
+<h3 id="21-初始代码实现">2.1 初始代码实现</h3>
+<p>以下是初始的代码实现，存在上述问题：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="nf">lagOf</span><span class="o">(</span><span class="n">String</span> <span class="n">groupID</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">readWriteLock</span><span class="o">.</span><span class="na">readLock</span><span class="o">().</span><span class="na">lock</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ListConsumerGroupOffsetsResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">adminClient</span><span class="o">.</span><span class="na">listConsumerGroupOffsets</span><span class="o">(</span><span class="n">groupID</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">OffsetAndMetadata</span><span class="o">&gt;</span> <span class="n">consumedOffsets</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">partitionsToOffsetAndMetadata</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="n">endOffsets</span> <span class="o">=</span> <span class="n">kafkaConsumer</span><span class="o">.</span><span class="na">endOffsets</span><span class="o">(</span><span class="n">consumedOffsets</span><span class="o">.</span><span class="na">keySet</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">endOffsets</span><span class="o">.</span><span class="na">entrySet</span><span class="o">().</span><span class="na">stream</span><span class="o">().</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toMap</span><span class="o">(</span><span class="n">entry</span> <span class="o">-&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span>
+</span></span><span class="line"><span class="cl">                <span class="n">entry</span> <span class="o">-&gt;</span> <span class="n">entry</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">-</span> <span class="n">consumedOffsets</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">getKey</span><span class="o">()).</span><span class="na">offset</span><span class="o">()));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">log</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">&#34;获取每个分区未消费的数量 lag() error, Exception--&gt;&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Collections</span><span class="o">.</span><span class="na">emptyMap</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">readWriteLock</span><span class="o">.</span><span class="na">readLock</span><span class="o">().</span><span class="na">unlock</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kt">long</span> <span class="nf">getKafkaCount</span><span class="o">(</span><span class="n">String</span> <span class="n">topicName</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">readWriteLock</span><span class="o">.</span><span class="na">readLock</span><span class="o">().</span><span class="na">lock</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="n">lagOf</span><span class="o">(</span><span class="n">groupId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="n">Long</span> <span class="n">i</span> <span class="o">:</span> <span class="n">map</span><span class="o">.</span><span class="na">values</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;getKafkaCount kafka topicName: {}, 返回count: {}, Exception--&gt;&#34;</span><span class="o">,</span> <span class="n">topicName</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">readWriteLock</span><span class="o">.</span><span class="na">readLock</span><span class="o">().</span><span class="na">unlock</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;kafka message count for topic {}: {}&#34;</span><span class="o">,</span> <span class="n">topicName</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;kafka message count: {}&#34;</span><span class="o">,</span> <span class="n">count</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">count</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>KafkaConsumer在代码设计上不允许多线程来进行访问的，通过阅读源码发现初始化时候会设置默认currentThread，并不允许修改，在多线程使用同一kafkaConsumer，即时通过加锁也还是会报出&quot;java.util.ConcurrentModificationException&quot;异常。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">acquire</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">long</span> <span class="n">threadId</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getId</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="o">(</span><span class="n">threadId</span> <span class="o">!=</span> <span class="k">this</span><span class="o">.</span><span class="na">currentThread</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="o">.</span><span class="na">currentThread</span><span class="o">.</span><span class="na">compareAndSet</span><span class="o">(-</span><span class="mi">1L</span><span class="o">,</span> <span class="n">threadId</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">throw</span> <span class="k">new</span> <span class="n">ConcurrentModificationException</span><span class="o">(</span><span class="s">&#34;KafkaConsumer is not safe for multi-threaded access&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="o">.</span><span class="na">refcount</span><span class="o">.</span><span class="na">incrementAndGet</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h2 id="3-优化过程">3. 优化过程</h2>
+<h3 id="31-第一版优化">3.1 第一版优化</h3>
+<p>为解决上述问题，我们进行了第一次优化：</p>
+<ol>
+<li>创建新的KafkaConsumer实例：每次查询时创建一个新的KafkaConsumer，避免并发访问问题。</li>
+<li>指定topic查询：通过订阅特定topic，确保只查询目标topic的堆积量。</li>
+</ol>
+<p>优化后的代码如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">synchronized</span> <span class="kt">long</span> <span class="nf">getTopicUnconsumedCount</span><span class="o">(</span><span class="n">String</span> <span class="n">topicName</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">totalLag</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">kafkaConsumer</span> <span class="o">=</span> <span class="n">createKafkaConsumer</span><span class="o">(</span><span class="n">topicName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">List</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">&gt;</span> <span class="n">topicPartitions</span> <span class="o">=</span> <span class="n">kafkaConsumer</span><span class="o">.</span><span class="na">partitionsFor</span><span class="o">(</span><span class="n">topicName</span><span class="o">).</span><span class="na">stream</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">partitionInfo</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">TopicPartition</span><span class="o">(</span><span class="n">partitionInfo</span><span class="o">.</span><span class="na">topic</span><span class="o">(),</span> <span class="n">partitionInfo</span><span class="o">.</span><span class="na">partition</span><span class="o">()))</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toList</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">ListConsumerGroupOffsetsResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">listConsumerGroupOffsets</span><span class="o">(</span><span class="n">groupId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">OffsetAndMetadata</span><span class="o">&gt;</span> <span class="n">consumedOffsets</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">partitionsToOffsetAndMetadata</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="n">endOffsets</span> <span class="o">=</span> <span class="n">kafkaConsumer</span><span class="o">.</span><span class="na">endOffsets</span><span class="o">(</span><span class="n">topicPartitions</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="n">TopicPartition</span> <span class="n">partition</span> <span class="o">:</span> <span class="n">topicPartitions</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Long</span> <span class="n">endOffset</span> <span class="o">=</span> <span class="n">endOffsets</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">partition</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">OffsetAndMetadata</span> <span class="n">consumedOffset</span> <span class="o">=</span> <span class="n">consumedOffsets</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">partition</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">endOffset</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">consumedOffset</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">long</span> <span class="n">lag</span> <span class="o">=</span> <span class="n">endOffset</span> <span class="o">-</span> <span class="n">consumedOffset</span><span class="o">.</span><span class="na">offset</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">totalLag</span> <span class="o">+=</span> <span class="n">lag</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;查询 topic {} 未消费消息数量时发生错误: {}&#34;</span><span class="o">,</span> <span class="n">topicName</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Topic [{}] 未消费的消息总数: {}&#34;</span><span class="o">,</span> <span class="n">topicName</span><span class="o">,</span> <span class="n">totalLag</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">totalLag</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="nf">createKafkaConsumer</span><span class="o">(</span><span class="n">String</span> <span class="n">topic</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">consumer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KafkaConsumer</span><span class="o">&lt;&gt;(</span><span class="n">kafkaConfiguration</span><span class="o">.</span><span class="na">consumerConfigs</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="n">consumer</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">Collections</span><span class="o">.</span><span class="na">singleton</span><span class="o">(</span><span class="n">topic</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">consumer</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>然而，这个版本仍然存在一些问题：</p>
+<ul>
+<li>潜在的内存泄漏：每次查询都创建新的KafkaConsumer实例，但没有及时释放。</li>
+<li>可能触发再均衡：新创建的消费者subscribe操作可能影响现有的消费者，引起不必要的再均衡。</li>
+</ul>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20240929101049141.png"
+    data-srcset="../images/image-20240929101049141.png, ../images/image-20240929101049141.png 1.5x, ../images/image-20240929101049141.png 2x"
+    data-sizes="auto"
+    alt="image-20240929101049141"
+    title="image-20240929101049141"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20240929095616258.png"
+    data-srcset="../images/image-20240929095616258.png, ../images/image-20240929095616258.png 1.5x, ../images/image-20240929095616258.png 2x"
+    data-sizes="auto"
+    alt="image-20240929095616258"
+    title="image-20240929095616258"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20240929095901457.png"
+    data-srcset="../images/image-20240929095901457.png, ../images/image-20240929095901457.png 1.5x, ../images/image-20240929095901457.png 2x"
+    data-sizes="auto"
+    alt="image-20240929095901457"
+    title="image-20240929095901457"/></p>
+<h3 id="32-第二版优化">3.2 第二版优化</h3>
+<p>针对第一版的问题，我们进行了进一步优化：</p>
+<ol>
+<li>使用try-with-resources语句：确保KafkaConsumer实例在使用后被正确关闭，避免内存泄漏。</li>
+<li>移除consumer.subscribe调用：在查询时不订阅topic，减少触发再均衡的可能性。</li>
+<li>使用独立的consumer group：为查询操作创建一个单独的consumer group，避免影响现有的消费者。</li>
+</ol>
+<p>最终优化后的代码如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kt">long</span> <span class="nf">getTopicUnconsumedCount</span><span class="o">(</span><span class="n">String</span> <span class="n">topicName</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">totalLag</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">(</span><span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">kafkaConsumer</span> <span class="o">=</span> <span class="n">createKafkaConsumer</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">List</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">&gt;</span> <span class="n">topicPartitions</span> <span class="o">=</span> <span class="n">kafkaConsumer</span><span class="o">.</span><span class="na">partitionsFor</span><span class="o">(</span><span class="n">topicName</span><span class="o">).</span><span class="na">stream</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">partitionInfo</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">TopicPartition</span><span class="o">(</span><span class="n">partitionInfo</span><span class="o">.</span><span class="na">topic</span><span class="o">(),</span> <span class="n">partitionInfo</span><span class="o">.</span><span class="na">partition</span><span class="o">()))</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toList</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="n">endOffsets</span> <span class="o">=</span> <span class="n">kafkaConsumer</span><span class="o">.</span><span class="na">endOffsets</span><span class="o">(</span><span class="n">topicPartitions</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">Map</span><span class="o">&lt;</span><span class="n">TopicPartition</span><span class="o">,</span> <span class="n">OffsetAndMetadata</span><span class="o">&gt;</span> <span class="n">consumedOffsets</span> <span class="o">=</span> <span class="n">adminClient</span><span class="o">.</span><span class="na">listConsumerGroupOffsets</span><span class="o">(</span><span class="n">groupId</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">partitionsToOffsetAndMetadata</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="n">TopicPartition</span> <span class="n">partition</span> <span class="o">:</span> <span class="n">topicPartitions</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Long</span> <span class="n">endOffset</span> <span class="o">=</span> <span class="n">endOffsets</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">partition</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">OffsetAndMetadata</span> <span class="n">consumedOffset</span> <span class="o">=</span> <span class="n">consumedOffsets</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">partition</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">endOffset</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">consumedOffset</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">long</span> <span class="n">lag</span> <span class="o">=</span> <span class="n">endOffset</span> <span class="o">-</span> <span class="n">consumedOffset</span><span class="o">.</span><span class="na">offset</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">totalLag</span> <span class="o">+=</span> <span class="n">lag</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;查询 topic {} 未消费消息数量时发生错误: {}&#34;</span><span class="o">,</span> <span class="n">topicName</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&#34;Topic [{}] 堆积消费的消息总数: {}&#34;</span><span class="o">,</span> <span class="n">topicName</span><span class="o">,</span> <span class="n">totalLag</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">totalLag</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="nf">createKafkaConsumer</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Properties</span> <span class="n">props</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Properties</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">props</span><span class="o">.</span><span class="na">putAll</span><span class="o">(</span><span class="n">kafkaConfiguration</span><span class="o">.</span><span class="na">consumerConfigs</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">ConsumerConfig</span><span class="o">.</span><span class="na">ENABLE_AUTO_COMMIT_CONFIG</span><span class="o">,</span> <span class="s">&#34;false&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">props</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">ConsumerConfig</span><span class="o">.</span><span class="na">GROUP_ID_CONFIG</span><span class="o">,</span> <span class="n">groupId</span> <span class="o">+</span> <span class="s">&#34;-lag-checker&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="n">KafkaConsumer</span><span class="o">&lt;&gt;(</span><span class="n">props</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20240929095748425.png"
+    data-srcset="../images/image-20240929095748425.png, ../images/image-20240929095748425.png 1.5x, ../images/image-20240929095748425.png 2x"
+    data-sizes="auto"
+    alt="image-20240929095748425"
+    title="image-20240929095748425"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20240929095823434.png"
+    data-srcset="../images/image-20240929095823434.png, ../images/image-20240929095823434.png 1.5x, ../images/image-20240929095823434.png 2x"
+    data-sizes="auto"
+    alt="image-20240929095823434"
+    title="image-20240929095823434"/></p>
+<h3 id="33-第三版优化最终版">3.3 第三版优化（最终版）</h3>
+<p>针对第二版性能进行进一步优化：</p>
+<ol>
+<li>虽然没错创建使用完再释放KafkaConsumer能实现相关功能，也不会造成内存泄漏，但young GC过于频繁，修改会使用newSingleThreadExecutor线程池来进行绑定KafkaConsumer；</li>
+<li>将拉取时间间隔max.poll.interval.ms 从1天调整为1小时，更为合理避免一些异常情况可以及时的Rebalance；</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//使用单线程线程池，这样可以对KafkaConsumer使用都会统一线程ID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="kd">final</span> <span class="n">ExecutorService</span> <span class="n">executorService</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newSingleThreadExecutor</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//内存缓存记录当前消息堆积情况，60秒更新一次
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="n">AtomicLong</span> <span class="n">nowTotalLag</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicLong</span><span class="o">(-</span><span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">  * 项目启动完毕以及类实例都创建完毕后执行
+</span></span></span><span class="line"><span class="cl"><span class="cm">  */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">initializeKafkaConsumer</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">executorService</span><span class="o">.</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">createKafkaConsumer</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">kafkaConsumerRef</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">consumer</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">totalLag</span> <span class="o">=</span> <span class="n">fetchTopicUnconsumedCount</span><span class="o">(</span><span class="n">kafkaConfiguration</span><span class="o">.</span><span class="na">getTopicName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">        <span class="n">nowTotalLag</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">totalLag</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">60L</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">WakeupException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// Ignore exception if closing
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">log</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">&#34;KafkaConsumer woken up&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">log</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;Error in KafkaConsumer. Will recreate after 5 seconds&#34;</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">ie</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">interrupt</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">KafkaConsumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">consumer</span> <span class="o">=</span> <span class="n">kafkaConsumerRef</span><span class="o">.</span><span class="na">getAndSet</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(</span><span class="n">consumer</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">consumer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">});</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241006101345092.png"
+    data-srcset="../images/image-20241006101345092.png, ../images/image-20241006101345092.png 1.5x, ../images/image-20241006101345092.png 2x"
+    data-sizes="auto"
+    alt="image-20241006101345092"
+    title="image-20241006101345092"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241006101357166.png"
+    data-srcset="../images/image-20241006101357166.png, ../images/image-20241006101357166.png 1.5x, ../images/image-20241006101357166.png 2x"
+    data-sizes="auto"
+    alt="image-20241006101357166"
+    title="image-20241006101357166"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241006101417983.png"
+    data-srcset="../images/image-20241006101417983.png, ../images/image-20241006101417983.png 1.5x, ../images/image-20241006101417983.png 2x"
+    data-sizes="auto"
+    alt="image-20241006101417983"
+    title="image-20241006101417983"/></p>
+<h2 id="4-原理分析">4. 原理分析</h2>
+<h3 id="41-kafkaconsumer线程安全性">4.1 KafkaConsumer线程安全性</h3>
+<p>KafkaConsumer不是线程安全的。Kafka的设计假设每个消费者实例由单个线程使用。当多个线程尝试同时访问同一个KafkaConsumer实例时，会导致并发修改异常。</p>
+<p><a href="https://mermaid.live/edit#pako:eNpNkE1vwjAMhv9K5DMctmMPk0bpLhPSBL01PViJSyNoXJlE2kT573MLQ_PJfvT6672CY09QwFFw7E29tdFovDef2J2w5HjJA0lr1us3s2nqXgi9eWkfqgWXf_j1gTcznvaKJlM1NY_BmS-UFFLg-Gwu_6vuqFqQLnVZhGIyO_ahCw6Xxurb0Thnk_loKhGWFlag1w0YvH5wnYdYSD0NZKHQ1FOH-Zws2HhTKebEh5_ooEiSaQXC-dhD0eH5olUePSbaBlQnhiclHxLL7u7RYtXtF86GY3s"target="_blank" rel="external nofollow noopener noreferrer"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://mermaid.ink/img/pako:eNpNkE1vwjAMhv9K5DMctmMPk0bpLhPSBL01PViJSyNoXJlE2kT573MLQ_PJfvT6672CY09QwFFw7E29tdFovDef2J2w5HjJA0lr1us3s2nqXgi9eWkfqgWXf_j1gTcznvaKJlM1NY_BmS-UFFLg-Gwu_6vuqFqQLnVZhGIyO_ahCw6Xxurb0Thnk_loKhGWFlag1w0YvH5wnYdYSD0NZKHQ1FOH-Zws2HhTKebEh5_ooEiSaQXC-dhD0eH5olUePSbaBlQnhiclHxLL7u7RYtXtF86GY3s?type=png"
+    data-srcset="https://mermaid.ink/img/pako:eNpNkE1vwjAMhv9K5DMctmMPk0bpLhPSBL01PViJSyNoXJlE2kT573MLQ_PJfvT6672CY09QwFFw7E29tdFovDef2J2w5HjJA0lr1us3s2nqXgi9eWkfqgWXf_j1gTcznvaKJlM1NY_BmS-UFFLg-Gwu_6vuqFqQLnVZhGIyO_ahCw6Xxurb0Thnk_loKhGWFlag1w0YvH5wnYdYSD0NZKHQ1FOH-Zws2HhTKebEh5_ooEiSaQXC-dhD0eH5olUePSbaBlQnhiclHxLL7u7RYtXtF86GY3s?type=png, https://mermaid.ink/img/pako:eNpNkE1vwjAMhv9K5DMctmMPk0bpLhPSBL01PViJSyNoXJlE2kT573MLQ_PJfvT6672CY09QwFFw7E29tdFovDef2J2w5HjJA0lr1us3s2nqXgi9eWkfqgWXf_j1gTcznvaKJlM1NY_BmS-UFFLg-Gwu_6vuqFqQLnVZhGIyO_ahCw6Xxurb0Thnk_loKhGWFlag1w0YvH5wnYdYSD0NZKHQ1FOH-Zws2HhTKebEh5_ooEiSaQXC-dhD0eH5olUePSbaBlQnhiclHxLL7u7RYtXtF86GY3s?type=png 1.5x, https://mermaid.ink/img/pako:eNpNkE1vwjAMhv9K5DMctmMPk0bpLhPSBL01PViJSyNoXJlE2kT573MLQ_PJfvT6672CY09QwFFw7E29tdFovDef2J2w5HjJA0lr1us3s2nqXgi9eWkfqgWXf_j1gTcznvaKJlM1NY_BmS-UFFLg-Gwu_6vuqFqQLnVZhGIyO_ahCw6Xxurb0Thnk_loKhGWFlag1w0YvH5wnYdYSD0NZKHQ1FOH-Zws2HhTKebEh5_ooEiSaQXC-dhD0eH5olUePSbaBlQnhiclHxLL7u7RYtXtF86GY3s?type=png 2x"
+    data-sizes="auto"
+    alt="https://mermaid.ink/img/pako:eNpNkE1vwjAMhv9K5DMctmMPk0bpLhPSBL01PViJSyNoXJlE2kT573MLQ_PJfvT6672CY09QwFFw7E29tdFovDef2J2w5HjJA0lr1us3s2nqXgi9eWkfqgWXf_j1gTcznvaKJlM1NY_BmS-UFFLg-Gwu_6vuqFqQLnVZhGIyO_ahCw6Xxurb0Thnk_loKhGWFlag1w0YvH5wnYdYSD0NZKHQ1FOH-Zws2HhTKebEh5_ooEiSaQXC-dhD0eH5olUePSbaBlQnhiclHxLL7u7RYtXtF86GY3s?type=png"
+    title="https://mermaid.ink/img/pako:eNpNkE1vwjAMhv9K5DMctmMPk0bpLhPSBL01PViJSyNoXJlE2kT573MLQ_PJfvT6672CY09QwFFw7E29tdFovDef2J2w5HjJA0lr1us3s2nqXgi9eWkfqgWXf_j1gTcznvaKJlM1NY_BmS-UFFLg-Gwu_6vuqFqQLnVZhGIyO_ahCw6Xxurb0Thnk_loKhGWFlag1w0YvH5wnYdYSD0NZKHQ1FOH-Zws2HhTKebEh5_ooEiSaQXC-dhD0eH5olUePSbaBlQnhiclHxLL7u7RYtXtF86GY3s?type=png"/></a></p>
+<h3 id="42-consumer-group和offset管理">4.2 Consumer Group和Offset管理</h3>
+<p>Kafka使用Consumer Group来管理消费者和它们的offset。每个Consumer Group独立维护自己的offset，这允许不同的应用程序以不同的速率消费同一个topic而不相互影响。</p>
+<p><a href="https://mermaid.live/edit#pako:eNptkUFrwzAMhf-K0bmFLsccBmvSdIeVjXa3OAcRK4mhsYMjH0rpf5_nhJCO6aTn7z1kpDvUVhGk0DocOvFxlkaEeiu_7aDrSmy3r2JffqFjzdoasatmQyTZirw8kXxFkpnsIzmUmTWj78mJo7N-WILZhCeRr8UULP4Gk6dgsQ7O4hDFsfxsmpFYnNBgSz0ZXoYW0fH-jyOpYANhWI9ahf3cf_0SuAtUQhpaRQ36K0uQ5hGs6NlebqaGlJ2nDYQvth2kDV7HoPygkCnXGPbcL6-kNFt3mi4QD_H4AVXjd5Q"target="_blank" rel="external nofollow noopener noreferrer"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://mermaid.ink/img/pako:eNptkUFrwzAMhf-K0bmFLsccBmvSdIeVjXa3OAcRK4mhsYMjH0rpf5_nhJCO6aTn7z1kpDvUVhGk0DocOvFxlkaEeiu_7aDrSmy3r2JffqFjzdoasatmQyTZirw8kXxFkpnsIzmUmTWj78mJo7N-WILZhCeRr8UULP4Gk6dgsQ7O4hDFsfxsmpFYnNBgSz0ZXoYW0fH-jyOpYANhWI9ahf3cf_0SuAtUQhpaRQ36K0uQ5hGs6NlebqaGlJ2nDYQvth2kDV7HoPygkCnXGPbcL6-kNFt3mi4QD_H4AVXjd5Q?type=png"
+    data-srcset="https://mermaid.ink/img/pako:eNptkUFrwzAMhf-K0bmFLsccBmvSdIeVjXa3OAcRK4mhsYMjH0rpf5_nhJCO6aTn7z1kpDvUVhGk0DocOvFxlkaEeiu_7aDrSmy3r2JffqFjzdoasatmQyTZirw8kXxFkpnsIzmUmTWj78mJo7N-WILZhCeRr8UULP4Gk6dgsQ7O4hDFsfxsmpFYnNBgSz0ZXoYW0fH-jyOpYANhWI9ahf3cf_0SuAtUQhpaRQ36K0uQ5hGs6NlebqaGlJ2nDYQvth2kDV7HoPygkCnXGPbcL6-kNFt3mi4QD_H4AVXjd5Q?type=png, https://mermaid.ink/img/pako:eNptkUFrwzAMhf-K0bmFLsccBmvSdIeVjXa3OAcRK4mhsYMjH0rpf5_nhJCO6aTn7z1kpDvUVhGk0DocOvFxlkaEeiu_7aDrSmy3r2JffqFjzdoasatmQyTZirw8kXxFkpnsIzmUmTWj78mJo7N-WILZhCeRr8UULP4Gk6dgsQ7O4hDFsfxsmpFYnNBgSz0ZXoYW0fH-jyOpYANhWI9ahf3cf_0SuAtUQhpaRQ36K0uQ5hGs6NlebqaGlJ2nDYQvth2kDV7HoPygkCnXGPbcL6-kNFt3mi4QD_H4AVXjd5Q?type=png 1.5x, https://mermaid.ink/img/pako:eNptkUFrwzAMhf-K0bmFLsccBmvSdIeVjXa3OAcRK4mhsYMjH0rpf5_nhJCO6aTn7z1kpDvUVhGk0DocOvFxlkaEeiu_7aDrSmy3r2JffqFjzdoasatmQyTZirw8kXxFkpnsIzmUmTWj78mJo7N-WILZhCeRr8UULP4Gk6dgsQ7O4hDFsfxsmpFYnNBgSz0ZXoYW0fH-jyOpYANhWI9ahf3cf_0SuAtUQhpaRQ36K0uQ5hGs6NlebqaGlJ2nDYQvth2kDV7HoPygkCnXGPbcL6-kNFt3mi4QD_H4AVXjd5Q?type=png 2x"
+    data-sizes="auto"
+    alt="https://mermaid.ink/img/pako:eNptkUFrwzAMhf-K0bmFLsccBmvSdIeVjXa3OAcRK4mhsYMjH0rpf5_nhJCO6aTn7z1kpDvUVhGk0DocOvFxlkaEeiu_7aDrSmy3r2JffqFjzdoasatmQyTZirw8kXxFkpnsIzmUmTWj78mJo7N-WILZhCeRr8UULP4Gk6dgsQ7O4hDFsfxsmpFYnNBgSz0ZXoYW0fH-jyOpYANhWI9ahf3cf_0SuAtUQhpaRQ36K0uQ5hGs6NlebqaGlJ2nDYQvth2kDV7HoPygkCnXGPbcL6-kNFt3mi4QD_H4AVXjd5Q?type=png"
+    title="https://mermaid.ink/img/pako:eNptkUFrwzAMhf-K0bmFLsccBmvSdIeVjXa3OAcRK4mhsYMjH0rpf5_nhJCO6aTn7z1kpDvUVhGk0DocOvFxlkaEeiu_7aDrSmy3r2JffqFjzdoasatmQyTZirw8kXxFkpnsIzmUmTWj78mJo7N-WILZhCeRr8UULP4Gk6dgsQ7O4hDFsfxsmpFYnNBgSz0ZXoYW0fH-jyOpYANhWI9ahf3cf_0SuAtUQhpaRQ36K0uQ5hGs6NlebqaGlJ2nDYQvth2kDV7HoPygkCnXGPbcL6-kNFt3mi4QD_H4AVXjd5Q?type=png"/></a></p>
+<h3 id="43-kafka再均衡机制">4.3 Kafka再均衡机制</h3>
+<p>当Consumer Group中的消费者数量发生变化时（如新消费者加入或现有消费者离开），Kafka会触发再均衡过程。这个过程会重新分配分区给消费者，可能会暂时中断消息处理。</p>
+<p><a href="https://mermaid.live/edit#pako:eNqdkk1LxDAQhv9KmHMF095yWLAVBKsgq6fSy9jOdoNtUvMhyLL_3alrZdftXswpyfMQXibvDhrbEijw9B7JNHSrsXM41EbwGtEF3egRTRCFFOhFYY2PAzkhF4z0xEgXjOzEyM6NfBJyZ9_IncOqnGhlbUk0zkIhr1arqlTi3moj7pyN4w9IL4HsAqhKBrkSL053Hedb0yv2yEM54JxpIZW48V53RjxNyYK2Rlwf8XSByyOeLfD0T64Hwg_6R7A14Vm0ZH59TrcgSUiA_2NA3XITdpNfQ9jSQDUo3ra0wdiHGmqzZxVjsM-fpgEVXKQEOGe3BbXB3vMpji2GuUa_t9TqYN3joWvfldt_AWh9yVM"target="_blank" rel="external nofollow noopener noreferrer"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://mermaid.ink/img/pako:eNqdkk1LxDAQhv9KmHMF095yWLAVBKsgq6fSy9jOdoNtUvMhyLL_3alrZdftXswpyfMQXibvDhrbEijw9B7JNHSrsXM41EbwGtEF3egRTRCFFOhFYY2PAzkhF4z0xEgXjOzEyM6NfBJyZ9_IncOqnGhlbUk0zkIhr1arqlTi3moj7pyN4w9IL4HsAqhKBrkSL053Hedb0yv2yEM54JxpIZW48V53RjxNyYK2Rlwf8XSByyOeLfD0T64Hwg_6R7A14Vm0ZH59TrcgSUiA_2NA3XITdpNfQ9jSQDUo3ra0wdiHGmqzZxVjsM-fpgEVXKQEOGe3BbXB3vMpji2GuUa_t9TqYN3joWvfldt_AWh9yVM?type=png"
+    data-srcset="https://mermaid.ink/img/pako:eNqdkk1LxDAQhv9KmHMF095yWLAVBKsgq6fSy9jOdoNtUvMhyLL_3alrZdftXswpyfMQXibvDhrbEijw9B7JNHSrsXM41EbwGtEF3egRTRCFFOhFYY2PAzkhF4z0xEgXjOzEyM6NfBJyZ9_IncOqnGhlbUk0zkIhr1arqlTi3moj7pyN4w9IL4HsAqhKBrkSL053Hedb0yv2yEM54JxpIZW48V53RjxNyYK2Rlwf8XSByyOeLfD0T64Hwg_6R7A14Vm0ZH59TrcgSUiA_2NA3XITdpNfQ9jSQDUo3ra0wdiHGmqzZxVjsM-fpgEVXKQEOGe3BbXB3vMpji2GuUa_t9TqYN3joWvfldt_AWh9yVM?type=png, https://mermaid.ink/img/pako:eNqdkk1LxDAQhv9KmHMF095yWLAVBKsgq6fSy9jOdoNtUvMhyLL_3alrZdftXswpyfMQXibvDhrbEijw9B7JNHSrsXM41EbwGtEF3egRTRCFFOhFYY2PAzkhF4z0xEgXjOzEyM6NfBJyZ9_IncOqnGhlbUk0zkIhr1arqlTi3moj7pyN4w9IL4HsAqhKBrkSL053Hedb0yv2yEM54JxpIZW48V53RjxNyYK2Rlwf8XSByyOeLfD0T64Hwg_6R7A14Vm0ZH59TrcgSUiA_2NA3XITdpNfQ9jSQDUo3ra0wdiHGmqzZxVjsM-fpgEVXKQEOGe3BbXB3vMpji2GuUa_t9TqYN3joWvfldt_AWh9yVM?type=png 1.5x, https://mermaid.ink/img/pako:eNqdkk1LxDAQhv9KmHMF095yWLAVBKsgq6fSy9jOdoNtUvMhyLL_3alrZdftXswpyfMQXibvDhrbEijw9B7JNHSrsXM41EbwGtEF3egRTRCFFOhFYY2PAzkhF4z0xEgXjOzEyM6NfBJyZ9_IncOqnGhlbUk0zkIhr1arqlTi3moj7pyN4w9IL4HsAqhKBrkSL053Hedb0yv2yEM54JxpIZW48V53RjxNyYK2Rlwf8XSByyOeLfD0T64Hwg_6R7A14Vm0ZH59TrcgSUiA_2NA3XITdpNfQ9jSQDUo3ra0wdiHGmqzZxVjsM-fpgEVXKQEOGe3BbXB3vMpji2GuUa_t9TqYN3joWvfldt_AWh9yVM?type=png 2x"
+    data-sizes="auto"
+    alt="https://mermaid.ink/img/pako:eNqdkk1LxDAQhv9KmHMF095yWLAVBKsgq6fSy9jOdoNtUvMhyLL_3alrZdftXswpyfMQXibvDhrbEijw9B7JNHSrsXM41EbwGtEF3egRTRCFFOhFYY2PAzkhF4z0xEgXjOzEyM6NfBJyZ9_IncOqnGhlbUk0zkIhr1arqlTi3moj7pyN4w9IL4HsAqhKBrkSL053Hedb0yv2yEM54JxpIZW48V53RjxNyYK2Rlwf8XSByyOeLfD0T64Hwg_6R7A14Vm0ZH59TrcgSUiA_2NA3XITdpNfQ9jSQDUo3ra0wdiHGmqzZxVjsM-fpgEVXKQEOGe3BbXB3vMpji2GuUa_t9TqYN3joWvfldt_AWh9yVM?type=png"
+    title="https://mermaid.ink/img/pako:eNqdkk1LxDAQhv9KmHMF095yWLAVBKsgq6fSy9jOdoNtUvMhyLL_3alrZdftXswpyfMQXibvDhrbEijw9B7JNHSrsXM41EbwGtEF3egRTRCFFOhFYY2PAzkhF4z0xEgXjOzEyM6NfBJyZ9_IncOqnGhlbUk0zkIhr1arqlTi3moj7pyN4w9IL4HsAqhKBrkSL053Hedb0yv2yEM54JxpIZW48V53RjxNyYK2Rlwf8XSByyOeLfD0T64Hwg_6R7A14Vm0ZH59TrcgSUiA_2NA3XITdpNfQ9jSQDUo3ra0wdiHGmqzZxVjsM-fpgEVXKQEOGe3BbXB3vMpji2GuUa_t9TqYN3joWvfldt_AWh9yVM?type=png"/></a></p>
+<h2 id="5-结论">5. 结论</h2>
+<p>通过三次优化，我们解决了初始实现中的主要问题：</p>
+<ol>
+<li>并发访问问题：通过为每次查询创建新的KafkaConsumer实例解决。</li>
+<li>查询精确性：通过指定topic和使用独立的consumer group确保只查询目标topic的堆积量。</li>
+<li>内存管理：使用try-with-resources确保及时释放资源。</li>
+<li>减少再均衡影响：避免不必要的subscribe操作，减少对现有消费者的影响。</li>
+<li>资源利用：增加内存缓存，减少进行查询的次数。</li>
+</ol>
+<h2 id="6-最终方案">6. 最终方案</h2>
+<p>最终的实现方案具有以下特点：</p>
+<ol>
+<li>使用独立线程对的KafkaConsumer实例进行访问操作，比如：newSingleThreadExecutor。（<strong>最佳实践</strong>）</li>
+<li>使用专用的consumer group进行查询，避免影响生产环境的消费者。(<strong>最佳实践</strong>)</li>
+<li>直接查询分区信息和offset，而不进行subscribe操作。(<strong>最佳实践</strong>)</li>
+<li>通过比较每个分区的end offset和consumed offset来精确计算未消费的消息数量。</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>经过三轮修改，优化了Kafka消息堆积查询服务，提高了系统的稳定性和查询准确性，第一版虽解决了一部分问题，但引入了新的内存管理问题。第二版通过合理的资源管理和消费者组控制，达到了预期效果。第三版通过使用newSingleThreadExecutor减少KafkaConsumer频繁创建与释放以及通过缓存减少操作的频率。</p>
+<p>在使用KafkaConsumer时，我们应更注重类的相关特性，以及类的并发安全和资源管理的，此案例梳理了几个最佳实践，同时我们第三版这个方案保证了查询的准确性，又避免了对现有Kafka消费者的影响，个人理解为 Kafka消费者深入研发的一次最佳实践。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2024-08-06&#32;10:57:37>更新于 2024-08-06&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/kafka/' class="post-tag">kafka</a><a href='/tags/%E6%B6%88%E8%B4%B9%E8%80%85/' class="post-tag">消费者</a><a href='/tags/%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/' class="post-tag">代码分析</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E6%A0%87%E5%87%86%E4%B9%8B%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%87%86%E7%A1%AE/" class="post-nav-item" rel="prev" title="技术文档标准之实时更新与准确"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>技术文档标准之实时更新与准确</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2024</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

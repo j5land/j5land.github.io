@@ -3,7 +3,17 @@
     <title>kafka - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
     <link>http://example.org/tags/kafka/</link>
     <description>kafka - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
-    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 27 Oct 2023 15:28:00 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/kafka/" rel="self" type="application/rss+xml" /><item>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 06 Aug 2024 10:57:37 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/kafka/" rel="self" type="application/rss+xml" /><item>
+  <title>广告取链场景Kafka消费者最佳实践</title>
+  <link>http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link>
+  <pubDate>Tue, 06 Aug 2024 10:57:37 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/image-20240929095616258.png" referrerpolicy="no-referrer">
+      </div>广告取链场景-Kafka消费者最佳实践 1. 背景 我们正在开发一个广告取链服务，其中包含一个消息生产者控量服务。这个服务需要监控Kafka消息的堆]]></description>
+</item>
+<item>
   <title>Kafka Schema Registry工作原理</title>
   <link>http://example.org/posts/kafka-schema-registry%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/</link>
   <pubDate>Fri, 27 Oct 2023 15:28:00 &#43;0800</pubDate>
