@@ -10,7 +10,7 @@
   <author>j5land</author>
   <guid>http://example.org/posts/%E5%B9%BF%E5%91%8A%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BEdiff%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/</guid>
   <description><![CDATA[<div class="featured-image">
-        <img src="/posts/images/ad-flow-diff-test.jpg" referrerpolicy="no-referrer">
+        <img src="/posts/images/image-20231129103324841.png" referrerpolicy="no-referrer">
       </div>一、需求背景 1.1 背景概述 我们重构了广告引擎，采用新的竞价排名机制。 为了验证其业务影响，我们计划通过线上日志记录和回放工具来重现流量，并与当前线]]></description>
 </item>
 </channel>

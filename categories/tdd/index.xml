@@ -10,7 +10,7 @@
   <author>j5land</author>
   <guid>http://example.org/posts/%E6%B5%8B%E8%AF%95%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%A2%86%E6%82%9F/</guid>
   <description><![CDATA[<div class="featured-image">
-        <img src="/posts/images/tdd-0.jpeg" referrerpolicy="no-referrer">
+        <img src="/posts/images/tdd-2.jpg" referrerpolicy="no-referrer">
       </div>一、概述 什么是TDD TDD颠覆了传统的开发和测试。TDD不是先写业务代码，而是先写测试代码，写业务代码来反向满足测试代码的校验。TDD规定你]]></description>
 </item>
 </channel>
