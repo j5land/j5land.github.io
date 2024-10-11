@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>广告引擎Redis优化：提升资源利用效率的实践 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="背景 目前广告引擎会频繁使用Redis，之前Redis内存已经从32GB扩展到64GB，并扩容后产生了一定的额外费用。又达到了容量80%告警通" /><meta name="keywords" content='redis, 内存分析' /><meta itemprop="name" content="广告引擎Redis优化：提升资源利用效率的实践">
+<meta itemprop="description" content="背景 目前广告引擎会频繁使用Redis，之前Redis内存已经从32GB扩展到64GB，并扩容后产生了一定的额外费用。又达到了容量80%告警通"><meta itemprop="datePublished" content="2024-10-11T16:52:51+08:00" />
+<meta itemprop="dateModified" content="2024-10-11T16:52:51+08:00" />
+<meta itemprop="wordCount" content="3136">
+<meta itemprop="keywords" content="redis,内存分析," /><meta property="og:title" content="广告引擎Redis优化：提升资源利用效率的实践" />
+<meta property="og:description" content="背景 目前广告引擎会频繁使用Redis，之前Redis内存已经从32GB扩展到64GB，并扩容后产生了一定的额外费用。又达到了容量80%告警通" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-10-11T16:52:51+08:00" />
+<meta property="article:modified_time" content="2024-10-11T16:52:51+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="广告引擎Redis优化：提升资源利用效率的实践"/>
+<meta name="twitter:description" content="背景 目前广告引擎会频繁使用Redis，之前Redis内存已经从32GB扩展到64GB，并扩容后产生了一定的额外费用。又达到了容量80%告警通"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5/" /><link rel="prev" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "广告引擎Redis优化：提升资源利用效率的实践",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5\/"
+    },"genre": "posts","keywords": "redis, 内存分析","wordcount":  3136 ,
+    "url": "http:\/\/example.org\/posts\/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5\/","datePublished": "2024-10-11T16:52:51+08:00","dateModified": "2024-10-11T16:52:51+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>广告引擎Redis优化：提升资源利用效率的实践</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/redis%E8%B5%84%E6%BA%90%E4%BC%98%E5%8C%96/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> Redis资源优化</a></span></div>
+      <div class="post-meta-line"><span title=2024-10-11&#32;16:52:51><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-10-11">2024-10-11</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 3136 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 7 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/image-20241011162844201.png"
+    data-srcset="/posts/images/image-20241011162844201.png, /posts/images/image-20241011162844201.png 1.5x, /posts/images/image-20241011162844201.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/image-20241011162844201.png"
+    title="/posts/images/image-20241011162844201.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#目标">目标</a></li>
+    <li><a href="#redis-存储模型及原理">Redis 存储模型及原理</a>
+      <ul>
+        <li><a href="#存储模型">存储模型</a></li>
+        <li><a href="#内存原理">内存原理</a></li>
+      </ul>
+    </li>
+    <li><a href="#redis使用分析">Redis使用分析</a>
+      <ul>
+        <li><a href="#redis节点信息">Redis节点信息</a></li>
+        <li><a href="#redis-key分析">Redis Key分析</a></li>
+        <li><a href="#redis-key-分析方法">Redis Key 分析方法</a></li>
+        <li><a href="#问题分析">问题分析</a></li>
+        <li><a href="#解决方案">解决方案</a></li>
+        <li><a href="#实施结果">实施结果</a></li>
+      </ul>
+    </li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>目前广告引擎会频繁使用Redis，之前Redis内存已经从32GB扩展到64GB，并扩容后产生了一定的额外费用。又达到了容量80%告警通知，DBA不建议我们进一步扩展至128GB，因为再扩展后会导致一半的内存浪费，另外还会有成本会增加。因此，我们需要对Redis进行数据结构深入优化分析和内存管理，通过分析数据具体占用情况，并合理的将Redis进行业务模块拆分，通过精细化的存储设计提升内存使用效率，从而降低资源的费用。</p>
+<h2 id="目标">目标</h2>
+<ol>
+<li><strong>降低Redis内存使用量</strong>：通过分析和优化Redis存储结构，减少无效数据占用，提升内存使用效率。</li>
+<li><strong>控制费用增长</strong>：通过精细化管理Redis内存，避免因无序扩展导致的资源浪费和成本上升。</li>
+<li><strong>优化Redis存储</strong>：在保证业务响应速度和性能的前提下，尽可能优化内存结构、减少内存消耗和提高访问效率。</li>
+<li><strong>模块归属分析与拆分</strong>：按照业务模块划分Redis中的数据，对不同业务模块的数据进行分析，是否进行分离存储，避免互相影响，降低大内存扩容的资源浪费。</li>
+</ol>
+<h2 id="redis-存储模型及原理">Redis 存储模型及原理</h2>
+<h3 id="存储模型">存储模型</h3>
+<p>Redis作为广告引擎中的核心存储组件，采用的是内存键值对存储模型，会根据不同的数据类型采用相应的数据结构和编码方式（如<code>ziplist</code>、<code>hashtable</code>、<code>skiplist</code>等）来进行内存管理和优化。</p>
+<p>如下是广告引擎在Redis使用的主要数据结构：</p>
+<ul>
+<li><strong>String</strong>：用于存储广告的访问计数、时间戳等单一字段值，常用于广告用户访问频率控制，以增加广告最大收益；</li>
+<li><strong>Hash</strong>：可用于存储复杂广告对象的多个字段，适合复杂的数据结构，比如：广告场景对应的订单数据等缓存、交易订单快照信息等；</li>
+<li><strong>Set</strong>：用于存储唯一值集合、按顺序排序的对象集合，用于存储广告RTA集合数据；</li>
+</ul>
+<h3 id="内存原理">内存原理</h3>
+<p>Redis的数据存储完全在内存中，这使得其具有极高的读写速度。内存的管理和使用主要涉及以下几个方面：</p>
+<ul>
+<li><strong>内存分配</strong>：Redis使用<code>jemalloc</code>作为内存分配器，以优化内存分配和释放的性能，避免内存碎片问题。根据对象大小的不同，Redis会在不同的区间中分配内存，以提高内存使用效率。</li>
+<li><strong>数据编码</strong>：为减少内存使用，Redis支持多种数据编码方式。例如：
+<ul>
+<li><code>ziplist</code>：一种压缩数据结构，适合存储小型<code>hash</code>、<code>list</code>等；</li>
+<li><code>intset</code>：用于存储小整型集合，避免过多的内存占用；</li>
+<li><code>quicklist</code>：用于<code>list</code>类型，结合了链表和压缩存储的优势。</li>
+</ul>
+</li>
+<li><strong>过期机制</strong>：Redis支持多种过期策略，包括：
+<ul>
+<li><strong>主动过期</strong>：Redis定期扫描一部分Key（默认每秒10次），主动淘汰过期的Key。</li>
+<li><strong>被动过期</strong>：当访问一个Key时，发现该Key已经过期，则立即清理该Key。</li>
+<li><strong>内存淘汰策略</strong>：当Redis内存到达配置的最大上限时，会根据淘汰策略（如LRU、LFU）清理一些Key以释放内存。</li>
+</ul>
+</li>
+</ul>
+<h2 id="redis使用分析">Redis使用分析</h2>
+<h3 id="redis节点信息">Redis节点信息</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241010001620168.png"
+    data-srcset="../images/image-20241010001620168.png, ../images/image-20241010001620168.png 1.5x, ../images/image-20241010001620168.png 2x"
+    data-sizes="auto"
+    alt="image-20241010001620168"
+    title="image-20241010001620168"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241010141957212.png"
+    data-srcset="../images/image-20241010141957212.png, ../images/image-20241010141957212.png 1.5x, ../images/image-20241010141957212.png 2x"
+    data-sizes="auto"
+    alt="image-20241010141957212"
+    title="image-20241010141957212"/></p>
+<p>信息显示：</p>
+<ol>
+<li>内存使用率高：已使用内存比例为80.33%，已经触发预警通知线。</li>
+<li>Key数量大：总计约252.61M个key，大量的key会导致内存碎片和可能的性能问题。</li>
+<li>已过期Key比例低：仅5.77%的key已过期，占用4.29%的内存，说明当前的过期设计策略可能还不够优化。</li>
+<li>有一部分永不过期Key：约1.30M个key永不过期，占用266.81 MB内存，占用内存比例较小可控范围。</li>
+</ol>
+<h3 id="redis-key分析">Redis Key分析</h3>
+<h4 id="top-500-key前缀">Top 500 Key前缀</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241010002322468.png"
+    data-srcset="../images/image-20241010002322468.png, ../images/image-20241010002322468.png 1.5x, ../images/image-20241010002322468.png 2x"
+    data-sizes="auto"
+    alt="image-20241010002322468"
+    title="image-20241010002322468"/></p>
+<h4 id="top-500-big-key按内存">Top 500 Big Key(按内存)</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241010002547171.png"
+    data-srcset="../images/image-20241010002547171.png, ../images/image-20241010002547171.png 1.5x, ../images/image-20241010002547171.png 2x"
+    data-sizes="auto"
+    alt="image-20241010002547171"
+    title="image-20241010002547171"/></p>
+<h4 id="top-500-big-key按数量">Top 500 Big Key(按数量)</h4>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241010002453782.png"
+    data-srcset="../images/image-20241010002453782.png, ../images/image-20241010002453782.png 1.5x, ../images/image-20241010002453782.png 2x"
+    data-sizes="auto"
+    alt="image-20241010002453782"
+    title="image-20241010002453782"/></p>
+<p>从上述数据分析表可以看出，这些数据可能具有复杂的业务逻辑或需要频繁存储大量的数据项：</p>
+<ol>
+<li><code>cola</code>前缀的数据主要使用了<code>hash</code>类型，Key数量197.95M，占用内存较大达到34.82GB，可以考虑拆分独立，并深入该数据结构分析优化；</li>
+<li><code>titan</code>前缀的数据则多为<code>string</code>类型，Key数量51.46M，占用了6.17GB内存；</li>
+<li>部分Big key 在命名上使用uuid的命名，若数据成倍的增长也会造成内存大量消耗；</li>
+<li>data:ticker:open 部分Big Key 存储占用192.09KB，需要分析存储的数据是否全都用到，以及是否有优化的空间；</li>
+</ol>
+<h3 id="redis-key-分析方法">Redis Key 分析方法</h3>
+<h4 id="数据采样与内存占用分析">数据采样与内存占用分析</h4>
+<p>我们使用的阿里云Redis，阿里云有相对成熟的分析工具来协助分析，在自建Redis时以下命令可以进行参考使用。</p>
+<ul>
+<li>使用 <code>redis-cli</code> 的 <code>INFO MEMORY</code> 和 <code>MEMORY STATS</code> 命令获取Redis的整体内存使用情况。</li>
+<li>通过 <code>redis-cli --bigkeys</code> 命令分析Redis中的大Key，找到占用内存最大的Key。</li>
+<li>使用 <code>MEMORY USAGE &lt;key&gt;</code> 命令查看特定Key的内存使用情况，并记录数据类型、长度、内存消耗等信息。</li>
+<li><strong>RDB工具</strong>，使用<code>redis-rdb-tools</code>分析Redis的RDB文件，生成详细的内存使用报告，包括每个Key的内存占用、过期时间和数据类型分布等。</li>
+</ul>
+<h4 id="分析key设计是否合理">分析Key设计是否合理</h4>
+<ul>
+<li>使用更紧凑的Key设计方案，避免过长的Key名称，可以考虑使用缩写、哈希等方式减少Key的长度。</li>
+<li>统计高频Key的TTL（Time to Live）设置，排查是否存在未设置过期时间或过期时间过长导致内存膨胀的问题</li>
+<li>针对大字段（如长字符串、JSON）可以考虑采用压缩存储方式（如<code>Gzip</code>、<code>LZ4</code>）。</li>
+<li>将长时间未访问的Key迁移到磁盘数据库中，减少内存占用。</li>
+</ul>
+<h4 id="redis拆分策略">Redis拆分策略</h4>
+<ul>
+<li>在Redis Key命名时通常会有类似 <code>module:submodule:key</code> 的结构，可以根据 <code>module</code> 划分业务模块。</li>
+<li>按照业务模块划分Redis实例，将不同业务模块的数据分别存储到不同的实例中，减少业务之间的耦合度，我们可以考虑将广告投放数据、用户行为数据、缓存数据等分配到不同的Redis实例中。</li>
+<li>另外根据业务模块和数据类型（如热数据和冷数据）选择不同的Redis实例和分片策略。</li>
+</ul>
+<h3 id="问题分析">问题分析</h3>
+<p>根据对 Redis 内存与Top Key分析，得到以下结论：</p>
+<p><strong>内存占用情况</strong>
+在广告引擎使用的 Redis 集群中，与 “cola” 相关的 Key 占用了约 34.82 GB 的内存，且 Key 数量高达 197.95M。这部分数据是可口可乐活动扫码点单期间产生的缓存信息。</p>
+<table>
+<thead>
+<tr>
+<th>Key前缀</th>
+<th>占用内存</th>
+<th>Key数量</th>
+<th>元素数量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cola</td>
+<td>34.82 GB</td>
+<td>197.95M</td>
+<td>395.90M</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Redis 内存占用情况与过期Key分析</strong></p>
+<ul>
+<li>当前 Redis 集群中，所有节点的内存使用率约为 80.33%，大部分被 “cola” 活动相关数据占用。</li>
+<li>Key 总数为 252.61M，其中已过期的 Key 数量为 14.58M，占比 5.77%。这些过期 Key 占用了约 2.21 GB 的内存，占总内存的 4.29%。</li>
+<li>永不过期的 Key 数量为 1.30M，内存占用为 266.81 MB，占用内存不大。</li>
+</ul>
+<p>我们发现 “cola” 前缀key的数据存储对 Redis 内存消耗巨大，随着可口可乐联合收钱吧广告运营活动的结束，这些 Key 已经成为无效数据，继续保留在 Redis 中没有意义，<strong>需要应当尽快进行清理</strong>。</p>
+<h3 id="解决方案">解决方案</h3>
+<p>为了高效地完成对 Redis 中 “cola” 相关 Key 的批量清理，采用了以下解决方案：</p>
+<p><strong>使用 Lua 脚本进行批量 Key 删除</strong></p>
+<ul>
+<li>
+<p>Lua 脚本通过 <code>SCAN</code> 指令逐批扫描匹配 “cola:*” 前缀的所有 Key，并使用 <code>DEL</code> 指令删除匹配的 Key。这样可以避免 <code>KEYS</code> 指令引起的 Redis 主线程阻塞，提升删除操作的安全性与效率。</p>
+</li>
+<li>
+<p>Lua 脚本代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">cursor</span> <span class="o">=</span> <span class="n">ARGV</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">match_pattern</span> <span class="o">=</span> <span class="n">ARGV</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">1000</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">deleted</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="kr">function</span> <span class="nf">delete_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">if</span> <span class="o">#</span><span class="n">keys</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">        <span class="n">redis.call</span><span class="p">(</span><span class="s2">&#34;DEL&#34;</span><span class="p">,</span> <span class="n">unpack</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>  <span class="c1">-- 批量删除提高效率</span>
+</span></span><span class="line"><span class="cl">        <span class="n">deleted</span> <span class="o">=</span> <span class="n">deleted</span> <span class="o">+</span> <span class="o">#</span><span class="n">keys</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">    <span class="n">redis.call</span><span class="p">(</span><span class="s2">&#34;SLEEP&#34;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span>  <span class="c1">-- 休眠 20 毫秒，降低对 Redis 的压力</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">scan_result</span> <span class="o">=</span> <span class="n">redis.call</span><span class="p">(</span><span class="s2">&#34;SCAN&#34;</span><span class="p">,</span> <span class="n">cursor</span><span class="p">,</span> <span class="s2">&#34;MATCH&#34;</span><span class="p">,</span> <span class="n">match_pattern</span><span class="p">,</span> <span class="s2">&#34;COUNT&#34;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">new_cursor</span> <span class="o">=</span> <span class="n">scan_result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">keys</span> <span class="o">=</span> <span class="n">scan_result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">delete_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">return</span> <span class="p">{</span><span class="n">new_cursor</span><span class="p">,</span> <span class="n">deleted</span><span class="p">}</span>
+</span></span></code></pre></div></li>
+<li>
+<p><strong>删除进度与内存释放情况监控</strong></p>
+<ul>
+<li>在执行批量删除操作时，实时监控 Redis 内存的变化情况，以确认内存释放的效果。同时通过统计 Key 的删除数量来掌握删除的进度。</li>
+<li>删除结束后，再次分析 Redis 中内存使用情况与 Key 数量变化，验证操作的实际效果。</li>
+</ul>
+</li>
+</ul>
+<h3 id="实施结果">实施结果</h3>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241011162830356.png"
+    data-srcset="../images/image-20241011162830356.png, ../images/image-20241011162830356.png 1.5x, ../images/image-20241011162830356.png 2x"
+    data-sizes="auto"
+    alt="image-20241011162830356"
+    title="image-20241011162830356"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241011162844201.png"
+    data-srcset="../images/image-20241011162844201.png, ../images/image-20241011162844201.png 1.5x, ../images/image-20241011162844201.png 2x"
+    data-sizes="auto"
+    alt="image-20241011162844201"
+    title="image-20241011162844201"/></p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/image-20241011162725309.png"
+    data-srcset="../images/image-20241011162725309.png, ../images/image-20241011162725309.png 1.5x, ../images/image-20241011162725309.png 2x"
+    data-sizes="auto"
+    alt="image-20241011162725309"
+    title="image-20241011162725309"/></p>
+<p>通过上述方案的实施，我们清理了 Redis 中所有与 “cola” 活动相关的 Key，释放了约 <strong>34 GB</strong> 的内存空间，Redis 集群整体内存占用率将从 80.33% 降至 45.21%，大幅提升了集群的响应速度和稳定性。</p>
+<h2 id="结论">结论</h2>
+<p><strong>批量删除已过期和无效数据是优化 Redis 内存使用的有效手段</strong>。此次对 “cola” 活动相关 Key 的清理，不仅释放了宝贵的内存资源，还提高了 Redis 集群的性能和稳定性。</p>
+<p>在未来的Redis内存管理中，还将持续分析并优化 Redis 中的数据存储，确保系统的高效运行和资源的合理利用。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2024-10-11&#32;16:52:51>更新于 2024-10-11&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/redis/' class="post-tag">redis</a><a href='/tags/%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/' class="post-tag">内存分析</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="post-nav-item" rel="prev" title="广告取链场景Kafka消费者最佳实践"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>广告取链场景Kafka消费者最佳实践</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2024</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

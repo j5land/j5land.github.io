@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>内存分析 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/tags/%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/</link>
+    <description>内存分析 - 标签 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 11 Oct 2024 16:52:51 &#43;0800</lastBuildDate><atom:link href="http://example.org/tags/%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/" rel="self" type="application/rss+xml" /><item>
+  <title>广告引擎Redis优化：提升资源利用效率的实践</title>
+  <link>http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5/</link>
+  <pubDate>Fri, 11 Oct 2024 16:52:51 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/image-20241011162844201.png" referrerpolicy="no-referrer">
+      </div>背景 目前广告引擎会频繁使用Redis，之前Redis内存已经从32GB扩展到64GB，并扩容后产生了一定的额外费用。又达到了容量80%告警通]]></description>
+</item>
+</channel>
+</rss>
