@@ -26,6 +26,16 @@
       </div>广告取链场景-Kafka消费者最佳实践 1. 背景 我们正在开发一个广告取链服务，其中包含一个消息生产者控量服务。这个服务需要监控Kafka消息的堆]]></description>
 </item>
 <item>
+  <title>开源项目文档撰写指南：README、Wiki和代码贡献</title>
+  <link>http://example.org/posts/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3%E6%92%B0%E5%86%99%E6%8C%87%E5%8D%97readmewiki%E5%92%8C%E4%BB%A3%E7%A0%81%E8%B4%A1%E7%8C%AE/</link>
+  <pubDate>Mon, 15 Jul 2024 17:56:16 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3%E6%92%B0%E5%86%99%E6%8C%87%E5%8D%97readmewiki%E5%92%8C%E4%BB%A3%E7%A0%81%E8%B4%A1%E7%8C%AE/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/readme-images.png" referrerpolicy="no-referrer">
+      </div>开源项目文档撰写指南：README、Wiki 和代码贡献 开源项目的成功不仅仅依赖于代码质量，还与良好的文档密不可分。README 文件、Wiki]]></description>
+</item>
+<item>
   <title>技术文档标准之实时更新与准确</title>
   <link>http://example.org/posts/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E6%A0%87%E5%87%86%E4%B9%8B%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%87%86%E7%A1%AE/</link>
   <pubDate>Wed, 19 Jun 2024 17:10:11 &#43;0800</pubDate>
@@ -94,16 +104,6 @@
   <description><![CDATA[<div class="featured-image">
         <img src="/posts/images/tdd-2.jpg" referrerpolicy="no-referrer">
       </div>一、概述 什么是TDD TDD颠覆了传统的开发和测试。TDD不是先写业务代码，而是先写测试代码，写业务代码来反向满足测试代码的校验。TDD规定你]]></description>
-</item>
-<item>
-  <title>数据仓库通用开发规范</title>
-  <link>http://example.org/posts/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</link>
-  <pubDate>Fri, 09 Jun 2023 17:28:45 &#43;0800</pubDate>
-  <author>j5land</author>
-  <guid>http://example.org/posts/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E9%80%9A%E7%94%A8%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/</guid>
-  <description><![CDATA[<div class="featured-image">
-        <img src="/posts/images/data-warehouse-dev-spec-0.jpg" referrerpolicy="no-referrer">
-      </div>一、数据模型架构原则 数仓分层原则12 可靠的数仓体系往往需要清晰的数据分层结构，既要保证数据层的稳定又要屏蔽对下游的影响。 分层是解决当前业务快]]></description>
 </item>
 </channel>
 </rss>

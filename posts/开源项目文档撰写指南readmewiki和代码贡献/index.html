@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>开源项目文档撰写指南：README、Wiki和代码贡献 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="开源项目文档撰写指南：README、Wiki 和代码贡献 开源项目的成功不仅仅依赖于代码质量，还与良好的文档密不可分。README 文件、Wiki" /><meta name="keywords" content='文档, readme' /><meta itemprop="name" content="开源项目文档撰写指南：README、Wiki和代码贡献">
+<meta itemprop="description" content="开源项目文档撰写指南：README、Wiki 和代码贡献 开源项目的成功不仅仅依赖于代码质量，还与良好的文档密不可分。README 文件、Wiki"><meta itemprop="datePublished" content="2024-07-15T17:56:16+08:00" />
+<meta itemprop="dateModified" content="2024-07-15T17:56:16+08:00" />
+<meta itemprop="wordCount" content="2535">
+<meta itemprop="keywords" content="文档,readme," /><meta property="og:title" content="开源项目文档撰写指南：README、Wiki和代码贡献" />
+<meta property="og:description" content="开源项目文档撰写指南：README、Wiki 和代码贡献 开源项目的成功不仅仅依赖于代码质量，还与良好的文档密不可分。README 文件、Wiki" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3%E6%92%B0%E5%86%99%E6%8C%87%E5%8D%97readmewiki%E5%92%8C%E4%BB%A3%E7%A0%81%E8%B4%A1%E7%8C%AE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-07-15T17:56:16+08:00" />
+<meta property="article:modified_time" content="2024-07-15T17:56:16+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="开源项目文档撰写指南：README、Wiki和代码贡献"/>
+<meta name="twitter:description" content="开源项目文档撰写指南：README、Wiki 和代码贡献 开源项目的成功不仅仅依赖于代码质量，还与良好的文档密不可分。README 文件、Wiki"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3%E6%92%B0%E5%86%99%E6%8C%87%E5%8D%97readmewiki%E5%92%8C%E4%BB%A3%E7%A0%81%E8%B4%A1%E7%8C%AE/" /><link rel="prev" href="http://example.org/posts/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E6%A0%87%E5%87%86%E4%B9%8B%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%87%86%E7%A1%AE/" /><link rel="next" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "开源项目文档撰写指南：README、Wiki和代码贡献",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3%E6%92%B0%E5%86%99%E6%8C%87%E5%8D%97readmewiki%E5%92%8C%E4%BB%A3%E7%A0%81%E8%B4%A1%E7%8C%AE\/"
+    },"genre": "posts","keywords": "文档, readme","wordcount":  2535 ,
+    "url": "http:\/\/example.org\/posts\/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3%E6%92%B0%E5%86%99%E6%8C%87%E5%8D%97readmewiki%E5%92%8C%E4%BB%A3%E7%A0%81%E8%B4%A1%E7%8C%AE\/","datePublished": "2024-07-15T17:56:16+08:00","dateModified": "2024-07-15T17:56:16+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>开源项目文档撰写指南：README、Wiki和代码贡献</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/readme/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> readme</a></span></div>
+      <div class="post-meta-line"><span title=2024-07-15&#32;17:56:16><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-07-15">2024-07-15</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2535 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/readme-images.png"
+    data-srcset="/posts/images/readme-images.png, /posts/images/readme-images.png 1.5x, /posts/images/readme-images.png 2x"
+    data-sizes="auto"
+    alt="/posts/images/readme-images.png"
+    title="/posts/images/readme-images.png"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#开源项目文档撰写指南readmewiki-和代码贡献">开源项目文档撰写指南：README、Wiki 和代码贡献</a></li>
+    <li><a href="#如何撰写-readme">如何撰写 README</a>
+      <ul>
+        <li><a href="#项目名称与简介">项目名称与简介</a></li>
+        <li><a href="#功能概述">功能概述</a></li>
+        <li><a href="#技术依赖">技术依赖</a></li>
+        <li><a href="#安装与运行">安装与运行</a></li>
+        <li><a href="#使用示例">使用示例</a></li>
+        <li><a href="#贡献指南">贡献指南</a></li>
+        <li><a href="#许可证">许可证</a></li>
+      </ul>
+    </li>
+    <li><a href="#如何撰写-wiki">如何撰写 Wiki</a>
+      <ul>
+        <li><a href="#结构化内容">结构化内容</a></li>
+        <li><a href="#每个页面专注于一个主题">每个页面专注于一个主题</a></li>
+        <li><a href="#更新与维护">更新与维护</a></li>
+        <li><a href="#图示与示例">图示与示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#如何贡献代码">如何贡献代码</a>
+      <ul>
+        <li><a href="#明确贡献流程">明确贡献流程</a></li>
+        <li><a href="#代码规范">代码规范</a></li>
+        <li><a href="#测试要求">测试要求</a></li>
+        <li><a href="#代码审查">代码审查</a></li>
+      </ul>
+    </li>
+    <li><a href="#案例开源java广告引擎">案例：开源Java广告引擎</a>
+      <ul>
+        <li><a href="#adengine">AdEngine</a></li>
+        <li><a href="#主要特性">主要特性</a></li>
+        <li><a href="#快速开始">快速开始</a></li>
+        <li><a href="#贡献">贡献</a></li>
+        <li><a href="#许可证-1">许可证</a></li>
+        <li><a href="#联系我们">联系我们</a></li>
+      </ul>
+    </li>
+    <li><a href="#案例wiki结构示例">案例：Wiki结构示例</a>
+      <ul>
+        <li><a href="#adengine项目的wiki">AdEngine项目的Wiki</a></li>
+        <li><a href="#贡献指南示例">贡献指南示例</a></li>
+        <li><a href="#测试">测试</a></li>
+      </ul>
+    </li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="开源项目文档撰写指南readmewiki-和代码贡献">开源项目文档撰写指南：README、Wiki 和代码贡献</h2>
+<p>开源项目的成功不仅仅依赖于代码质量，还与良好的文档密不可分。README 文件、Wiki 和贡献指南是帮助用户和开发者理解、使用和参与项目的关键。本文将介绍如何撰写这些文档，以便提升开源项目的可用性和吸引力。</p>
+<h2 id="如何撰写-readme">如何撰写 README</h2>
+<p>README 文件是用户了解项目的第一步。一个优秀的 README 应该简洁明了，涵盖以下几个重要部分：</p>
+<h3 id="项目名称与简介">项目名称与简介</h3>
+<ul>
+<li><strong>项目名称</strong>：清晰、简洁。</li>
+<li><strong>简介</strong>：用一到两句话描述项目的核心功能和目的。</li>
+</ul>
+<h3 id="功能概述">功能概述</h3>
+<p>简要列出项目的主要功能或特性。这可以通过项目的核心功能清单来实现，帮助用户快速理解项目的价值。</p>
+<h3 id="技术依赖">技术依赖</h3>
+<p>列出项目所需的技术栈和依赖库，便于用户在搭建环境时能快速安装所需组件。</p>
+<h3 id="安装与运行">安装与运行</h3>
+<p>提供详细的安装和运行指南，确保用户能够顺利开始使用项目。包括如何克隆项目、构建和运行服务的具体命令。</p>
+<h3 id="使用示例">使用示例</h3>
+<p>给出基本的使用示例，帮助用户了解如何使用项目的主要功能。示例代码和命令能够让用户更快上手。</p>
+<h3 id="贡献指南">贡献指南</h3>
+<p>鼓励社区参与项目。提供贡献指南，说明如何提出问题、提交代码和参与讨论。</p>
+<h3 id="许可证">许可证</h3>
+<p>指明项目的许可证类型，告知用户项目的使用和修改权限。</p>
+<h2 id="如何撰写-wiki">如何撰写 Wiki</h2>
+<p>Wiki 是一个更全面的文档，适合存放详细的项目文档、使用教程和技术架构等内容。以下是撰写 Wiki 的建议：</p>
+<h3 id="结构化内容">结构化内容</h3>
+<p>使用清晰的层次结构划分 Wiki 页面的内容，例如：</p>
+<ul>
+<li><strong>介绍</strong></li>
+<li><strong>项目架构</strong></li>
+<li><strong>教程和指南</strong></li>
+<li><strong>安装与配置</strong></li>
+<li><strong>使用指南</strong></li>
+<li><strong>API 文档</strong></li>
+<li><strong>常见问题解答</strong></li>
+</ul>
+<p>一个好的Wiki应该:</p>
+<ol>
+<li><strong>结构清晰</strong>: 使用层次结构组织内容,便于导航。</li>
+<li><strong>全面</strong>: 涵盖项目的各个方面,从基础概念到高级主题。</li>
+<li><strong>保持更新</strong>: 随着项目的发展定期更新内容。</li>
+<li><strong>包含示例</strong>: 提供丰富的代码示例和使用场景。</li>
+<li><strong>FAQ</strong>: 包含常见问题及其答案。</li>
+</ol>
+<h3 id="每个页面专注于一个主题">每个页面专注于一个主题</h3>
+<p>确保每个页面的内容集中于一个主题，以便用户能快速找到所需的信息。例如，创建单独的页面来详细描述 API 的每个端点。</p>
+<h3 id="更新与维护">更新与维护</h3>
+<p>Wiki 文档应定期更新，以反映项目的最新状态和功能变更。确保文档始终准确且相关。</p>
+<h3 id="图示与示例">图示与示例</h3>
+<p>使用图表、流程图和示例代码来帮助解释复杂的概念和工作流，增加文档的可读性。</p>
+<h2 id="如何贡献代码">如何贡献代码</h2>
+<p>一个活跃的开源项目离不开社区的支持和贡献。以下是促进代码贡献的策略：</p>
+<p><strong>如何贡献</strong></p>
+<ol>
+<li>Fork 本仓库</li>
+<li>创建你的特性分支 (<code>git checkout -b feature/AmazingFeature</code>)</li>
+<li>提交你的更改 (<code>git commit -m 'Add some AmazingFeature'</code>)</li>
+<li>推送到分支 (<code>git push origin feature/AmazingFeature</code>)</li>
+<li>开启一个 Pull Request</li>
+</ol>
+<h3 id="明确贡献流程">明确贡献流程</h3>
+<p>在贡献指南中详细说明代码贡献的流程，包括如何报告问题、如何提交功能请求以及如何创建 Pull Request。</p>
+<h3 id="代码规范">代码规范</h3>
+<p>提供清晰的代码风格指南，确保所有贡献者的代码保持一致。例如，使用特定的代码风格、命名约定等。</p>
+<h3 id="测试要求">测试要求</h3>
+<p>要求贡献者在提交代码前运行测试，确保新代码不破坏现有功能。可以提供测试框架的使用说明。</p>
+<h3 id="代码审查">代码审查</h3>
+<p>建立代码审查流程，以确保每个 Pull Request 都经过审查和讨论。这有助于提高代码质量并促进知识共享。</p>
+<h2 id="案例开源java广告引擎">案例：开源Java广告引擎</h2>
+<p>为了更好地理解如何应用这些原则，让我们以一个虚构的开源Java广告引擎项目&quot;AdEngine&quot;为例，展示如何编写其文档。</p>
+<h3 id="adengine">AdEngine</h3>
+<p>AdEngine是一个高性能、可扩展的开源Java广告引擎，专为大规模在线广告投放而设计。</p>
+<p><a href="https://travis-ci.org/adengine/adengine"target="_blank" rel="external nofollow noopener noreferrer"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://travis-ci.org/adengine/adengine.svg?branch=main"
+    data-srcset="https://travis-ci.org/adengine/adengine.svg?branch=main, https://travis-ci.org/adengine/adengine.svg?branch=main 1.5x, https://travis-ci.org/adengine/adengine.svg?branch=main 2x"
+    data-sizes="auto"
+    alt="Build Status"
+    title="Build Status"/></a>
+<a href="https://opensource.org/licenses/Apache-2.0"target="_blank" rel="external nofollow noopener noreferrer"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"
+    data-srcset="https://img.shields.io/badge/License-Apache%202.0-blue.svg, https://img.shields.io/badge/License-Apache%202.0-blue.svg 1.5x, https://img.shields.io/badge/License-Apache%202.0-blue.svg 2x"
+    data-sizes="auto"
+    alt="License"
+    title="License"/></a>
+<a href="https://www.oracle.com/java/technologies/javase-jdk11-downloads.html"target="_blank" rel="external nofollow noopener noreferrer"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="https://img.shields.io/badge/Java-11%2B-green.svg"
+    data-srcset="https://img.shields.io/badge/Java-11%2B-green.svg, https://img.shields.io/badge/Java-11%2B-green.svg 1.5x, https://img.shields.io/badge/Java-11%2B-green.svg 2x"
+    data-sizes="auto"
+    alt="Java Version"
+    title="Java Version"/></a></p>
+<h3 id="主要特性">主要特性</h3>
+<ul>
+<li>实时广告投放决策</li>
+<li>多维度用户定向</li>
+<li>灵活的广告预算管理</li>
+<li>高并发处理能力</li>
+<li>可扩展的插件系统</li>
+</ul>
+<h3 id="快速开始">快速开始</h3>
+<h4 id="前置条件">前置条件</h4>
+<ul>
+<li>Java 11或更高版本</li>
+<li>Maven 3.6+</li>
+<li>MySQL 8.0+</li>
+</ul>
+<h4 id="安装">安装</h4>
+<p>1.克隆仓库：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone https://github.com/j5land/adengine.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> adengine
+</span></span></code></pre></div><p>2.编译项目：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mvn clean install
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-properties" data-lang="properties"><span class="line"><span class="cl"><span class="na">spring.datasource.url</span><span class="o">=</span><span class="s">jdbc:mysql://localhost:3306/adengine</span>
+</span></span><span class="line"><span class="cl"><span class="na">spring.datasource.username</span><span class="o">=</span><span class="s">your_username</span>
+</span></span><span class="line"><span class="cl"><span class="na">spring.datasource.password</span><span class="o">=</span><span class="s">your_password</span>
+</span></span></code></pre></div><p>3.运行应用：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">java -jar target/adengine-1.0.0.jar
+</span></span></code></pre></div><h4 id="使用示例-1">使用示例</h4>
+<p>以下是一个简单的广告请求处理示例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">AdRequest</span> <span class="n">request</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="na">setUserId</span><span class="o">(</span><span class="s">&#34;user123&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="na">setAdSlot</span><span class="o">(</span><span class="s">&#34;banner_top&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="na">setDeviceType</span><span class="o">(</span><span class="n">DeviceType</span><span class="o">.</span><span class="na">MOBILE</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">AdResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="n">adEngine</span><span class="o">.</span><span class="na">processRequest</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Selected Ad: &#34;</span> <span class="o">+</span> <span class="n">response</span><span class="o">.</span><span class="na">getAdId</span><span class="o">());</span>
+</span></span></code></pre></div><p>多示例和详细文档，请查看我们的<a href="https://github.com/adengine/adengine/wiki"target="_blank" rel="external nofollow noopener noreferrer">Wiki</a>。</p>
+<h3 id="贡献">贡献</h3>
+<p>我们欢迎各种形式的贡献！请查看我们的<a href="CONTRIBUTING.md">贡献指南</a>了解如何参与项目开发。</p>
+<h3 id="许可证-1">许可证</h3>
+<p>本项目采用 Apache 2.0 许可证。查看 <a href="LICENSE">LICENSE</a> 文件了解更多信息。</p>
+<h3 id="联系我们">联系我们</h3>
+<ul>
+<li>邮件列表：mail</li>
+<li>QQ：xxxxx</li>
+</ul>
+<h2 id="案例wiki结构示例">案例：Wiki结构示例</h2>
+<h3 id="adengine项目的wiki">AdEngine项目的Wiki</h3>
+<p>包含以下页面：</p>
+<p>首页</p>
+<ul>
+<li>项目简介</li>
+<li>快速导航链接</li>
+</ul>
+<p>架构概述</p>
+<ul>
+<li>系统组件图</li>
+<li>数据流程</li>
+</ul>
+<p>核心概念</p>
+<ul>
+<li>广告请求处理流程</li>
+<li>定向机制</li>
+<li>预算控制</li>
+</ul>
+<p>配置指南</p>
+<ul>
+<li>系统参数设置</li>
+<li>数据库配置</li>
+<li>缓存策略</li>
+</ul>
+<p>API文档</p>
+<ul>
+<li>RESTful API端点</li>
+<li>请求/响应格式</li>
+<li>认证机制</li>
+</ul>
+<p>插件开发</p>
+<ul>
+<li>插件系统介绍</li>
+<li>创建自定义插件的步骤</li>
+<li>插件API参考</li>
+</ul>
+<p>性能调优</p>
+<ul>
+<li>JVM优化建议</li>
+<li>数据库索引策略</li>
+<li>缓存优化技巧</li>
+</ul>
+<p>故障排除</p>
+<ul>
+<li>常见问题及解决方案</li>
+<li>日志分析指南</li>
+<li>性能诊断工具</li>
+</ul>
+<p>社区贡献</p>
+<ul>
+<li>代码贡献流程</li>
+<li>文档贡献指南</li>
+<li>报告bug的最佳实践</li>
+</ul>
+<h3 id="贡献指南示例">贡献指南示例</h3>
+<h4 id="adengine贡献指南">AdEngine贡献指南</h4>
+<p>首先，感谢你考虑为AdEngine做出贡献！每一个贡献都是宝贵的，无论大小。</p>
+<h4 id="行为准则">行为准则</h4>
+<p>参与本项目即表示你同意遵守我们的<a href="CODE_OF_CONDUCT.md">行为准则</a>。请确保仔细阅读并遵守这些规则。</p>
+<h4 id="如何贡献">如何贡献</h4>
+<ol>
+<li>查看<a href="https://github.com/adengine/adengine/issues"target="_blank" rel="external nofollow noopener noreferrer">问题列表</a>，看看是否有你可以帮助解决的问题。</li>
+<li>如果你发现了bug或有新功能建议，请先创建一个issue。</li>
+<li>Fork本仓库并创建你的特性分支：<code>git checkout -b feature/AmazingFeature</code></li>
+<li>进行你的修改，并确保代码符合我们的风格指南。</li>
+<li>提交你的更改：<code>git commit -m 'Add some AmazingFeature'</code></li>
+<li>推送到分支：<code>git push origin feature/AmazingFeature</code></li>
+<li>打开一个Pull Request。</li>
+</ol>
+<h4 id="开发环境设置">开发环境设置</h4>
+<ol>
+<li>安装Java 11和Maven 3.6+。</li>
+<li>Fork并克隆仓库。</li>
+<li>在项目根目录运行：<code>mvn clean install</code></li>
+<li>使用你喜欢的IDE导入项目（推荐使用IntelliJ IDEA或Eclipse）。</li>
+</ol>
+<h4 id="代码风格">代码风格</h4>
+<p>我们使用Google Java风格指南。请确保你的代码符合这个规范。你可以使用<a href="https://github.com/google/google-java-format"target="_blank" rel="external nofollow noopener noreferrer">Google Java Format</a>插件来自动格式化代码。</p>
+<h4 id="提交消息指南">提交消息指南</h4>
+<ul>
+<li>使用现在时态（&ldquo;Add feature&quot;而不是&quot;Added feature&rdquo;）</li>
+<li>第一行应该是50个字符以内的简短摘要</li>
+<li>如果需要，可以在摘要后添加一个空行，然后是更详细的描述</li>
+</ul>
+<h3 id="测试">测试</h3>
+<ul>
+<li>为所有新功能和bug修复添加单元测试。</li>
+<li>确保所有测试都能通过：<code>mvn test</code></li>
+<li>对于重要的功能更改，请添加集成测试。</li>
+</ul>
+<h4 id="文档">文档</h4>
+<ul>
+<li>更新README.md文件（如果适用）。</li>
+<li>为新功能添加或更新Wiki页面。</li>
+<li>在代码中添加清晰的注释，特别是对于复杂的算法或业务逻辑。</li>
+</ul>
+<h4 id="代码审查-1">代码审查</h4>
+<p>所有提交都需要通过代码审查。审查者将关注代码质量、测试覆盖率和文档完整性。请耐心等待反馈，并积极响应审查意见。</p>
+<h2 id="结论">结论</h2>
+<p>通过这个AdEngine的案例，我们可以看到如何将README、Wiki和贡献指南的最佳实践应用到实际项目中。
+一个精心设计的文档不仅能吸引更多的贡献者，还能确保项目的长期可持续性。
+记住，好的文档是一个持续改进的过程，随着项目的发展，定期更新和完善你的文档是非常重要的。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2024-07-15&#32;17:56:16>更新于 2024-07-15&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E6%96%87%E6%A1%A3/' class="post-tag">文档</a><a href='/tags/readme/' class="post-tag">readme</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E6%A0%87%E5%87%86%E4%B9%8B%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%87%86%E7%A1%AE/" class="post-nav-item" rel="prev" title="技术文档标准之实时更新与准确"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>技术文档标准之实时更新与准确</a>
+      <a href="/posts/%E5%B9%BF%E5%91%8A%E5%8F%96%E9%93%BE%E5%9C%BA%E6%99%AFkafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="post-nav-item" rel="next" title="广告取链场景Kafka消费者最佳实践">广告取链场景Kafka消费者最佳实践<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2024</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
