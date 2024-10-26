@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>投放平台发布故障复盘与经验总结 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、背景 10月23日上午，广告主投放平台在一次例行升级过程中出现了严重的生产事故，导致第三方广告主无法正常使用该平台。这样的故障不仅影响业务" /><meta name="keywords" content='复盘, 故障' /><meta itemprop="name" content="投放平台发布故障复盘与经验总结">
+<meta itemprop="description" content="一、背景 10月23日上午，广告主投放平台在一次例行升级过程中出现了严重的生产事故，导致第三方广告主无法正常使用该平台。这样的故障不仅影响业务"><meta itemprop="datePublished" content="2024-10-26T10:51:56+08:00" />
+<meta itemprop="dateModified" content="2024-10-26T10:51:56+08:00" />
+<meta itemprop="wordCount" content="2186">
+<meta itemprop="keywords" content="复盘,故障," /><meta property="og:title" content="投放平台发布故障复盘与经验总结" />
+<meta property="og:description" content="一、背景 10月23日上午，广告主投放平台在一次例行升级过程中出现了严重的生产事故，导致第三方广告主无法正常使用该平台。这样的故障不仅影响业务" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/%E6%8A%95%E6%94%BE%E5%B9%B3%E5%8F%B0%E5%8F%91%E5%B8%83%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98%E4%B8%8E%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-10-26T10:51:56+08:00" />
+<meta property="article:modified_time" content="2024-10-26T10:51:56+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="投放平台发布故障复盘与经验总结"/>
+<meta name="twitter:description" content="一、背景 10月23日上午，广告主投放平台在一次例行升级过程中出现了严重的生产事故，导致第三方广告主无法正常使用该平台。这样的故障不仅影响业务"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://example.org/posts/%E6%8A%95%E6%94%BE%E5%B9%B3%E5%8F%B0%E5%8F%91%E5%B8%83%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98%E4%B8%8E%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/" /><link rel="prev" href="http://example.org/posts/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "投放平台发布故障复盘与经验总结",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/example.org\/posts\/%E6%8A%95%E6%94%BE%E5%B9%B3%E5%8F%B0%E5%8F%91%E5%B8%83%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98%E4%B8%8E%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93\/"
+    },"genre": "posts","keywords": "复盘, 故障","wordcount":  2186 ,
+    "url": "http:\/\/example.org\/posts\/%E6%8A%95%E6%94%BE%E5%B9%B3%E5%8F%B0%E5%8F%91%E5%B8%83%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98%E4%B8%8E%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93\/","datePublished": "2024-10-26T10:51:56+08:00","dateModified": "2024-10-26T10:51:56+08:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "j5land"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"
+    title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item search" id="search-desktop">
+            <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-desktop">
+            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+              <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+              <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+            </a>
+            <span class="search-button search-loading" id="search-loading-desktop">
+              <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+            </span>
+          </li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客"><img
+    class="lazyload logo"
+    src="/svg/loading.min.svg"
+    data-src="/assets/logo.png"
+    data-srcset="/assets/logo.png, /assets/logo.png 1.5x, /assets/logo.png 2x"
+    data-sizes="auto"
+    alt="/assets/logo.png"
+    title="/assets/logo.png"/><span class="header-title-text"></span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li class="search-wrapper">
+            <div class="search mobile" id="search-mobile">
+              <input type="text" placeholder="搜索文章标题或内容 ..." id="search-input-mobile">
+              <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                <i class="fa-solid fa-search fa-fw" aria-hidden="true"></i>
+              </a>
+              <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                <i class="fa-solid fa-times-circle fa-fw" aria-hidden="true"></i>
+              </a>
+              <span class="search-button search-loading" id="search-loading-mobile">
+                <i class="fa-solid fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+              </span>
+            </div>
+            <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+              取消
+            </a>
+          </li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+  </div>
+  <div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+  </div><main class="container" data-page-style="normal"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX">
+        <span title="转载" class="icon-repost"><i class="fa-solid fa-share fa-fw" aria-hidden="true"></i></span><span>投放平台发布故障复盘与经验总结</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><img
+    class="lazyload avatar"
+    src="/svg/loading.min.svg"
+    data-src="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c,%20string=%29"
+    data-srcset="/assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 1.5x, /assets/avatar.png?s=32&amp;d=localhost:1313%25!%28EXTRA%20string=09f6ba2c1a27e4f0245271e28bf8417c%2c%20string=%29 2x"
+    data-sizes="auto"
+    alt="j5land"
+    title="j5land"/>&nbsp;j5land</span></span>
+          <span class="post-category">收录于 <a href="/categories/%E5%A4%8D%E7%9B%98/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 复盘</a>&ensp;<a href="/categories/%E7%BB%8F%E9%AA%8C/"><i class="fa-regular fa-folder fa-fw" aria-hidden="true"></i> 经验</a></span></div>
+      <div class="post-meta-line"><span title=2024-10-26&#32;10:51:56><i class="fa-regular fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-10-26">2024-10-26</time></span>&nbsp;<span><i class="fa-solid fa-pencil-alt fa-fw" aria-hidden="true"></i> 约 2186 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw" aria-hidden="true"></i> 预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="featured-image"><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="/posts/images/guzhangfupan-1.jpg"
+    data-srcset="/posts/images/guzhangfupan-1.jpg, /posts/images/guzhangfupan-1.jpg 1.5x, /posts/images/guzhangfupan-1.jpg 2x"
+    data-sizes="auto"
+    alt="/posts/images/guzhangfupan-1.jpg"
+    title="/posts/images/guzhangfupan-1.jpg"/></div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一背景">一、背景</a></li>
+        <li><a href="#二定责分析">二、定责分析</a></li>
+        <li><a href="#三优化改进措施">三、优化改进措施</a></li>
+        <li><a href="#四改进措施">四、改进措施</a></li>
+        <li><a href="#五经验总结">五、经验总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h3 id="一背景">一、背景</h3>
+<p>10月23日上午，广告主投放平台在一次例行升级过程中出现了严重的生产事故，导致第三方广告主无法正常使用该平台。这样的故障不仅影响业务的正常运转，还可能影响与第三方广告主之间的信任。</p>
+<p>此次故障的发生引发了我们对发布流程、提测流程以及自动化测试覆盖率等多个方面的深度思考。</p>
+<p>我参与了故障的紧急处理，也在后续复盘中总结了问题的根因。这是提升团队技术水平与工作流程的必经之路。我将回顾事件的整个过程，分析故障根源，并总结从中汲取的经验教训与改进措施。</p>
+<h4 id="经过">经过</h4>
+<p>以下是此次故障的具体经过：</p>
+<ul>
+<li><strong>上午10:44</strong> 前端工程师完成升级操作，并向产品经理进行通知验证。</li>
+<li><strong>上午10:50</strong> 产品经理通知相关业务方进行功能验证，因改动较小未引入QA测试。</li>
+<li><strong>上午10:54</strong> 产品经理通知运营并让第三方广告主登录验证功能。</li>
+<li><strong>上午11:02</strong> 运营反馈平台无法登录，影响正常操作，要求紧急回滚。</li>
+<li><strong>上午11:04</strong> 产品反馈广告平台系统报错无法访问。</li>
+<li><strong>上午11:05</strong> 技术经理开始介入，发现发布错误。原因为测试环境的镜像被发布到生产环境。</li>
+<li><strong>上午11:17</strong> 技术团队回滚到正确的版本，并修复问题。</li>
+</ul>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/20241026-101351.jpeg"
+    data-srcset="../images/20241026-101351.jpeg, ../images/20241026-101351.jpeg 1.5x, ../images/20241026-101351.jpeg 2x"
+    data-sizes="auto"
+    alt="20241026-101351"
+    title="20241026-101351"/></p>
+<h4 id="事故根因分析">事故根因分析</h4>
+<p>在复盘此次故障时，我们发现其背后存在多重问题，不仅仅是单一的操作失误。</p>
+<p>此次事故的根因可以归结为以下几点核心问题：</p>
+<ol>
+<li><strong>测试与生产环境隔离不严</strong>
+这次事故的直接原因是测试环境的容器镜像错误地发布到了生产环境。开发与测试环境的隔离不严，导致了生产系统与测试系统混用镜像的问题，进而导致发布失败。发布流程中的环境隔离机制缺乏有效的检查和限制。</li>
+<li><strong>验证流程不完善</strong>
+在此次发布中，我们采取了“二级提测”流程，允许产品经理直接在生产环境上进行验证，而没有测试人员参与。虽然这一流程适用于非常小改动的快速发布，但在实际场景中，由于缺少多个角色的交叉即时验证，导致了错误没有及时被发现，放大了潜在风险。</li>
+<li><strong>监控体系不健全</strong>
+我们的系统监控没有在发布后立即检测出异常情况，直到运营人员反馈Mate平台无法使用时，才发现问题。这表明我们的监控体系缺乏对关键发布环节的实时追踪，无法及时预警。</li>
+<li><strong>自动化程度不足</strong>
+我们有一定的接口自动化测试覆盖，但发布流程中缺乏对广告平台主流程自动化验证。手动流程的介入较多。</li>
+</ol>
+<h3 id="二定责分析">二、定责分析</h3>
+<p><strong>前端工程师：60%</strong>，作为发布操作执行人应承担主要责任</p>
+<ul>
+<li>未严格遵循发布流程</li>
+<li>未对正确部署环境进行</li>
+</ul>
+<p><strong>技术团队制度与规范：30%</strong></p>
+<ul>
+<li>CI/CD研发流程存在风险点</li>
+<li>缺乏环境隔离机制</li>
+<li>缺少自动化检查机制</li>
+</ul>
+<p><strong>产品经理：10%</strong></p>
+<ul>
+<li>作为二级测试负责人，验证不够严谨</li>
+<li>未在第一时间发现异常</li>
+</ul>
+<h3 id="三优化改进措施">三、优化改进措施</h3>
+<p>此次事故的复盘不仅是为了寻找责任，更重要的是总结经验，并通过流程优化减少未来类似问题的发生。</p>
+<p>下面将结合此次事件提出的关键经验教训，并针对性的提出优化措施。</p>
+<h4 id="31-测试与生产环境严格隔离">3.1 测试与生产环境严格隔离</h4>
+<p>为确保类似错误不再发生，我们将严格实施测试与生产环境的隔离策略：</p>
+<ul>
+<li>每次发布前，必须验证生产镜像与测试镜像的差异性，确保生产环境的镜像来源于正确的构建源。</li>
+<li>生产环境和测试环境的镜像发布机制将加入强制性检查机制，防止非生产镜像被误发布到生产环境。</li>
+</ul>
+<h4 id="32-完善验证流程">3.2 完善验证流程</h4>
+<p>在验证流程上，我们将针对不同需求，优化提测流程，特别是二级提测流程：</p>
+<ul>
+<li><strong>增加自动化测试覆盖</strong>：在提测过程中增加自动化测试，确保包括前端、后端和UI在内的核心功能都有核心的自动化测试的覆盖。</li>
+<li><strong>建立更严格的判定标准</strong>：对提测流程引入更为严格的判定标准，确保关键功能和变更点通过适当的流程进行验证，二级提测需要开发与产品在一起验证以便于快速决策。</li>
+<li><strong>要求多角色交叉验证</strong>：不仅依赖产品经理的业务验证，还需要开发人员的技术验证和运营的功能验证，确保每个发布都经过多角色的交叉确认。</li>
+</ul>
+<p>以下是研发与测试流程的优化图示：</p>
+<p><img
+    class="lazyload"
+    src="/svg/loading.min.svg"
+    data-src="../images/diagram-3433565425131735535.jpg"
+    data-srcset="../images/diagram-3433565425131735535.jpg, ../images/diagram-3433565425131735535.jpg 1.5x, ../images/diagram-3433565425131735535.jpg 2x"
+    data-sizes="auto"
+    alt="diagram-3433565425131735535"
+    title="diagram-3433565425131735535"/></p>
+<h4 id="33-加强监控体系">3.3 加强监控体系</h4>
+<p>为了避免类似问题再次发生，我们将完善系统监控体系，确保发布后能够及时发现问题：</p>
+<ul>
+<li><strong>引入发布后监控机制</strong>：每次发布完成后，系统将自动检测服务状态，并通过日志、API调用监控等方式，实时监控服务的健康状态。</li>
+<li><strong>异常预警与自动化响应</strong>：系统监控发现异常时，将自动触发预警通知技术团队，并结合回滚机制自动执行回滚操作，确保系统稳定。</li>
+</ul>
+<h3 id="四改进措施">四、改进措施</h3>
+<h4 id="41-短期行动1周内">4.1 短期行动（1周内）</h4>
+<ol>
+<li>环境隔离强化</li>
+</ol>
+<ul>
+<li>修改CI配置，强制区分环境标识</li>
+<li>优化镜像命名规范，确保生产和测试环境明显区分</li>
+</ul>
+<ol start="2">
+<li>发布流程优化</li>
+</ol>
+<ul>
+<li>建立标准化的发布清单</li>
+<li>明确发布负责人制度</li>
+<li>二级提测，加入灰度发布验证体系</li>
+</ul>
+<h4 id="42-中期计划1-3个月">4.2 中期计划（1-3个月）</h4>
+<ol>
+<li>测试体系升级</li>
+</ol>
+<ul>
+<li>完善测试标准</li>
+<li>建设自动化测试</li>
+<li>优化验证流程</li>
+</ul>
+<ol start="2">
+<li>监控告警建设</li>
+</ol>
+<ul>
+<li>配置核心服务监控</li>
+<li>优化告警通知流程</li>
+</ul>
+<ol start="3">
+<li>团队能力提升</li>
+</ol>
+<ul>
+<li>建立知识库</li>
+<li>优化协作机制</li>
+<li>组织技术培训</li>
+</ul>
+<h3 id="五经验总结">五、经验总结</h3>
+<h4 id="经验">经验</h4>
+<ol>
+<li>
+<p>环境隔离的重要性：生产环境和测试环境必须严格隔离；</p>
+</li>
+<li>
+<p>自动化的必要性：减少人工操作风险、提高发布效率、保证操作的一致性；</p>
+</li>
+<li>
+<p>监控的价值：及时发现问题、快速定位原因、提供决策依据；</p>
+</li>
+<li>
+<p>标准流程流程的意义：标准化操作、明确责任边界、保证服务质量；</p>
+</li>
+</ol>
+<h4 id="总结">总结</h4>
+<p>这次故障为我们提供了宝贵的经验教训，暴露了发布和提测流程中存在的不足。</p>
+<p>通过深度分析和优化改进，我们不仅提高了系统的可靠性，也加强了发布过程中的自动化程度与监控机制。</p>
+<p>我认为技术团队应不断反思和迭代现有流程，在保证系统稳定的同时，努力提高开发与运维的效率。<strong>自动化、严谨的流程和有效的监控是确保系统高效运行的关键</strong>。</p>
+<p>这次的故障不仅是一次技术挑战，更是团队成长的契机。通过不断的复盘与改进，我们可以将这些教训转化为进步的动力，逐步构建更为高效、可靠的技术平台。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title=2024-10-26&#32;10:51:56>更新于 2024-10-26&nbsp;</span>
+      </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E5%A4%8D%E7%9B%98/' class="post-tag">复盘</a><a href='/tags/%E6%95%85%E9%9A%9C/' class="post-tag">故障</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/%E5%B9%BF%E5%91%8A%E5%BC%95%E6%93%8Eredis%E4%BC%98%E5%8C%96%E6%8F%90%E5%8D%87%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E6%95%88%E7%8E%87%E7%9A%84%E5%AE%9E%E8%B7%B5/" class="post-nav-item" rel="prev" title="广告引擎Redis优化：提升资源利用效率的实践"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>广告引擎Redis优化：提升资源利用效率的实践</a></div>
+</div>
+<div id="comments"><div id="giscus">
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="j5land/j5land.github.io"
+            data-repo-id="MDEwOlJlcG9zaXRvcnkxNjYxNTcwMjc="
+            data-category="General"
+            data-category-id="DIC_kwDOCeda484CUFrI"
+            data-mapping="title"
+            
+            data-theme="preferred_color_scheme"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="zh-CN"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+            defer
+          ></script>
+        </div>
+        <noscript>
+          Please enable JavaScript to view the comments powered by <a href="https://giscus.app/" rel="external nofollow noopener noreferrer">giscus</a>.
+        </noscript></div></article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">Copyright © J5land Blog 2023
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2021 - 2024</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span><span class="license footer-divider"><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div><div class="footer-line statistics"><span class="site-time" title='网站运行中 ...'><i class="fa-solid fa-heartbeat fa-fw animate-icon" aria-hidden="true"></i><span class="ms-1 d-none">博客已运行</span><span class="run-times ms-1">网站运行中 ...</span></span></div><div class="footer-line visitor">
+          <span id="busuanzi_container_site_uv" title='总访客数'><i class="fa-regular fa-user fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span><span id="busuanzi_container_site_pv" class="footer-divider" title='总访问量'><i class="fa-regular fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span></span>
+        </div></div>
+  </footer>
+<script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div><div class="fixed-button view-comments d-none" role="button" aria-label="查看评论"><i class="fa-solid fa-comment fa-fw" aria-hidden="true"></i></div></div><div id="mask"></div><div class="reading-progress-bar" style="left: 0;top: 0;"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><script src="/lib/autocomplete/autocomplete.min.js" defer></script><script src="/lib/fuse/fuse.min.js" defer></script><script src="/lib/lazysizes/lazysizes.min.js" async defer></script><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":true,"expired":false,"giscus":{"darkTheme":"dark","lightTheme":"light"}},"search":{"distance":100,"findAllMatches":false,"highlightTag":"em","ignoreFieldNorm":false,"ignoreLocation":false,"isCaseSensitive":false,"location":0,"maxResultLength":10,"minMatchCharLength":2,"noResultsFound":"没有找到结果","snippetLength":30,"threshold":0.3,"useExtendedSearch":false},"siteTime":"2020-05-23T16:15:22+08:00"};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

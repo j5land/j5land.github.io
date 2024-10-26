@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>经验 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</title>
+    <link>http://example.org/categories/%E7%BB%8F%E9%AA%8C/</link>
+    <description>经验 - 分类 - J5land, 程序员, 广告行业, 云原生 | 这里是 J5land 的博客</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 26 Oct 2024 10:51:56 &#43;0800</lastBuildDate><atom:link href="http://example.org/categories/%E7%BB%8F%E9%AA%8C/" rel="self" type="application/rss+xml" /><item>
+  <title>投放平台发布故障复盘与经验总结</title>
+  <link>http://example.org/posts/%E6%8A%95%E6%94%BE%E5%B9%B3%E5%8F%B0%E5%8F%91%E5%B8%83%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98%E4%B8%8E%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</link>
+  <pubDate>Sat, 26 Oct 2024 10:51:56 &#43;0800</pubDate>
+  <author>j5land</author>
+  <guid>http://example.org/posts/%E6%8A%95%E6%94%BE%E5%B9%B3%E5%8F%B0%E5%8F%91%E5%B8%83%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98%E4%B8%8E%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</guid>
+  <description><![CDATA[<div class="featured-image">
+        <img src="/posts/images/guzhangfupan-1.jpg" referrerpolicy="no-referrer">
+      </div>一、背景 10月23日上午，广告主投放平台在一次例行升级过程中出现了严重的生产事故，导致第三方广告主无法正常使用该平台。这样的故障不仅影响业务]]></description>
+</item>
+</channel>
+</rss>
